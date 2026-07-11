@@ -1,58 +1,153 @@
 ---
 title: "Quickstart"
-description: "Build your first knowledge graph in minutes."
+description: "Choose the fastest Wazoo starting point for your project."
 ---
 
-## Prerequisites
+Wazoo has multiple entry points. Choose the path that matches what you are trying to build.
 
-- [Deno](https://deno.com) 2.0+
-- Or [Node.js](https://nodejs.org) 20+ (via npm/JSR)
+<CardGroup cols={2}>
+  <Card title="Create a World" icon="network" href="#create-a-world">
+    Use Worlds when you need a persistent graph of facts for agents or applications.
+  </Card>
+  <Card title="Validate a Markdown wiki" icon="book-open" href="#validate-a-markdown-wiki">
+    Use Wiki CLI when you want Markdown that can be checked, queried, and published.
+  </Card>
+  <Card title="Parse semantic Markdown" icon="braces" href="#parse-semantic-markdown">
+    Use Linked Markdown when you need typed Markdown frontmatter that can become graph data.
+  </Card>
+  <Card title="Target portable memory" icon="database" href="#target-portable-memory">
+    Use MemSDK when your app should not be locked to one AI memory backend.
+  </Card>
+</CardGroup>
 
-## Install
+## Create a World
+
+Worlds is the context engine for agents. The cloud path uses the Worlds API and the TypeScript SDK.
+
+### Prerequisites
+
+1. Sign up at the [Worlds Console](https://console.wazoo.dev).
+2. Generate an API key.
+3. Save it as `WORLDS_API_KEY`.
+
+### Install
 
 <CodeGroup>
-```bash deno
-deno add jsr:@worlds/client
+```bash Deno
+deno add jsr:@wazoo/worlds-sdk
 ```
 
 ```bash npm
-npx jsr add @worlds/client
+npx jsr add @wazoo/worlds-sdk
+```
+
+```bash Bun
+bunx jsr add @wazoo/worlds-sdk
 ```
 </CodeGroup>
 
-## Create a client
+### Run a graph loop
 
-```typescript
-import { Client } from "@worlds/client";
+```typescript index.ts
+import { Worlds } from "@wazoo/worlds-sdk";
 
-const client = new Client();
+const worlds = new Worlds({
+  apiKey: process.env.WORLDS_API_KEY!,
+  baseUrl: "https://api.wazoo.dev",
+});
 
-await client.import(`
-  @prefix schema: <https://schema.org/> .
+await worlds.create({
+  slug: "quickstart-cloud",
+  label: "My First World",
+});
 
-  <https://wazoo.dev/artists/Beethoven>
-    a schema:Person ;
-    schema:name "Ludwig van Beethoven" ;
-    schema:birthDate "1770-12-17" .
-`);
+await worlds.import(
+  "quickstart-cloud",
+  `@prefix user: <https://example.org/user/> .
+   @prefix wazoo: <https://wazoo.dev/#> .
+
+   user:person wazoo:worksFor wazoo:organization .`,
+  { contentType: "text/turtle" },
+);
+
+const result = await worlds.sparql(
+  "quickstart-cloud",
+  `PREFIX wazoo: <https://wazoo.dev/#>
+   SELECT ?organization WHERE {
+     <https://example.org/user/person> wazoo:worksFor ?organization
+   }`,
+);
+
+console.log(JSON.stringify(result, null, 2));
 ```
 
-## Search and query
+Next: [Worlds overview](/projects/worlds), [search](/worlds/search), and [query](/worlds/query).
 
-```typescript
-// Hybrid search — finds subjects by label or keyword
-const results = await client.search("Beethoven");
+## Validate a Markdown wiki
 
-// SPARQL traversal — inspect a subject's properties
-const bindings = await client.query(`
-  SELECT ?p ?o WHERE {
-    <https://wazoo.dev/artists/Beethoven> ?p ?o
-  }
-`);
+Wiki CLI turns a folder of Markdown into a validated, queryable, publishable wiki.
+
+```bash
+pip install wazootech-wiki
+wiki init
+wiki check --strict
+wiki serve --watch
 ```
 
-## What's next
+Use this path for Obsidian vaults, LLM-maintained knowledge bases, internal wikis, or static sites that need graph integrity.
 
-- [Knowledge graphs explained](/concepts/knowledge-graphs)
-- [SPARQL query guide](/guides/sparql-queries)
-- [In-memory vs persistent storage](/guides/in-memory)
+Next: [Wiki CLI](/projects/wiki) and [templates](/projects/templates).
+
+## Parse semantic Markdown
+
+Linked Markdown extracts typed semantic frontmatter from Markdown.
+
+<CodeGroup>
+```bash Python
+pip install linked-markdown
+```
+
+```bash Deno
+deno add jsr:@wazoo/linked-markdown
+```
+</CodeGroup>
+
+```typescript
+import { extract } from "@wazoo/linked-markdown";
+
+const result = extract(`---
+{
+  "@id": "https://example.org/docs/alice",
+  "@type": "schema:Person"
+}
+---
+
+# Alice
+`);
+
+console.log(result.attrs);
+```
+
+Next: [Linked Markdown](/projects/linked-markdown).
+
+## Target portable memory
+
+MemSDK gives your application a Supermemory-compatible memory interface that can be implemented by multiple backends.
+
+```typescript
+import type { SupermemoryInterface } from "memsdk";
+
+async function remember(client: SupermemoryInterface) {
+  await client.add({
+    content: "The user prefers graph-backed memory.",
+    containerTag: "user_123",
+  });
+
+  return client.search.documents({
+    q: "graph-backed memory",
+    containerTag: "user_123",
+  });
+}
+```
+
+Next: [MemSDK](/projects/memsdk).
