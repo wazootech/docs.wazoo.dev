@@ -56,12 +56,20 @@
       {
         "type": "github",
         "href": "https://github.com/wazootech"
+      },
+      {
+        "label": "Projects",
+        "href": "/projects"
+      },
+      {
+        "label": "Website",
+        "href": "https://wazoo.dev"
       }
     ],
     "primary": {
       "type": "button",
-      "label": "Go to Console",
-      "href": "https://console.wazoo.dev"
+      "label": "Explore projects",
+      "href": "/projects"
     }
   },
   "navigation": {
@@ -169,8 +177,33 @@
   "footer": {
     "links": [
       {
-        "header": "Developers",
+        "header": "Projects",
         "items": [
+          {
+            "label": "Worlds",
+            "href": "/projects/worlds"
+          },
+          {
+            "label": "Wiki CLI",
+            "href": "/projects/wiki"
+          },
+          {
+            "label": "Linked Markdown",
+            "href": "/projects/linked-markdown"
+          },
+          {
+            "label": "MemSDK",
+            "href": "/projects/memsdk"
+          }
+        ]
+      },
+      {
+        "header": "Worlds",
+        "items": [
+          {
+            "label": "Worlds Console",
+            "href": "https://console.wazoo.dev"
+          },
           {
             "label": "API reference",
             "href": "/reference"
@@ -186,24 +219,15 @@
         ]
       },
       {
-        "header": "Explore",
-        "items": [
-          {
-            "label": "Worlds Console",
-            "href": "https://console.wazoo.dev"
-          },
-          {
-            "label": "Blog",
-            "href": "https://wazoo.dev/blog"
-          }
-        ]
-      },
-      {
         "header": "Community",
         "items": [
           {
             "label": "GitHub",
             "href": "https://github.com/wazootech"
+          },
+          {
+            "label": "Website",
+            "href": "https://wazoo.dev"
           },
           {
             "label": "X/Twitter",
