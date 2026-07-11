@@ -4,3 +4,5 @@
 
 # Local dev config
 .env
+
+.vercel
