@@ -12,54 +12,56 @@
     "light": "/logo/light.svg",
     "dark": "/logo/dark.svg"
   },
-  "navigation": [
-    {
-      "group": "Getting started",
-      "pages": [
-        "introduction",
-        "quickstart"
-      ]
-    },
-    {
-      "group": "Core concepts",
-      "pages": [
-        "concepts/knowledge-graphs",
-        "concepts/worlds",
-        "concepts/hybrid-search",
-        "concepts/synchronization"
-      ]
-    },
-    {
-      "group": "Guides",
-      "pages": [
-        "guides/installation",
-        "guides/in-memory",
-        "guides/libsql-adapter",
-        "guides/denokv-adapter",
-        "guides/ai-sdk-integration",
-        "guides/sparql-queries"
-      ]
-    },
-    {
-      "group": "Reference",
-      "pages": [
-        "reference/client",
-        "reference/quad-store",
-        "reference/search-index",
-        "reference/sparql-engine"
-      ]
-    },
-    {
-      "group": "Ecosystem",
-      "pages": [
-        "ecosystem/overview",
-        "ecosystem/libsql",
-        "ecosystem/denokv",
-        "ecosystem/ai-sdk",
-        "ecosystem/eval-harness"
-      ]
-    }
-  ],
+  "navigation": {
+    "groups": [
+      {
+        "group": "Getting started",
+        "pages": [
+          "introduction",
+          "quickstart"
+        ]
+      },
+      {
+        "group": "Core concepts",
+        "pages": [
+          "concepts/knowledge-graphs",
+          "concepts/worlds",
+          "concepts/hybrid-search",
+          "concepts/synchronization"
+        ]
+      },
+      {
+        "group": "Guides",
+        "pages": [
+          "guides/installation",
+          "guides/in-memory",
+          "guides/libsql-adapter",
+          "guides/denokv-adapter",
+          "guides/ai-sdk-integration",
+          "guides/sparql-queries"
+        ]
+      },
+      {
+        "group": "Reference",
+        "pages": [
+          "reference/client",
+          "reference/quad-store",
+          "reference/search-index",
+          "reference/sparql-engine"
+        ]
+      },
+      {
+        "group": "Ecosystem",
+        "pages": [
+          "ecosystem/overview",
+          "ecosystem/libsql",
+          "ecosystem/denokv",
+          "ecosystem/ai-sdk",
+          "ecosystem/eval-harness"
+        ]
+      }
+    ]
+  },
   "navbar": {
     "links": [
       {
