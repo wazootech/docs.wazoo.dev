@@ -1,6 +1,6 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "name": "Worlds Docs",
+  "name": "Wazoo Docs",
   "theme": "mint",
   "logo": {
     "light": "/logo/light.svg",
@@ -37,7 +37,7 @@
     "indexing": "all",
     "metatags": {
       "og:type": "website",
-      "og:site_name": "Worlds Docs",
+      "og:site_name": "Wazoo Docs",
       "canonical": "https://docs.wazoo.dev"
     }
   },
@@ -55,7 +55,7 @@
     "links": [
       {
         "type": "github",
-        "href": "https://github.com/wazootech/worlds"
+        "href": "https://github.com/wazootech"
       }
     ],
     "primary": {
@@ -68,7 +68,24 @@
     "groups": [
       {
         "group": "Welcome",
-        "pages": ["introduction", "quickstart", "platform", "manifesto"]
+        "pages": [
+          "introduction",
+          "what-were-building",
+          "projects",
+          "quickstart",
+          "platform",
+          "manifesto"
+        ]
+      },
+      {
+        "group": "Projects",
+        "pages": [
+          "projects/worlds",
+          "projects/wiki",
+          "projects/linked-markdown",
+          "projects/memsdk",
+          "projects/templates"
+        ]
       },
       {
         "group": "Worlds",
@@ -186,7 +203,7 @@
         "items": [
           {
             "label": "GitHub",
-            "href": "https://github.com/wazootech/worlds"
+            "href": "https://github.com/wazootech"
           },
           {
             "label": "X/Twitter",

@@ -1,0 +1,43 @@
+---
+title: "Projects"
+description: "A map of public Wazoo projects and how they fit together."
+---
+
+Wazoo projects are organized around verifiable context: representing knowledge, validating it, storing it, and connecting it to agents.
+
+<CardGroup cols={2}>
+  <Card title="Worlds" icon="network" href="/projects/worlds">
+    Context infrastructure for agents: knowledge graphs, hybrid search, SPARQL, REST APIs, and edge-native storage.
+  </Card>
+  <Card title="Wiki CLI" icon="book-open" href="/projects/wiki">
+    Command-line tooling for semantic Markdown wikis: validate, lint, query, render, build, and publish.
+  </Card>
+  <Card title="Linked Markdown" icon="braces" href="/projects/linked-markdown">
+    A spec and implementations for Markdown as semantic graph infrastructure.
+  </Card>
+  <Card title="MemSDK" icon="database" href="/projects/memsdk">
+    A Supermemory-compatible interface for portable memory backends.
+  </Card>
+  <Card title="Templates" icon="copy" href="/projects/templates">
+    Starter projects for Wiki CLI, LLM wikis, Mintlify, Next.js, Astro, Quartz, and SPARQL explorers.
+  </Card>
+</CardGroup>
+
+## Public repositories
+
+| Project | Repository | Role |
+| ------- | ---------- | ---- |
+| Worlds client | [worlds-client-ts](https://github.com/wazootech/worlds-client-ts) | Core TypeScript client and in-memory backend |
+| Worlds LibSQL | [worlds-libsql](https://github.com/wazootech/worlds-libsql) | Durable LibSQL/Turso adapter |
+| Worlds Deno KV | [worlds-denokv](https://github.com/wazootech/worlds-denokv) | Durable Deno KV adapter |
+| Wiki CLI | [wiki](https://github.com/wazootech/wiki) | Semantic Markdown wiki toolchain |
+| Linked Markdown | [linked-markdown](https://github.com/wazootech/linked-markdown) | Specification and conformance suite |
+| Linked Markdown TS | [linked-markdown-ts](https://github.com/wazootech/linked-markdown-ts) | TypeScript implementation |
+| Linked Markdown Python | [linked-markdown-py](https://github.com/wazootech/linked-markdown-py) | Python implementation |
+| MemSDK | [memsdk](https://github.com/wazootech/memsdk) | Backend-agnostic AI memory contract |
+| MemSDK Letta | [memsdk-letta](https://github.com/wazootech/memsdk-letta) | Letta adapter |
+| MemSDK Worlds | [memsdk-worlds](https://github.com/wazootech/memsdk-worlds) | Worlds adapter |
+
+## Private and evolving work
+
+Some Wazoo projects are private or experimental while product surfaces are still changing. These docs focus on public repositories and stable concepts first, then link into platform docs where appropriate.
