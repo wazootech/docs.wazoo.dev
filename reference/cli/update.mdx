@@ -1,0 +1,30 @@
+---
+title: "update"
+description: "Modify world metadata"
+---
+
+Updates the high-level metadata assigned to a World. Note that this does _not_
+modify the graph data inside the World; for that, use the [sparql](./sparql.mdx)
+command.
+
+<ParamField path="--world" type="string" required>
+  The unique system identifier of the target world. *Alias:* `-w`
+</ParamField>
+
+<ParamField path="--slug" type="string">
+  A new human-readable, URL-friendly identifier for the world. *Alias:* `-s`
+</ParamField>
+
+<ParamField path="--label" type="string">
+  A new human-readable name for the world. *Alias:* `-l`
+</ParamField>
+
+<ParamField path="--description" type="string">
+  A new detailed description of the world's contents. *Alias:* `-d`
+</ParamField>
+
+### Usage
+
+```bash
+worlds update --world my-world --label "Renamed World"
+```

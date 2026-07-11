@@ -1,0 +1,34 @@
+---
+title: "search"
+description: "Search items using hybrid similarity"
+---
+
+Executes a semantic hybrid search against the world's underlying vector index.
+
+<ParamField path="--world" type="string" required>
+  The unique system identifier of the target world. *Alias:* `-w`
+</ParamField>
+
+<ParamField path="--query" type="string" required>
+  The free-text search string. *Alias:* `-q`
+</ParamField>
+
+<ParamField path="--limit" type="number">
+  The maximum number of entities to return. Default is 10. *Alias:* `-l`
+</ParamField>
+
+<ParamField path="--subjects" type="string">
+  Specifies IRIs to restrict the search context. Can be provided multiple times.
+  *Alias:* `-s`
+</ParamField>
+
+<ParamField path="--predicates" type="string">
+  Specifies IRIs of properties to restrict the search context. Can be provided
+  multiple times. *Alias:* `-p`
+</ParamField>
+
+### Usage
+
+```bash
+worlds search --world my-world --query "Acme Corp operations" --limit 5
+```

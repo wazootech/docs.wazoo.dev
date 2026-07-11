@@ -1,0 +1,26 @@
+---
+title: "import"
+description: "Import RDF triples into a world"
+---
+
+Streams a local file containing RDF assertions into a remote world.
+
+<ParamField path="--world" type="string" required>
+  The unique system identifier of the target world. *Alias:* `-w`
+</ParamField>
+
+<ParamField path="--file" type="string" required>
+  The relative or absolute path to the RDF file.
+</ParamField>
+
+<ParamField path="--content-type" type="string">
+  The RDF serialization content type. *Options:* `text/turtle`,
+  `application/n-quads`, `application/n-triples`, `text/n3`, `application/trig`.
+  *Alias:* `-c`
+</ParamField>
+
+### Usage
+
+```bash
+worlds import --world my-world --file ./data.ttl --content-type text/turtle
+```

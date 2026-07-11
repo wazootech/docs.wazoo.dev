@@ -1,0 +1,109 @@
+---
+title: "Update"
+description: "Mutate graph state with RDF patches."
+---
+
+Autonomous agents write new facts into the graph to evolve the world. Worlds
+supports multiple strategies for ingesting and synchronizing knowledge within a
+stateful context.
+
+## State mutations
+
+A world mutates its state using RDF patches, which are granular additions and
+deletions of facts. Because Worlds functions as a chronological, append-only
+ledger, these patches permanently preserve historical truth.
+
+### SPARQL updates
+
+The most common way to mutate state is executing SPARQL updates. When an agent
+runs an `INSERT` or `DELETE` command, Worlds translates it into a deterministic
+patch.
+
+```sparql SPARQL
+PREFIX wazoo: <https://wazoo.dev/#>
+PREFIX schema: <https://schema.org/>
+
+INSERT DATA {
+  wazoo:organization a schema:Organization .
+}
+```
+
+Changes in Worlds are orchestrated through the API or direct SPARQL updates.
+Unlike traditional databases that overwrite records, Worlds utilizes RDF patches
+to maintain a chronological system of record.
+
+## Mutation and state
+
+Every update to a world is a transaction that appends new facts to the ledger.
+This ensures that agents can always query past states and understand how
+information has evolved over time.
+
+### RDF patches
+
+An RDF patch is a structured set of additions and deletions. When you update a
+relationship, the engine performs a patch:
+
+1. Deletion: Remove the outdated triple.
+2. Addition: Insert the new, verified triple.
+
+This process is atomic and verifiable.
+
+---
+
+## Update strategies
+
+Worlds supports multiple methods for mutating state, depending on the required
+precision and automation level.
+
+| Method        | Precision | Use case                                         |
+| :------------ | :-------- | :----------------------------------------------- |
+| SPARQL Update | Highest   | Complex, conditional logic and batch deletes     |
+| API assert    | High      | Programmatic ingestion of verified facts         |
+| RDF Patches   | High      | Delta-based synchronization from external stores |
+
+---
+
+## Feedback ingestion
+
+Intentional agency requires a bridge between human preferences and graph state.
+RLHF enables this by treating feedback as a first-class mutation.
+
+### Capturing rewards
+
+When a user or supervisor provides feedback (e.g., a thumbs up or a specific
+correction), the API records this as a preference item connected to the original
+fact.
+
+```typescript TypeScript
+import { Worlds } from "@wazoo/worlds-sdk";
+
+const worlds = new Worlds({
+  apiKey: process.env.WORLDS_API_KEY,
+});
+
+// Execute a SPARQL update to assert a preference (reward)
+await worlds.sparql(
+  "my-world-id",
+  `PREFIX worlds: <https://schema.wazoo.dev#>
+  PREFIX user: <https://etok.me/#>
+
+  INSERT DATA {
+    <fact:123> worlds:hasPreference [
+      a worlds:Preference ;
+      worlds:hasReward 1.0 ;
+      worlds:verifiedBy user:person
+    ] .
+  }`,
+);
+```
+
+## Recursive learning
+
+As preferences accumulate, the world's probability landscape is reshaped.
+Retrieval results are boosted based on historical reward signals, creating a
+recursive loop where the system learns which triples are most useful or truthful
+for the agent's specific context.
+
+This historical truth remains in the ledger, allowing future queries to be
+guided by this preference data. Learn more about steered retrieval in the
+[Alignment](/contribute/architecture#alignment--intentional-agency) deep-dive.
