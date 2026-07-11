@@ -1,0 +1,31 @@
+---
+title: "Deno KV adapter"
+description: "Native Deno key-value storage for Wazoo Worlds."
+---
+
+The `@worlds/denokv` adapter uses Deno KV, the built-in key-value store in the Deno runtime, for persistent graph storage.
+
+## Architecture
+
+```
+┌──────────────┐    ┌──────────────┐    ┌──────────────┐
+│   Client     │───▶│ DenokvQuad   │───▶│ DenokvRdfjs  │
+│   (import)   │    │ Store        │    │ Store        │
+└──────────────┘    └──────┬───────┘    └──────┬───────┘
+                           │                   │
+                           ▼                   ▼
+                    ┌──────────────┐    ┌──────────────┐
+                    │ DenokvSearch │    │ Hexastore    │
+                    │ Index        │    │ (quads)      │
+                    └──────────────┘    └──────────────┘
+```
+
+## Features
+
+- Keyword FTS via Deno KV indexing.
+- Native Deno integration — no external database.
+- Serverless ready for Deno Deploy.
+
+## Repository
+
+Source and issues: [github.com/wazootech/worlds-denokv](https://github.com/wazootech/worlds-denokv)

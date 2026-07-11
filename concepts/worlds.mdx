@@ -1,0 +1,40 @@
+---
+title: "Worlds"
+description: "Scoped, synchronized knowledge graphs for AI agents."
+---
+
+A **World** is the core runtime environment in Wazoo — a scoped knowledge graph with built-in search, query, and synchronization.
+
+## Client facade
+
+The `Client` class is the primary entry point. It orchestrates:
+
+- **Quad store** — The RDF graph storage backend.
+- **Search index** — Hybrid vector + keyword search over graph content.
+- **SPARQL engine** — Declarative query execution via Comunica.
+
+```typescript
+import { Client } from "@worlds/client";
+
+const client = new Client({
+  quadStore: myQuadStore,
+  searchIndex: mySearchIndex,
+  sparqlEngine: mySparqlEngine,
+});
+```
+
+## Storage backends
+
+| Backend    | Use case              |
+| ---------- | --------------------- |
+| In-memory  | Dev, tests, demos     |
+| LibSQL     | Production, edge, Turso Cloud |
+| Deno KV    | Deno-native, serverless |
+
+## Synchronization
+
+Mutations in a World are queued as atomic insert/delete operations and serialized to persistent storage. The sync layer ensures:
+
+- **ACID semantics** — Mutations are atomic and consistent.
+- **Idempotency** — Duplicate writes are suppressed at the storage layer.
+- **Conflict resolution** — Concurrent mutations are handled deterministically.

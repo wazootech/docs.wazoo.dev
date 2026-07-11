@@ -1,0 +1,61 @@
+---
+title: "SPARQL queries"
+description: "Query your knowledge graph with SPARQL."
+---
+
+Wazoo embeds a SPARQL engine powered by [Comunica](https://comunica.dev) for declarative graph traversal.
+
+## Basic query
+
+```typescript
+const bindings = await client.query(`
+  SELECT ?name ?birthDate WHERE {
+    ?person a schema:Person ;
+            schema:name ?name ;
+            schema:birthDate ?birthDate .
+  }
+  ORDER BY ?birthDate
+`);
+```
+
+## Inspect a resource
+
+```typescript
+const bindings = await client.query(`
+  SELECT ?p ?o WHERE {
+    <https://wazoo.dev/artists/Beethoven> ?p ?o
+  }
+`);
+```
+
+## Filter by graph
+
+```typescript
+const bindings = await client.query(`
+  SELECT ?s ?p ?o WHERE {
+    GRAPH <https://wazoo.dev/graphs/composers> {
+      ?s ?p ?o
+    }
+  }
+`);
+```
+
+## Search-then-SPARQL pattern
+
+The recommended pattern for AI agents is:
+
+1. **Search** — Find subject IRIs by label or keyword.
+2. **SPARQL** — Traverse the graph from those IRIs.
+
+```typescript
+// Step 1: Search
+const results = await client.search("Beethoven");
+const subject = results[0].subject;
+
+// Step 2: Traverse
+const details = await client.query(`
+  SELECT ?p ?o WHERE {
+    <${subject}> ?p ?o
+  }
+`);
+```

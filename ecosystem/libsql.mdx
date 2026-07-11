@@ -1,0 +1,32 @@
+---
+title: "LibSQL adapter"
+description: "Production-grade persistence with SQLite at the edge."
+---
+
+The `@worlds/libsql` adapter provides a production-grade graph storage backend using LibSQL, the open-source SQLite fork from the Turso team.
+
+## Architecture
+
+```
+┌──────────────┐    ┌──────────────┐    ┌──────────────┐
+│   Client     │───▶│ LibsqlQuad   │───▶│ LibsqlRdfjs  │
+│   (import)   │    │ Store        │    │ Store        │
+└──────────────┘    └──────┬───────┘    └──────┬───────┘
+                           │                   │
+                           ▼                   ▼
+                    ┌──────────────┐    ┌──────────────┐
+                    │ LibsqlSearch │    │ Hexastore    │
+                    │ Index        │    │ (quads)      │
+                    └──────────────┘    └──────────────┘
+```
+
+## Features
+
+- Hybrid FTS5 + vector search.
+- Persistent hexastore for Comunica SPARQL.
+- Turso Cloud compatible for edge deployment.
+- Idempotent writes with conflict resolution.
+
+## Repository
+
+Source and issues: [github.com/wazootech/worlds-libsql](https://github.com/wazootech/worlds-libsql)

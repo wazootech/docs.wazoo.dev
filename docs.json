@@ -1,0 +1,85 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "Wazoo",
+  "colors": {
+    "primary": "#6366f1",
+    "light": "#818cf8",
+    "dark": "#4f46e5"
+  },
+  "favicon": "/favicon.svg",
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg"
+  },
+  "navigation": [
+    {
+      "group": "Getting started",
+      "pages": [
+        "introduction",
+        "quickstart"
+      ]
+    },
+    {
+      "group": "Core concepts",
+      "pages": [
+        "concepts/knowledge-graphs",
+        "concepts/worlds",
+        "concepts/hybrid-search",
+        "concepts/synchronization"
+      ]
+    },
+    {
+      "group": "Guides",
+      "pages": [
+        "guides/installation",
+        "guides/in-memory",
+        "guides/libsql-adapter",
+        "guides/denokv-adapter",
+        "guides/ai-sdk-integration",
+        "guides/sparql-queries"
+      ]
+    },
+    {
+      "group": "Reference",
+      "pages": [
+        "reference/client",
+        "reference/quad-store",
+        "reference/search-index",
+        "reference/sparql-engine"
+      ]
+    },
+    {
+      "group": "Ecosystem",
+      "pages": [
+        "ecosystem/overview",
+        "ecosystem/libsql",
+        "ecosystem/denokv",
+        "ecosystem/ai-sdk",
+        "ecosystem/eval-harness"
+      ]
+    }
+  ],
+  "navbar": {
+    "links": [
+      {
+        "label": "GitHub",
+        "href": "https://github.com/wazootech"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Get started",
+      "href": "/quickstart"
+    }
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/wazootech",
+      "x": "https://x.com/wazootech"
+    }
+  },
+  "background": {
+    "style": "gradient"
+  }
+}

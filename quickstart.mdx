@@ -1,0 +1,58 @@
+---
+title: "Quickstart"
+description: "Build your first knowledge graph in minutes."
+---
+
+## Prerequisites
+
+- [Deno](https://deno.com) 2.0+
+- Or [Node.js](https://nodejs.org) 20+ (via npm/JSR)
+
+## Install
+
+<CodeGroup>
+```bash deno
+deno add jsr:@worlds/client
+```
+
+```bash npm
+npx jsr add @worlds/client
+```
+</CodeGroup>
+
+## Create a client
+
+```typescript
+import { Client } from "@worlds/client";
+
+const client = new Client();
+
+await client.import(`
+  @prefix schema: <https://schema.org/> .
+
+  <https://wazoo.dev/artists/Beethoven>
+    a schema:Person ;
+    schema:name "Ludwig van Beethoven" ;
+    schema:birthDate "1770-12-17" .
+`);
+```
+
+## Search and query
+
+```typescript
+// Hybrid search — finds subjects by label or keyword
+const results = await client.search("Beethoven");
+
+// SPARQL traversal — inspect a subject's properties
+const bindings = await client.query(`
+  SELECT ?p ?o WHERE {
+    <https://wazoo.dev/artists/Beethoven> ?p ?o
+  }
+`);
+```
+
+## What's next
+
+- [Knowledge graphs explained](/concepts/knowledge-graphs)
+- [SPARQL query guide](/guides/sparql-queries)
+- [In-memory vs persistent storage](/guides/in-memory)

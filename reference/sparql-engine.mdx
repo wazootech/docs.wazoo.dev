@@ -1,0 +1,44 @@
+---
+title: "SPARQL engine"
+description: "Declarative graph queries with Comunica."
+---
+
+Wazoo's SPARQL engine is powered by [Comunica](https://comunica.dev), a modular SPARQL query engine for JavaScript.
+
+## How it works
+
+The engine executes SPARQL queries against the quad store via the RDF/JS `Source` interface:
+
+```
+SPARQL query
+    │
+    ▼
+┌────────────┐    ┌────────────┐
+│ Comunica   │───▶│ RDF/JS     │
+│ Engine     │    │ Source     │
+└────────────┘    └─────┬──────┘
+                        │
+                        ▼
+                ┌────────────┐
+                │ Quad Store │
+                └────────────┘
+```
+
+## Query syntax
+
+Supported SPARQL 1.1 features:
+
+- `SELECT` queries with `?variables`
+- `CONSTRUCT` for graph transformation
+- `ASK` for boolean checks
+- `DESCRIBE` for resource exploration
+- `GRAPH` for named graph scoping
+- `FILTER`, `OPTIONAL`, `UNION`, `ORDER BY`, `LIMIT`, `OFFSET`
+
+## Engine interface
+
+```typescript
+interface SparqlEngineInterface {
+  query(sparql: string): Promise<SparqlResponse>;
+}
+```

@@ -1,0 +1,44 @@
+---
+title: "In-memory development"
+description: "Getting started with zero-setup in-memory graph storage."
+---
+
+Wazoo ships with an in-memory RDF/JS backend (`N3.Store`) for local development and testing. No database required.
+
+```typescript
+import { Client } from "@worlds/client";
+
+const client = new Client();
+
+// Import triples
+await client.import(`
+  @prefix schema: <https://schema.org/> .
+  @prefix ex: <https://example.org/> .
+
+  ex:alice a schema:Person ;
+    schema:name "Alice" ;
+    schema:knows ex:bob .
+
+  ex:bob a schema:Person ;
+    schema:name "Bob" .
+`);
+
+// Query
+const result = await client.query(`
+  SELECT ?name WHERE {
+    ?person schema:name ?name
+  }
+`);
+```
+
+## When to use in-memory
+
+- **Development** — Quick iteration without infrastructure.
+- **Testing** — Unit and integration tests.
+- **Demos** — Zero-setup demonstrations.
+
+## When to use persistent storage
+
+- **Production** — Use [LibSQL adapter](/guides/libsql-adapter) or [Deno KV adapter](/guides/denokv-adapter).
+- **Edge deployment** — Turso Cloud with LibSQL.
+- **Serverless** — Deno KV or LibSQL.

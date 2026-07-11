@@ -1,0 +1,57 @@
+---
+title: "Knowledge graphs"
+description: "Understanding RDF, triples, and SPARQL — the foundation of Wazoo."
+---
+
+A knowledge graph represents entities and their relationships as a network of facts. Wazoo uses the W3C-standard **RDF** (Resource Description Framework) data model.
+
+## RDF triples
+
+Every fact is a triple:
+
+```
+subject → predicate → object
+```
+
+```
+<https://wazoo.dev/artists/Mozart>
+  → <https://schema.org/name>
+  → "Wolfgang Amadeus Mozart"
+```
+
+- **Subject** — The entity being described (an IRI).
+- **Predicate** — The property or relationship (an IRI).
+- **Object** — The value (an IRI or literal).
+
+## Named graphs
+
+Triples are grouped into named graphs — logical collections that can be queried, imported, and managed independently.
+
+```
+GRAPH <https://wazoo.dev/graphs/composers> {
+  <Mozart> <name> "Mozart" .
+  <Beethoven> <name> "Beethoven" .
+}
+```
+
+## SPARQL
+
+SPARQL is the query language for RDF. Wazoo embeds a SPARQL engine powered by Comunica.
+
+```sparql
+PREFIX schema: <https://schema.org/>
+
+SELECT ?name ?birthDate WHERE {
+  ?person a schema:Person ;
+          schema:name ?name ;
+          schema:birthDate ?birthDate .
+}
+ORDER BY ?birthDate
+```
+
+## Why RDF
+
+- **Interoperability** — Standardized W3C model, works with existing RDF tooling.
+- **Schema flexibility** — Add properties on the fly; no migrations needed.
+- **Linked Data** — IRIs enable cross-repository references and federation.
+- **Reasoning** — Combine with SHACL shapes for validation and inference.

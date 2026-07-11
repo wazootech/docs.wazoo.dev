@@ -1,0 +1,43 @@
+---
+title: "Introduction"
+description: "Wazoo is a platform for building persistent, edge-native knowledge graphs for AI agents."
+---
+
+Wazoo provides the infrastructure layer for agentic knowledge graphs — persistent storage, hybrid search, and SPARQL querying, designed to run at the edge.
+
+## What is a World?
+
+A **World** is a scoped knowledge graph: a collection of RDF triples (subject-predicate-object) that represent facts about entities. Worlds are the core abstraction — every query, mutation, and search operates within a World.
+
+## Key capabilities
+
+- **Persistent graph storage** — In-memory (N3) for development, LibSQL/Turso and Deno KV for production.
+- **Hybrid search** — Fuse vector similarity (embeddings) with keyword full-text search via reciprocal rank fusion.
+- **SPARQL query engine** — Declarative graph traversal using Comunica.
+- **Agent SDK integration** — First-class support for AI SDK, LangChain, and custom agent tooling.
+- **Synchronization** — Atomic mutation queues for reliable persistence.
+- **Idempotency guards** — Prevents redundant writes and deduplication at the storage layer.
+
+## How it works
+
+```
+Application
+    │
+    ▼
+┌──────────────┐    ┌──────────────┐    ┌──────────────┐
+│   Client     │───▶│ Quad Store   │───▶│  RDF/JS      │
+│  (Facade)    │    │ (Interface)  │    │  (Backend)   │
+└──────┬───────┘    └──────┬───────┘    └──────┬───────┘
+       │                   │                   │
+       ▼                   ▼                   ▼
+┌──────────────┐    ┌──────────────┐    ┌──────────────┐
+│  Search      │    │  SPARQL      │    │  Sync        │
+│  Index       │    │  Engine      │    │  Layer       │
+└──────────────┘    └──────────────┘    └──────────────┘
+```
+
+## Where to next
+
+- [Quickstart](/quickstart) — Build your first World in minutes.
+- [Core concepts](/concepts/knowledge-graphs) — Understand knowledge graphs, RDF, and SPARQL.
+- [Guides](/guides/installation) — Integrate Wazoo into your project.

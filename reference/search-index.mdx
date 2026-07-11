@@ -1,0 +1,41 @@
+---
+title: "Search index"
+description: "Hybrid vector and keyword search over RDF content."
+---
+
+The search index provides hybrid retrieval combining vector semantic similarity and keyword full-text search.
+
+## Chunk structure
+
+Each indexed chunk contains:
+
+| Field | Description |
+| ----- | ----------- |
+| `value` | The object literal returned as `SearchResult.text` |
+| `fts_value` | Subject label, predicate phrase, and literal text (for FTS + embedding) |
+| `vector` | Embedding of the chunk (when configured) |
+
+## Retrieval modes
+
+- **Hybrid** — Vector + keyword fused via RRF (k=60). Default.
+- **Keyword-only** — FTS5 full-text search. Automatic fallback.
+- **Semantic-only** — Vector similarity search only.
+
+## Rebuilding
+
+```typescript
+await client.reindex({
+  include: { graphs: ["http://example.org/ontology"] },
+});
+```
+
+For targeted refresh after entity changes:
+
+```typescript
+import { refreshSearchChunksForSubjects } from "@worlds/libsql";
+
+await refreshSearchChunksForSubjects(
+  ["http://example.org/Aurelia"],
+  { client: db, textSplitter, libsqlQueryBuilder, embeddingService }
+);
+```

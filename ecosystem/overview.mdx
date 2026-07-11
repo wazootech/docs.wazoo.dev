@@ -1,0 +1,27 @@
+---
+title: "Ecosystem overview"
+description: "The Wazoo platform and its component packages."
+---
+
+Wazoo is composed of several packages that work together:
+
+## Core
+
+| Package | Description |
+| ------- | ----------- |
+| `@worlds/client` | Primary client facade, in-memory RDF/JS store, search index, SPARQL engine |
+| `@worlds/libsql` | Persistent storage with LibSQL / Turso Cloud |
+| `@worlds/denokv` | Persistent storage with Deno KV |
+
+## Integrations
+
+| Package | Description |
+| ------- | ----------- |
+| `@worlds/client/ai-sdk` | AI SDK tools and utilities |
+| `@worlds/client/rdfjs` | RDF/JS types and utilities |
+| `@worlds/client/comunica` | Comunica SPARQL engine factory |
+
+## Related
+
+- [Eval harness](https://github.com/wazootech/worlds-client-evals) — Deterministic assertion tests for agent tooling.
+- [Wiki CLI](https://github.com/wazootech/wiki) — Author semantic markdown and publish to Wazoo Worlds.

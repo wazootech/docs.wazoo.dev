@@ -1,0 +1,45 @@
+---
+title: "LibSQL adapter"
+description: "Persistent storage with SQLite, Turso, and LibSQL."
+---
+
+The `@worlds/libsql` package provides persistent graph storage using LibSQL — the open-source, edge-compatible SQLite fork.
+
+## Installation
+
+```bash
+deno add jsr:@worlds/libsql
+```
+
+## Usage
+
+```typescript
+import { createLibsqlClient } from "@worlds/libsql";
+import { createClient } from "@libsql/client";
+
+const db = createClient({ url: "file:./data.db" });
+
+const client = await createLibsqlClient({
+  client: db,
+});
+
+// Now use client.search(), client.query(), client.import()...
+```
+
+## Features
+
+- **Hybrid FTS5 + vector search** — Full-text search combined with vector embeddings.
+- **Persistent hexastore** — Durable quad storage with Comunica SPARQL support.
+- **Turso Cloud compatible** — Deploy at the edge with Turso's distributed SQLite.
+
+## Configuration
+
+```typescript
+const client = await createLibsqlClient({
+  client: db,
+  labelPredicates: [
+    "http://example.org/customLabel",
+  ],
+  embeddingService: myEmbeddingService,
+});
+```

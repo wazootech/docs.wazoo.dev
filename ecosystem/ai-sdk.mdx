@@ -1,0 +1,37 @@
+---
+title: "AI SDK package"
+description: "Pre-built tools and utilities for AI SDK agents."
+---
+
+The `@worlds/client/ai-sdk` module provides pre-built tools for building AI SDK agents that interact with Wazoo Worlds.
+
+## Available tools
+
+### `searchGraphTool`
+
+Hybrid search over the knowledge graph. Accepts a query string and returns matching subjects, predicates, and text snippets.
+
+### `queryGraphTool`
+
+SPARQL query execution. Accepts a SPARQL query string and returns bindings.
+
+## Usage
+
+```typescript
+import { Client } from "@worlds/client";
+import { createSearchGraphTool } from "@worlds/client/ai-sdk";
+import { generateText } from "ai";
+
+const client = new Client();
+const searchTool = createSearchGraphTool(client);
+
+const result = await generateText({
+  model: myModel,
+  tools: { searchGraph: searchTool },
+  prompt: "Find information about Beethoven in my knowledge graph.",
+});
+```
+
+## Eval harness
+
+The [worlds-client-evals](https://github.com/wazootech/worlds-client-evals) repository provides deterministic assertion tests for agent tooling, ensuring your agents produce correct results.

@@ -1,0 +1,38 @@
+---
+title: "Installation"
+description: "Install @worlds/client in your project."
+---
+
+## Deno
+
+```bash
+deno add jsr:@worlds/client
+```
+
+## npm / Bun
+
+```bash
+npx jsr add @worlds/client
+# or
+bunx jsr add @worlds/client
+```
+
+## Import
+
+```typescript
+import { Client } from "@worlds/client";
+```
+
+## Adapter packages
+
+For persistent storage, install the adapter for your backend:
+
+<CodeGroup>
+```bash LibSQL / Turso
+deno add jsr:@worlds/libsql
+```
+
+```bash Deno KV
+deno add jsr:@worlds/denokv
+```
+</CodeGroup>
