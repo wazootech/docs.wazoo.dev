@@ -1,181 +1,49 @@
 ---
 title: "Quickstart"
-description: "Choose the fastest Wazoo starting point for your project."
+description: "Start with Wazoo's model for structured context."
 ---
 
-Wazoo has multiple entry points. Choose the path that matches what you are
-trying to build.
+Wazoo helps agents and applications work with context as structured, verifiable,
+portable data instead of opaque text blobs.
+
+## The mental model
+
+Wazoo starts from a simple sequence:
+
+- Author context in Markdown when humans need to read and maintain it.
+- Add typed frontmatter when machines need to validate and query it.
+- Load verified facts into worlds when agents need graph search and traversal.
+- Use portable memory interfaces when applications need to swap memory backends.
+
+The projects share this model, but each one starts at a different layer.
+
+## Choose your path
 
 <CardGroup cols={2}>
-  <Card title="Create a World" icon="network" href="#create-a-world">
-    Use Worlds when you need a persistent graph of facts for agents or
-    applications.
+  <Card title="Worlds" icon="network" href="/projects/worlds">
+    Use Worlds when your agent or application needs a persistent graph of facts,
+    search, SPARQL, and API access.
   </Card>
-  <Card
-    title="Validate a Markdown wiki"
-    icon="book-open"
-    href="#validate-a-markdown-wiki"
-  >
-    Use the Wiki toolchain when you want Markdown that can be checked, queried,
-    and published.
+  <Card title="Wiki" icon="book-open" href="/projects/wiki">
+    Use Wiki when you want a Markdown knowledge base that can be checked,
+    queried, and published.
   </Card>
-  <Card
-    title="Parse semantic Markdown"
-    icon="braces"
-    href="#parse-semantic-markdown"
-  >
-    Use Linked Markdown when you need typed Markdown frontmatter that can become
-    graph data.
+  <Card title="Linked Markdown" icon="braces" href="/projects/linked-markdown">
+    Use Linked Markdown when Markdown documents need typed frontmatter that can
+    become graph data.
   </Card>
-  <Card
-    title="Target portable memory"
-    icon="database"
-    href="#target-portable-memory"
-  >
-    Use MemSDK when your app should not be locked to one AI memory backend.
+  <Card title="MemSDK" icon="database" href="/projects/memsdk">
+    Use MemSDK when your app needs portable AI memory across backends.
   </Card>
 </CardGroup>
 
-## Create a World
+## What to read first
 
-Worlds is the context engine for agents. Start with the hosted API when you want
-managed storage, or use the same TypeScript SDK locally when you want embedded
-memory during development.
+- [Worlds](/projects/worlds): Build with the context engine.
+- [Wiki](/projects/wiki): Validate and publish a semantic Markdown wiki.
+- [Linked Markdown](/projects/linked-markdown): Structure Markdown as graph
+  nodes.
+- [MemSDK](/projects/memsdk): Target a portable AI memory interface.
 
-### Prerequisites
-
-1. Sign up at the [Worlds Console](https://console.wazoo.dev).
-2. Generate an API key.
-3. Save it as `WORLDS_API_KEY`.
-
-### Install
-
-<CodeGroup>
-```bash Deno
-deno add jsr:@wazoo/worlds-sdk
-```
-
-```bash npm
-npx jsr add @wazoo/worlds-sdk
-```
-
-```bash Bun
-bunx jsr add @wazoo/worlds-sdk
-```
-
-</CodeGroup>
-
-### Run a graph loop
-
-```typescript index.ts
-import { Worlds } from "@wazoo/worlds-sdk";
-
-const worlds = new Worlds({
-  apiKey: process.env.WORLDS_API_KEY!,
-  baseUrl: "https://api.wazoo.dev",
-});
-
-await worlds.create({
-  slug: "quickstart-cloud",
-  label: "My First World",
-});
-
-await worlds.import(
-  "quickstart-cloud",
-  `@prefix user: <https://example.org/user/> .
-   @prefix wazoo: <https://wazoo.dev/#> .
-
-   user:person wazoo:worksFor wazoo:organization .`,
-  { contentType: "text/turtle" },
-);
-
-const result = await worlds.sparql(
-  "quickstart-cloud",
-  `PREFIX wazoo: <https://wazoo.dev/#>
-   SELECT ?organization WHERE {
-     <https://example.org/user/person> wazoo:worksFor ?organization
-   }`,
-);
-
-console.log(JSON.stringify(result, null, 2));
-```
-
-For local or test workflows, use `LocalWorlds` from the same SDK and switch to
-the hosted `Worlds` client when you need managed persistence.
-
-Next: [Worlds overview](/projects/worlds), [search](/worlds/search), and
-[query](/worlds/query).
-
-## Validate a Markdown wiki
-
-The Wiki toolchain turns a folder of Markdown into a validated, queryable,
-publishable wiki.
-
-```bash
-pip install wazootech-wiki
-wiki init
-wiki check --strict
-wiki serve --watch
-```
-
-Use this path for Obsidian vaults, LLM-maintained knowledge bases, internal
-wikis, or static sites that need graph integrity.
-
-Next: [Wiki toolchain](/projects/wiki) and
-[Wiki templates](/projects/wiki/templates).
-
-## Parse semantic Markdown
-
-Linked Markdown extracts typed semantic frontmatter from Markdown.
-
-<CodeGroup>
-```bash Python
-pip install linked-markdown
-```
-
-```bash Deno
-deno add jsr:@wazoo/linked-markdown
-```
-
-</CodeGroup>
-
-```typescript
-import { extract } from "@wazoo/linked-markdown";
-
-const result = extract(`---
-{
-  "@id": "https://example.org/docs/alice",
-  "@type": "schema:Person"
-}
----
-
-# Alice
-`);
-
-console.log(result.attrs);
-```
-
-Next: [Linked Markdown](/projects/linked-markdown).
-
-## Target portable memory
-
-MemSDK gives your application a Supermemory-compatible memory interface that can
-be implemented by multiple backends.
-
-```typescript
-import type { SupermemoryInterface } from "memsdk";
-
-async function remember(client: SupermemoryInterface) {
-  await client.add({
-    content: "The user prefers graph-backed memory.",
-    containerTag: "user_123",
-  });
-
-  return client.search.documents({
-    q: "graph-backed memory",
-    containerTag: "user_123",
-  });
-}
-```
-
-Next: [MemSDK](/projects/memsdk).
+Start with Worlds if you are building an agent or application and want one
+concrete entry point into the Wazoo stack.

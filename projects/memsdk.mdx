@@ -34,7 +34,80 @@ MemSDK freezes a proven interface instead of inventing a new one. It provides:
 | [memsdk-worlds](https://github.com/wazootech/memsdk-worlds) | Worlds-backed implementation                  |
 | [memsdk-e2e](https://github.com/wazootech/memsdk-e2e)       | Private conformance scenarios across backends |
 
-## Example
+## Installation
+
+Both `memsdk` and its adapters are distributed directly from GitHub. They are
+not currently published to the npm registry.
+
+Install the core package with any npm-compatible package manager:
+
+<CodeGroup>
+```sh npm
+npm install github:wazootech/memsdk
+```
+
+```sh pnpm
+pnpm add github:wazootech/memsdk
+```
+
+```sh yarn
+yarn add github:wazootech/memsdk
+```
+
+```sh bun
+bun add github:wazootech/memsdk
+```
+
+</CodeGroup>
+
+Install a backend adapter (e.g. Letta):
+
+<CodeGroup>
+```sh npm
+npm install github:wazootech/memsdk-letta
+```
+
+```sh pnpm
+pnpm add github:wazootech/memsdk-letta
+```
+
+```sh yarn
+yarn add github:wazootech/memsdk-letta
+```
+
+```sh bun
+bun add github:wazootech/memsdk-letta
+```
+
+</CodeGroup>
+
+For reproducible installs, pin to a tag or commit:
+
+```sh
+npm install github:wazootech/memsdk#<tag-or-commit>
+```
+
+Packages build from source during installation via `prepare`, then expose
+compiled ESM entrypoints and TypeScript declarations from `dist`.
+
+### Runtime support
+
+| Runtime        | Core | Letta adapter        |
+| -------------- | ---- | -------------------- |
+| Node.js        | ✓    | ✓                    |
+| pnpm / yarn    | ✓    | ✓                    |
+| Bun            | ✓    | ✓                    |
+| Vite / browser | ✓¹   | ✗ (server-side only) |
+| Deno           | ⚠    | ⚠                    |
+| Browser / CDN  | ✗    | ✗                    |
+
+¹ The core package is primarily TypeScript contracts and Zod schemas, so it
+bundles cleanly. The Letta adapter depends on the Letta SDK and should run
+server-side unless browser bundling has been validated for your app.
+
+## Usage
+
+Use the core contract to write backend-agnostic app code:
 
 ```typescript
 import type { SupermemoryInterface } from "memsdk";
@@ -42,6 +115,27 @@ import type { SupermemoryInterface } from "memsdk";
 function buildApp(client: SupermemoryInterface) {
   return client.search.documents({ q: "project notes" });
 }
+```
+
+Then wire in a backend adapter. For Letta:
+
+```typescript
+import { LettaMemoryClient } from "memsdk-letta";
+
+const client = new LettaMemoryClient({
+  baseUrl: "http://localhost:8283",
+  apiKey: "sk-your-api-key",
+});
+
+await client.add({
+  content: "Dhravya prefers ML over traditional programming.",
+  containerTag: "user_123",
+});
+
+const results = await client.search.documents({
+  q: "ML",
+  containerTag: "user_123",
+});
 ```
 
 ## Status
