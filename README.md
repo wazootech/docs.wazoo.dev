@@ -8,8 +8,7 @@ ecosystem, built with [Mintlify](https://mintlify.com).
 The documentation covers:
 
 - **Welcome**: Introduction, thesis, project map, and quickstart paths.
-- **Projects**: Overviews for Worlds, Wiki toolchain, Linked Markdown, and
-  MemSDK.
+- **Projects**: Overviews for Worlds, Wiki, Linked Markdown, and MemSDK.
 - **Worlds guides**: Search, query, update, and the Worlds API reference.
 - **Integrations**: Agent framework and platform connectors.
 - **Open source**: Architecture, security, self-hosting, and style guide.

@@ -58,3 +58,23 @@ npx jsr add @wazoo/linked-markdown
 ```
 
 </CodeGroup>
+
+## Parse frontmatter
+
+Use `extract` to read semantic attributes from a Markdown document:
+
+```typescript
+import { extract } from "@wazoo/linked-markdown";
+
+const result = extract(`---
+{
+  "@id": "https://example.org/docs/alice",
+  "@type": "schema:Person"
+}
+---
+
+# Alice
+`);
+
+console.log(result.attrs);
+```

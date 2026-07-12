@@ -30,8 +30,7 @@ context inspectable.
     Linked Markdown turns ordinary Markdown into typed, queryable documents.
   </Card>
   <Card title="Validate" icon="shield-check" href="/projects/wiki">
-    The Wiki toolchain checks links, frontmatter, shapes, and graph integrity
-    before publish.
+    Wiki checks links, frontmatter, shapes, and graph integrity before publish.
   </Card>
   <Card title="Store" icon="network" href="/projects/worlds">
     Worlds stores graph facts with search and SPARQL for agent workflows.
@@ -48,7 +47,7 @@ context inspectable.
 Markdown and app events
         |
         v
-Linked Markdown + Wiki toolchain
+Linked Markdown + Wiki
         |
         v
 Validated semantic graph data
@@ -61,15 +60,14 @@ Agents, apps, docs, and consoles
 ```
 
 Worlds is the storage and reasoning layer in that stack. Linked Markdown defines
-semantic documents, the Wiki toolchain validates and publishes them, and MemSDK
-lets applications use Worlds as one portable memory backend instead of
-hard-coding a single provider.
+semantic documents, Wiki validates and publishes them, and MemSDK lets
+applications use Worlds as one portable memory backend instead of hard-coding a
+single provider.
 
 ## What to explore first
 
 - If you need agent knowledge graphs, start with [Worlds](/projects/worlds).
-- If you maintain a wiki or docs vault, start with the
-  [Wiki toolchain](/projects/wiki).
+- If you maintain a wiki or docs vault, start with [Wiki](/projects/wiki).
 - If you design semantic document formats, start with
   [Linked Markdown](/projects/linked-markdown).
 - If you are integrating memory providers, start with

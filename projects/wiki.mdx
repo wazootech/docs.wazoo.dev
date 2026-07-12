@@ -1,12 +1,11 @@
 ---
-title: "Wiki toolchain"
-description:
-  "The Wiki toolchain validates, queries, and publishes semantic Markdown wikis."
+title: "Wiki"
+description: "Wiki validates, queries, and publishes semantic Markdown wikis."
 ---
 
-The Wiki toolchain is a command-line system for Markdown wikis. You keep writing
-in Obsidian, VS Code, or any editor, then use the CLI to validate documents, run
-semantic queries, render derived content, and build static sites.
+Wiki is a command-line system for Markdown wikis. You keep writing in Obsidian,
+VS Code, or any editor, then use the CLI to validate documents, run semantic
+queries, render derived content, and build static sites.
 
 ## What it does
 
@@ -35,8 +34,8 @@ semantic queries, render derived content, and build static sites.
 
 ## Programmatic integration
 
-The Wiki toolchain ships as an embeddable Python library and exposes JS-CLI
-bindings for JavaScript and TypeScript environments.
+Wiki ships as an embeddable Python library and exposes JS-CLI bindings for
+JavaScript and TypeScript environments.
 
 ```python
 from wazootech_wiki import Wiki
@@ -60,7 +59,20 @@ npx wazootech-wiki --help
 
 </CodeGroup>
 
+## Quickstart
+
+Initialize a wiki, validate it, then preview it locally:
+
+```bash
+wiki init
+wiki check --strict
+wiki serve --watch
+```
+
+Use this path for Obsidian vaults, LLM-maintained knowledge bases, internal
+wikis, or static sites that need graph integrity.
+
 ## Learn more
 
-- [Wiki toolchain repository](https://github.com/wazootech/wiki)
+- [Wiki repository](https://github.com/wazootech/wiki)
 - [Wiki templates](/projects/wiki/templates)

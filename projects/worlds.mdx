@@ -26,9 +26,74 @@ retrieve and update verifiable context.
 | [worlds-denokv](https://github.com/wazootech/worlds-denokv)             | Deno KV adapter                          |
 | [worlds-client-evals](https://github.com/wazootech/worlds-client-evals) | Agent evaluation harness                 |
 
-## Start here
+## Quickstart
 
-- [Worlds quickstart](/quickstart)
+Start with the hosted API when you want managed storage, or use the same
+TypeScript SDK locally when you want embedded memory during development.
+
+### Prerequisites
+
+1. Sign up at the [Worlds Console](https://console.wazoo.dev).
+2. Generate an API key.
+3. Save it as `WORLDS_API_KEY`.
+
+### Install
+
+<CodeGroup>
+```bash Deno
+deno add jsr:@wazoo/worlds-sdk
+```
+
+```bash npm
+npx jsr add @wazoo/worlds-sdk
+```
+
+```bash Bun
+bunx jsr add @wazoo/worlds-sdk
+```
+
+</CodeGroup>
+
+### Run a graph loop
+
+```typescript index.ts
+import { Worlds } from "@wazoo/worlds-sdk";
+
+const worlds = new Worlds({
+  apiKey: process.env.WORLDS_API_KEY!,
+  baseUrl: "https://api.wazoo.dev",
+});
+
+await worlds.create({
+  slug: "quickstart-cloud",
+  label: "My First World",
+});
+
+await worlds.import(
+  "quickstart-cloud",
+  `@prefix user: <https://example.org/user/> .
+   @prefix wazoo: <https://wazoo.dev/#> .
+
+   user:person wazoo:worksFor wazoo:organization .`,
+  { contentType: "text/turtle" },
+);
+
+const result = await worlds.sparql(
+  "quickstart-cloud",
+  `PREFIX wazoo: <https://wazoo.dev/#>
+   SELECT ?organization WHERE {
+     <https://example.org/user/person> wazoo:worksFor ?organization
+   }`,
+);
+
+console.log(JSON.stringify(result, null, 2));
+```
+
+For local or test workflows, use `LocalWorlds` from the same SDK. Switch to the
+hosted `Worlds` client when you need managed persistence.
+
+### Next steps
+
 - [Search](/worlds/search)
 - [Query](/worlds/query)
 - [Update](/worlds/update)

@@ -41,7 +41,7 @@ docs.wazoo.dev/
 ├── introduction.mdx             # Landing page
 ├── what-were-building.mdx       # Product thesis
 ├── projects.mdx                 # Ecosystem project map
-├── quickstart.mdx               # Multi-path quickstart
+├── quickstart.mdx               # Conceptual starting point
 ├── manifesto.mdx                # Worlds manifesto
 ├── platform.mdx                 # Worlds Console overview
 ├── openapi.yaml                 # Worlds API spec
