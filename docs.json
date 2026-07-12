@@ -241,6 +241,10 @@
     {
       "source": "/",
       "destination": "/introduction"
+    },
+    {
+      "source": "/projects/wiki/:slug*",
+      "destination": "/wiki/:slug*"
     }
   ],
   "icons": {
