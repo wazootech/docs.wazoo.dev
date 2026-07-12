@@ -22,7 +22,7 @@ Wazoo has multiple entry points. Choose the path that matches what you are tryin
 
 ## Create a World
 
-Worlds is the context engine for agents. The cloud path uses the Worlds API and the TypeScript SDK.
+Worlds is the context engine for agents. Start with the hosted API when you want managed storage, or use the same TypeScript SDK locally when you want embedded memory during development.
 
 ### Prerequisites
 
@@ -81,6 +81,8 @@ const result = await worlds.sparql(
 console.log(JSON.stringify(result, null, 2));
 ```
 
+For local or test workflows, use `LocalWorlds` from the same SDK and switch to the hosted `Worlds` client when you need managed persistence.
+
 Next: [Worlds overview](/projects/worlds), [search](/worlds/search), and [query](/worlds/query).
 
 ## Validate a Markdown wiki
@@ -96,7 +98,7 @@ wiki serve --watch
 
 Use this path for Obsidian vaults, LLM-maintained knowledge bases, internal wikis, or static sites that need graph integrity.
 
-Next: [Wiki toolchain](/projects/wiki) and [Wiki templates](/projects/wiki-templates).
+Next: [Wiki toolchain](/projects/wiki) and [Wiki templates](/projects/wiki/templates).
 
 ## Parse semantic Markdown
 

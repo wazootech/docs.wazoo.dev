@@ -90,7 +90,7 @@
         "pages": [
           "projects/worlds",
           "projects/wiki",
-          "projects/wiki-templates",
+          "projects/wiki/templates/index",
           "projects/linked-markdown",
           "projects/memsdk"
         ]
@@ -157,7 +157,7 @@
         ]
       },
       {
-        "group": "CLI reference",
+        "group": "Worlds CLI reference",
         "icon": "book-open",
         "pages": [
           "reference/cli/create",
@@ -209,7 +209,7 @@
             "href": "/reference"
           },
           {
-            "label": "CLI reference",
+            "label": "Worlds CLI reference",
             "href": "/reference/cli"
           },
           {
