@@ -1,35 +1,46 @@
 ---
 title: "What we're building"
-description: "The shared thesis behind Wazoo projects: verifiable context for agents and humans."
+description:
+  "The shared thesis behind Wazoo projects: verifiable context for agents and
+  humans."
 ---
 
-Wazoo is building infrastructure for software that can remember, explain, and evolve. The projects are different entry points into the same system: documents become data, data becomes context, and context becomes a world model that agents can use without guessing.
+Wazoo is building infrastructure for software that can remember, explain, and
+evolve. The projects are different entry points into the same system: documents
+become data, data becomes context, and context becomes a world model that agents
+can use without guessing.
 
 ## The problem
 
-Most AI products still treat context as a temporary blob of text. That creates familiar failures:
+Most AI products still treat context as a temporary blob of text. That creates
+familiar failures:
 
 - Memory is locked inside vendor-specific backends.
 - Documents are readable by humans but weakly typed for machines.
 - Agents retrieve text snippets without knowing the facts behind them.
+- Models rely on probabilistic inference when they need deterministic facts.
 - Teams cannot easily verify where an answer came from.
 
 ## The Wazoo approach
 
-Wazoo projects use semantic standards and practical developer tools to make context inspectable.
+Wazoo projects use semantic standards and practical developer tools to make
+context inspectable. LLMs can still plan and write, but factual lookup moves to
+queryable systems like SPARQL instead of relying only on next-token prediction.
 
 <CardGroup cols={2}>
   <Card title="Represent" icon="file-json" href="/projects/linked-markdown">
     Linked Markdown turns ordinary Markdown into typed, queryable documents.
   </Card>
   <Card title="Validate" icon="shield-check" href="/projects/wiki">
-    The Wiki toolchain checks links, frontmatter, shapes, and graph integrity before publish.
+    The Wiki toolchain checks links, frontmatter, shapes, and graph integrity
+    before publish.
   </Card>
   <Card title="Store" icon="network" href="/projects/worlds">
     Worlds stores graph facts with search and SPARQL for agent workflows.
   </Card>
   <Card title="Port" icon="replace" href="/projects/memsdk">
-    MemSDK lets applications swap memory backends without rewriting their memory layer.
+    MemSDK lets applications swap memory backends without rewriting their memory
+    layer.
   </Card>
 </CardGroup>
 
@@ -51,11 +62,17 @@ Worlds and memory adapters
 Agents, apps, docs, and consoles
 ```
 
-Worlds is the storage and reasoning layer in that stack. Linked Markdown defines semantic documents, the Wiki toolchain validates and publishes them, and MemSDK lets applications use Worlds as one portable memory backend instead of hard-coding a single provider.
+Worlds is the storage and reasoning layer in that stack. Linked Markdown defines
+semantic documents, the Wiki toolchain validates and publishes them, and MemSDK
+lets applications use Worlds as one portable memory backend instead of
+hard-coding a single provider.
 
 ## What to explore first
 
 - If you need agent knowledge graphs, start with [Worlds](/projects/worlds).
-- If you maintain a wiki or docs vault, start with the [Wiki toolchain](/projects/wiki).
-- If you design semantic document formats, start with [Linked Markdown](/projects/linked-markdown).
-- If you are integrating memory providers, start with [MemSDK](/projects/memsdk).
+- If you maintain a wiki or docs vault, start with the
+  [Wiki toolchain](/projects/wiki).
+- If you design semantic document formats, start with
+  [Linked Markdown](/projects/linked-markdown).
+- If you are integrating memory providers, start with
+  [MemSDK](/projects/memsdk).
