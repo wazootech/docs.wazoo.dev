@@ -1,9 +1,12 @@
 ---
 title: "Linked Markdown"
-description: "Linked Markdown structures Markdown documents as semantic graph nodes."
+description:
+  "Linked Markdown structures Markdown documents as semantic graph nodes."
 ---
 
-Linked Markdown is a specification for Markdown documents with semantic frontmatter. It lets ordinary Markdown pages carry typed JSON-LD-style attributes that can be validated, queried, and loaded into RDF tooling.
+Linked Markdown is a specification for Markdown documents with semantic
+frontmatter. It lets ordinary Markdown pages carry typed JSON-LD-style
+attributes that can be validated, queried, and loaded into RDF tooling.
 
 ## Example
 
@@ -12,17 +15,16 @@ Linked Markdown is a specification for Markdown documents with semantic frontmat
 {
   "@id": "https://example.org/docs/ethan-davidson",
   "@type": "schema:Person",
-  "@context": {
-    "schema": "https://schema.org/"
-  },
+  "@context": { "schema": "https://schema.org/" },
   "schema:givenName": "Ethan",
-  "schema:familyName": "Davidson"
+  "schema:familyName": "Davidson",
 }
 ---
 
 # Ethan Davidson
 
-Ethan Davidson is a [knowledge graph engineer](./roles/knowledge-graph-engineer.md).
+Ethan Davidson is a
+[knowledge graph engineer](./roles/knowledge-graph-engineer.md).
 ```
 
 ## What it unlocks
@@ -34,11 +36,11 @@ Ethan Davidson is a [knowledge graph engineer](./roles/knowledge-graph-engineer.
 
 ## Repositories
 
-| Repository | Purpose |
-| ---------- | ------- |
-| [linked-markdown](https://github.com/wazootech/linked-markdown) | Specification, paper, conformance suite, and community materials |
-| [linked-markdown-ts](https://github.com/wazootech/linked-markdown-ts) | TypeScript implementation published on JSR |
-| [linked-markdown-py](https://github.com/wazootech/linked-markdown-py) | Python implementation published on PyPI |
+| Repository                                                            | Purpose                                                          |
+| --------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| [linked-markdown](https://github.com/wazootech/linked-markdown)       | Specification, paper, conformance suite, and community materials |
+| [linked-markdown-ts](https://github.com/wazootech/linked-markdown-ts) | TypeScript implementation published on JSR                       |
+| [linked-markdown-py](https://github.com/wazootech/linked-markdown-py) | Python implementation published on PyPI                          |
 
 ## Install
 
@@ -54,4 +56,5 @@ deno add jsr:@wazoo/linked-markdown
 ```bash npm
 npx jsr add @wazoo/linked-markdown
 ```
+
 </CodeGroup>

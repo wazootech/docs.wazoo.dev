@@ -8,7 +8,8 @@ ecosystem, built with [Mintlify](https://mintlify.com).
 The documentation covers:
 
 - **Welcome**: Introduction, thesis, project map, and quickstart paths.
-- **Projects**: Overviews for Worlds, Wiki toolchain, Linked Markdown, and MemSDK.
+- **Projects**: Overviews for Worlds, Wiki toolchain, Linked Markdown, and
+  MemSDK.
 - **Worlds guides**: Search, query, update, and the Worlds API reference.
 - **Integrations**: Agent framework and platform connectors.
 - **Open source**: Architecture, security, self-hosting, and style guide.
@@ -31,12 +32,12 @@ View your local preview at `http://localhost:3000`.
 
 ### Scripts
 
-| Command              | Purpose                           |
-| -------------------- | --------------------------------- |
-| `npm run dev`        | Start local preview               |
-| `npm run check`      | Validate docs build               |
-| `npm run format`     | Format all MD/MDX/JSON            |
-| `npm run precommit`  | Format check + validate           |
+| Command             | Purpose                 |
+| ------------------- | ----------------------- |
+| `npm run dev`       | Start local preview     |
+| `npm run check`     | Validate docs build     |
+| `npm run format`    | Format all MD/MDX/JSON  |
+| `npm run precommit` | Format check + validate |
 
 ## Deployment
 
