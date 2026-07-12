@@ -18,12 +18,14 @@ familiar failures:
 - Memory is locked inside vendor-specific backends.
 - Documents are readable by humans but weakly typed for machines.
 - Agents retrieve text snippets without knowing the facts behind them.
+- Models rely on probabilistic inference when they need deterministic facts.
 - Teams cannot easily verify where an answer came from.
 
 ## The Wazoo approach
 
 Wazoo projects use semantic standards and practical developer tools to make
-context inspectable.
+context inspectable. LLMs can still plan and write, but factual lookup moves to
+queryable systems like SPARQL instead of relying only on next-token prediction.
 
 <CardGroup cols={2}>
   <Card title="Represent" icon="file-json" href="/projects/linked-markdown">

@@ -52,6 +52,25 @@ deterministically verify. In practice, an LLM accesses this source of truth via
 tool calling, allowing it to ground its responses in **verified facts** rather
 than probabilistic weights.
 
+## LLM inference vs. graph queries
+
+LLM inference predicts the next token from model weights and prompt context.
+That makes it useful for language, synthesis, and planning, but weak as a source
+of truth.
+
+SPARQL queries a graph of stored facts. When an agent asks Worlds a question,
+the model can use a tool call to retrieve facts instead of relying only on
+probabilistic generation.
+
+| Layer         | What it does                          | Failure mode                                                  |
+| ------------- | ------------------------------------- | ------------------------------------------------------------- |
+| LLM inference | Predicts useful language from context | Returns plausible but incorrect facts when context is missing |
+| SPARQL query  | Matches patterns against stored facts | Returns only what the graph can answer                        |
+
+In practice, the LLM decides what to ask. Worlds answers from the graph. The
+final response can still be natural language, but the facts come from a
+deterministic query path.
+
 ---
 
 ## High-stakes context
