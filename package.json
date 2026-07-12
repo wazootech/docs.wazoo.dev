@@ -1,8 +1,8 @@
 {
-  "name": "@wazoo/worlds-docs",
+  "name": "@wazoo/docs",
   "version": "0.1.0",
   "private": true,
-  "description": "This repository contains the official documentation for **Worlds** (the Agentic Context Stack),\r built with [Mintlify](https://mintlify.com).",
+  "description": "Official documentation hub for the Wazoo project ecosystem, built with Mintlify.",
   "scripts": {
     "dev": "mintlify dev",
     "check": "mintlify validate",

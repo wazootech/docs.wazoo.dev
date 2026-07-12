@@ -1,41 +1,44 @@
-# Worlds Documentation
+# Wazoo Docs
 
-This repository contains the official documentation for **Worlds** (the Agentic
-Context Stack), built with [Mintlify](https://mintlify.com).
+This repository contains the official documentation for the Wazoo project
+ecosystem, built with [Mintlify](https://mintlify.com).
 
 ## Overview
 
 The documentation covers:
 
-- **Guides**: Quickstart, Authentication, and Core Concepts.
-- **API Reference**: Detailed endpoint documentation for Worlds, SPARQL, and
-  Search.
-- **SDKs**: TypeScript SDK reference.
+- **Welcome**: Introduction, thesis, project map, and quickstart paths.
+- **Projects**: Overviews for Worlds, Wiki toolchain, Linked Markdown, and MemSDK.
+- **Worlds guides**: Search, query, update, and the Worlds API reference.
+- **Integrations**: Agent framework and platform connectors.
+- **Open source**: Architecture, security, self-hosting, and style guide.
 
 ## Development
 
-Install the [Mintlify CLI](https://www.npmjs.com/package/mint) to preview your
-documentation changes locally.
+[Mintlify CLI](https://www.npmjs.com/package/mintlify):
 
 ```bash
-npm i -g mint
+npm install
 ```
 
 Run the development server:
 
 ```bash
-mint dev
-```
-
-**Alternative:**
-
-```bash
-npx mintlify dev
+npm run dev
 ```
 
 View your local preview at `http://localhost:3000`.
 
+### Scripts
+
+| Command              | Purpose                           |
+| -------------------- | --------------------------------- |
+| `npm run dev`        | Start local preview               |
+| `npm run check`      | Validate docs build               |
+| `npm run format`     | Format all MD/MDX/JSON            |
+| `npm run precommit`  | Format check + validate           |
+
 ## Deployment
 
-Changes pushed to the `main` branch are automatically deployed to the production
+Changes pushed to `main` are automatically deployed to the production
 documentation site via the Mintlify GitHub App.
