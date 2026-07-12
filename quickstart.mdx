@@ -3,26 +3,44 @@ title: "Quickstart"
 description: "Choose the fastest Wazoo starting point for your project."
 ---
 
-Wazoo has multiple entry points. Choose the path that matches what you are trying to build.
+Wazoo has multiple entry points. Choose the path that matches what you are
+trying to build.
 
 <CardGroup cols={2}>
   <Card title="Create a World" icon="network" href="#create-a-world">
-    Use Worlds when you need a persistent graph of facts for agents or applications.
+    Use Worlds when you need a persistent graph of facts for agents or
+    applications.
   </Card>
-  <Card title="Validate a Markdown wiki" icon="book-open" href="#validate-a-markdown-wiki">
-    Use the Wiki toolchain when you want Markdown that can be checked, queried, and published.
+  <Card
+    title="Validate a Markdown wiki"
+    icon="book-open"
+    href="#validate-a-markdown-wiki"
+  >
+    Use the Wiki toolchain when you want Markdown that can be checked, queried,
+    and published.
   </Card>
-  <Card title="Parse semantic Markdown" icon="braces" href="#parse-semantic-markdown">
-    Use Linked Markdown when you need typed Markdown frontmatter that can become graph data.
+  <Card
+    title="Parse semantic Markdown"
+    icon="braces"
+    href="#parse-semantic-markdown"
+  >
+    Use Linked Markdown when you need typed Markdown frontmatter that can become
+    graph data.
   </Card>
-  <Card title="Target portable memory" icon="database" href="#target-portable-memory">
+  <Card
+    title="Target portable memory"
+    icon="database"
+    href="#target-portable-memory"
+  >
     Use MemSDK when your app should not be locked to one AI memory backend.
   </Card>
 </CardGroup>
 
 ## Create a World
 
-Worlds is the context engine for agents. Start with the hosted API when you want managed storage, or use the same TypeScript SDK locally when you want embedded memory during development.
+Worlds is the context engine for agents. Start with the hosted API when you want
+managed storage, or use the same TypeScript SDK locally when you want embedded
+memory during development.
 
 ### Prerequisites
 
@@ -44,6 +62,7 @@ npx jsr add @wazoo/worlds-sdk
 ```bash Bun
 bunx jsr add @wazoo/worlds-sdk
 ```
+
 </CodeGroup>
 
 ### Run a graph loop
@@ -81,13 +100,16 @@ const result = await worlds.sparql(
 console.log(JSON.stringify(result, null, 2));
 ```
 
-For local or test workflows, use `LocalWorlds` from the same SDK and switch to the hosted `Worlds` client when you need managed persistence.
+For local or test workflows, use `LocalWorlds` from the same SDK and switch to
+the hosted `Worlds` client when you need managed persistence.
 
-Next: [Worlds overview](/projects/worlds), [search](/worlds/search), and [query](/worlds/query).
+Next: [Worlds overview](/projects/worlds), [search](/worlds/search), and
+[query](/worlds/query).
 
 ## Validate a Markdown wiki
 
-The Wiki toolchain turns a folder of Markdown into a validated, queryable, publishable wiki.
+The Wiki toolchain turns a folder of Markdown into a validated, queryable,
+publishable wiki.
 
 ```bash
 pip install wazootech-wiki
@@ -96,9 +118,11 @@ wiki check --strict
 wiki serve --watch
 ```
 
-Use this path for Obsidian vaults, LLM-maintained knowledge bases, internal wikis, or static sites that need graph integrity.
+Use this path for Obsidian vaults, LLM-maintained knowledge bases, internal
+wikis, or static sites that need graph integrity.
 
-Next: [Wiki toolchain](/projects/wiki) and [Wiki templates](/projects/wiki/templates).
+Next: [Wiki toolchain](/projects/wiki) and
+[Wiki templates](/projects/wiki/templates).
 
 ## Parse semantic Markdown
 
@@ -112,6 +136,7 @@ pip install linked-markdown
 ```bash Deno
 deno add jsr:@wazoo/linked-markdown
 ```
+
 </CodeGroup>
 
 ```typescript
@@ -134,7 +159,8 @@ Next: [Linked Markdown](/projects/linked-markdown).
 
 ## Target portable memory
 
-MemSDK gives your application a Supermemory-compatible memory interface that can be implemented by multiple backends.
+MemSDK gives your application a Supermemory-compatible memory interface that can
+be implemented by multiple backends.
 
 ```typescript
 import type { SupermemoryInterface } from "memsdk";

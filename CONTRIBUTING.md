@@ -69,12 +69,12 @@ docs.wazoo.dev/
 
 ### Scripts
 
-| Command              | Purpose                           |
-| -------------------- | --------------------------------- |
-| `npm run dev`        | Start local preview               |
-| `npm run check`      | Validate docs build               |
-| `npm run format`     | Format all MD/MDX/JSON            |
-| `npm run precommit`  | Format check + validate           |
+| Command             | Purpose                 |
+| ------------------- | ----------------------- |
+| `npm run dev`       | Start local preview     |
+| `npm run check`     | Validate docs build     |
+| `npm run format`    | Format all MD/MDX/JSON  |
+| `npm run precommit` | Format check + validate |
 
 Run `npm run precommit` before opening a pull request to verify everything
 passes.
@@ -84,8 +84,8 @@ passes.
 - Write content in **MDX** with YAML frontmatter.
 - Use root-relative paths without file extensions for internal links
   (`/projects/worlds`, not `../projects/worlds.mdx`).
-- Follow the [style guide](/contribute/style) for voice, formatting, and
-  code conventions.
+- Follow the [style guide](/contribute/style) for voice, formatting, and code
+  conventions.
 - Run `npm run format` before committing.
 
 ## Pull request process
@@ -96,8 +96,7 @@ passes.
 3. **Run checks** — `npm run precommit` must pass.
 4. **Open a PR** — include a summary of what changed and why. Link related
    issues.
-5. **Reviews** — all PRs require at least one maintainer review before
-   merging.
+5. **Reviews** — all PRs require at least one maintainer review before merging.
 
 ## Community guidelines
 
