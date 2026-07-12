@@ -1,0 +1,31 @@
+---
+title: "Worlds"
+description: "Worlds is Wazoo's context engine for agents and applications."
+---
+
+Worlds is Wazoo's flagship context engine. It stores facts as knowledge graphs, exposes search and SPARQL query paths, and provides APIs that let agents retrieve and update verifiable context.
+
+## What Worlds provides
+
+- **Graph storage** - RDF triples and named graphs for durable facts.
+- **Hybrid search** - Keyword and vector retrieval over graph literals.
+- **SPARQL queries** - Declarative graph traversal and reasoning.
+- **API and CLI surfaces** - Programmatic and terminal workflows for creating, importing, exporting, searching, and querying worlds.
+- **Edge-ready adapters** - LibSQL/Turso and Deno KV backends for durable deployments.
+
+## Repositories
+
+| Repository | Purpose |
+| ---------- | ------- |
+| [worlds-client-ts](https://github.com/wazootech/worlds-client-ts) | Core client facade and in-memory backend |
+| [worlds-libsql](https://github.com/wazootech/worlds-libsql) | LibSQL/Turso adapter |
+| [worlds-denokv](https://github.com/wazootech/worlds-denokv) | Deno KV adapter |
+| [worlds-client-evals](https://github.com/wazootech/worlds-client-evals) | Agent evaluation harness |
+
+## Start here
+
+- [Worlds quickstart](/quickstart)
+- [Search](/worlds/search)
+- [Query](/worlds/query)
+- [Update](/worlds/update)
+- [Worlds API](/reference)

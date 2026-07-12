@@ -1,0 +1,58 @@
+---
+title: "Wiki toolchain"
+description: "The Wiki toolchain validates, queries, and publishes semantic Markdown wikis."
+---
+
+The Wiki toolchain is a command-line system for Markdown wikis. You keep writing in Obsidian, VS Code, or any editor, then use the CLI to validate documents, run semantic queries, render derived content, and build static sites.
+
+## What it does
+
+- **Trust** - `check`, `lint`, and `fmt` validate frontmatter, links, shapes, and conventions.
+- **Intelligence** - `query`, `render`, and `export` turn Markdown into queryable semantic data.
+- **Publish** - `build`, `serve`, and `link` support static site workflows and wikilink hygiene.
+
+## Use cases
+
+- Personal knowledge management and Obsidian vaults.
+- Internal company wikis.
+- LLM memory wikis maintained by agents.
+- Static documentation sites backed by semantic Markdown.
+
+## Repositories
+
+| Repository | Purpose |
+| ---------- | ------- |
+| [wiki](https://github.com/wazootech/wiki) | CLI, Python package, docs, and core implementation |
+| [wiki-template](https://github.com/wazootech/wiki-template) | Generic starter workspace |
+| [llm-wiki-template](https://github.com/wazootech/llm-wiki-template) | Agent-oriented wiki starter |
+| [wiki-mintlify-template](https://github.com/wazootech/wiki-mintlify-template) | Mintlify docs from a Wiki vault |
+
+## Programmatic integration
+
+The Wiki toolchain ships as an embeddable Python library and exposes JS-CLI bindings for JavaScript and TypeScript environments.
+
+```python
+from wazootech_wiki import Wiki
+
+wiki = Wiki("./my-vault")
+wiki.check(strict=True)
+wiki.build()
+```
+
+## Install
+
+<CodeGroup>
+```bash pip
+pip install wazootech-wiki
+wiki --help
+```
+
+```bash npm
+npx wazootech-wiki --help
+```
+</CodeGroup>
+
+## Learn more
+
+- [Wiki toolchain repository](https://github.com/wazootech/wiki)
+- [Wiki templates](/projects/wiki/templates)

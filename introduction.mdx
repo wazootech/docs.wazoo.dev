@@ -1,43 +1,43 @@
 ---
 title: "Introduction"
-description: "Wazoo is a platform for building persistent, edge-native knowledge graphs for AI agents."
+description: "Wazoo builds tools for verifiable context, semantic documents, agent memory, and world models."
 ---
 
-Wazoo provides the infrastructure layer for agentic knowledge graphs — persistent storage, hybrid search, and SPARQL querying, designed to run at the edge.
+Wazoo builds open tools for software that needs memory, provenance, and structured context. The projects share one thesis: AI systems need more than prompts. They need inspectable world models, semantic documents, queryable memory, and deployment paths that keep humans in control.
 
-## What is a World?
+## The Wazoo stack
 
-A **World** is a scoped knowledge graph: a collection of RDF triples (subject-predicate-object) that represent facts about entities. Worlds are the core abstraction — every query, mutation, and search operates within a World.
+<CardGroup cols={2}>
+  <Card title="Worlds" icon="network" href="/projects/worlds">
+    Persistent, edge-native knowledge graphs for agents, with search, SPARQL, and API access.
+  </Card>
+  <Card title="Wiki toolchain" icon="book-open" href="/projects/wiki">
+    A verifiable Markdown wiki toolchain with SHACL validation, SPARQL queries, and static publishing.
+  </Card>
+  <Card title="Linked Markdown" icon="braces" href="/projects/linked-markdown">
+    A specification for Markdown documents with semantic frontmatter that can become RDF graph nodes.
+  </Card>
+  <Card title="MemSDK" icon="database" href="/projects/memsdk">
+    A Supermemory-compatible interface for portable AI memory backends such as Letta and Worlds.
+  </Card>
+</CardGroup>
 
-## Key capabilities
+## Why these projects belong together
 
-- **Persistent graph storage** — In-memory (N3) for development, LibSQL/Turso and Deno KV for production.
-- **Hybrid search** — Fuse vector similarity (embeddings) with keyword full-text search via reciprocal rank fusion.
-- **SPARQL query engine** — Declarative graph traversal using Comunica.
-- **Agent SDK integration** — First-class support for AI SDK, LangChain, and custom agent tooling.
-- **Synchronization** — Atomic mutation queues for reliable persistence.
-- **Idempotency guards** — Prevents redundant writes and deduplication at the storage layer.
+- **World models** give agents a durable substrate for facts, relationships, and provenance.
+- **Semantic documents** let human-authored Markdown participate in graph workflows.
+- **Portable memory interfaces** reduce coupling between apps and AI memory vendors.
+- **Templates and examples** make the stack practical across docs, wikis, agents, and static sites.
 
-## How it works
+## Featured projects
 
-```
-Application
-    │
-    ▼
-┌──────────────┐    ┌──────────────┐    ┌──────────────┐
-│   Client     │───▶│ Quad Store   │───▶│  RDF/JS      │
-│  (Facade)    │    │ (Interface)  │    │  (Backend)   │
-└──────┬───────┘    └──────┬───────┘    └──────┬───────┘
-       │                   │                   │
-       ▼                   ▼                   ▼
-┌──────────────┐    ┌──────────────┐    ┌──────────────┐
-│  Search      │    │  SPARQL      │    │  Sync        │
-│  Index       │    │  Engine      │    │  Layer       │
-└──────────────┘    └──────────────┘    └──────────────┘
-```
+- [Worlds](/projects/worlds) - The flagship context engine for agents.
+- [Wiki toolchain](/projects/wiki) - A command-line system for trustworthy Markdown wikis.
+- [Linked Markdown](/projects/linked-markdown) - A portable document format for semantic infrastructure.
+- [MemSDK](/projects/memsdk) - A backend-agnostic SDK contract for AI memory.
 
 ## Where to next
 
-- [Quickstart](/quickstart) — Build your first World in minutes.
-- [Core concepts](/concepts/knowledge-graphs) — Understand knowledge graphs, RDF, and SPARQL.
-- [Guides](/guides/installation) — Integrate Wazoo into your project.
+- [What we're building](/what-were-building) - Understand the product thesis.
+- [Projects](/projects) - Browse the Wazoo ecosystem.
+- [Worlds quickstart](/quickstart) - Build your first World in minutes.

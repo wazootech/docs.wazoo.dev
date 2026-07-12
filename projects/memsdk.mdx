@@ -1,0 +1,44 @@
+---
+title: "MemSDK"
+description: "MemSDK is a portable SDK interface for AI memory backends."
+---
+
+MemSDK extracts Supermemory's public API surface into a backend-agnostic TypeScript contract. Application code can target one memory interface, then swap adapters without rewriting its memory layer.
+
+> "Oh wow that is awesome"
+> — [Dhravya Shah](https://x.com/DhravyaShah/status/2074650939072618968), founder of Supermemory
+
+## The problem
+
+Every AI memory backend ships a different SDK. Moving from Supermemory to Letta to another backend usually means rewriting document add, search, forget, and list workflows even when the product behavior is conceptually the same.
+
+## The approach
+
+MemSDK freezes a proven interface instead of inventing a new one. It provides:
+
+- `SupermemoryInterface` as a type-level contract.
+- Zod schemas for runtime request validation.
+- Adapters that prove the contract can map to real backends.
+
+## Repositories
+
+| Repository | Purpose |
+| ---------- | ------- |
+| [memsdk](https://github.com/wazootech/memsdk) | Core interface and schemas |
+| [memsdk-letta](https://github.com/wazootech/memsdk-letta) | Letta-backed implementation |
+| [memsdk-worlds](https://github.com/wazootech/memsdk-worlds) | Worlds-backed implementation |
+| [memsdk-e2e](https://github.com/wazootech/memsdk-e2e) | Private conformance scenarios across backends |
+
+## Example
+
+```typescript
+import type { SupermemoryInterface } from "memsdk";
+
+function buildApp(client: SupermemoryInterface) {
+  return client.search.documents({ q: "project notes" });
+}
+```
+
+## Status
+
+MemSDK is useful when you want memory portability more than hosted-memory lock-in. The public surface focuses on memory-domain methods first: add, profile, documents, search, and memories.
