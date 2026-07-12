@@ -90,9 +90,9 @@
         "pages": [
           "projects/worlds",
           "projects/wiki",
+          "projects/wiki-templates",
           "projects/linked-markdown",
-          "projects/memsdk",
-          "projects/templates"
+          "projects/memsdk"
         ]
       },
       {
@@ -184,7 +184,7 @@
             "href": "/projects/worlds"
           },
           {
-            "label": "Wiki CLI",
+            "label": "Wiki toolchain",
             "href": "/projects/wiki"
           },
           {
