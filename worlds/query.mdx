@@ -62,10 +62,10 @@ SPARQL queries a graph of stored facts. When an agent asks Worlds a question,
 the model can use a tool call to retrieve facts instead of relying only on
 probabilistic generation.
 
-| Layer         | What it does                          | Failure mode                             |
-| ------------- | ------------------------------------- | ---------------------------------------- |
-| LLM inference | Predicts useful language from context | Can invent facts when context is missing |
-| SPARQL query  | Matches patterns against stored facts | Returns only what the graph can answer   |
+| Layer         | What it does                          | Failure mode                                                  |
+| ------------- | ------------------------------------- | ------------------------------------------------------------- |
+| LLM inference | Predicts useful language from context | Returns plausible but incorrect facts when context is missing |
+| SPARQL query  | Matches patterns against stored facts | Returns only what the graph can answer                        |
 
 In practice, the LLM decides what to ask. Worlds answers from the graph. The
 final response can still be natural language, but the facts come from a
