@@ -241,6 +241,14 @@
     {
       "source": "/wiki/:slug*",
       "destination": "/projects/wiki/:slug*"
+    },
+    {
+      "source": "/linked-markdown/:slug*",
+      "destination": "/projects/linked-markdown/:slug*"
+    },
+    {
+      "source": "/memsdk/:slug*",
+      "destination": "/projects/memsdk/:slug*"
     }
   ],
   "icons": {
