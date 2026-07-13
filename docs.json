@@ -58,18 +58,14 @@
         "href": "https://github.com/wazootech"
       },
       {
-        "label": "Projects",
-        "href": "/projects"
-      },
-      {
         "label": "Website",
         "href": "https://wazoo.dev"
       }
     ],
     "primary": {
       "type": "button",
-      "label": "Explore projects",
-      "href": "/projects"
+      "label": "Talk to the team",
+      "href": "https://etok.me/meet"
     }
   },
   "navigation": {
@@ -243,8 +239,8 @@
       "destination": "/introduction"
     },
     {
-      "source": "/projects/wiki/:slug*",
-      "destination": "/wiki/:slug*"
+      "source": "/wiki/:slug*",
+      "destination": "/projects/wiki/:slug*"
     }
   ],
   "icons": {
