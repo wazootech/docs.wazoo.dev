@@ -16,19 +16,19 @@ Install the Worlds AI SDK from JSR:
 <CodeGroup>
 
 ```bash deno
-deno add jsr:@wazoo/worlds-ai-sdk
+deno add jsr:@worlds/tools
 ```
 
 ```bash npm
-npx jsr add @wazoo/worlds-ai-sdk
+npx jsr add @worlds/tools
 ```
 
 ```bash bun
-bunx jsr add @wazoo/worlds-ai-sdk
+bunx jsr add @worlds/tools
 ```
 
 ```bash pnpm
-pnpm i jsr:@wazoo/worlds-ai-sdk
+pnpm i jsr:@worlds/tools
 ```
 
 </CodeGroup>
@@ -41,14 +41,14 @@ The tools are designed to work with the
 ```typescript
 import { generateText } from "ai";
 import { openai } from "@ai-sdk/openai";
-import { Worlds } from "@wazoo/worlds-sdk";
-import { createTools } from "@wazoo/worlds-ai-sdk";
+import { Worlds } from "@worlds/client";
+import { createTools } from "@worlds/tools";
 
 const worlds = new Worlds({
   apiKey: process.env.WORLDS_API_KEY,
 });
 
-// @wazoo/worlds-ai-sdk
+// @worlds/tools
 const tools = createTools({
   worlds,
   sources: ["my-world-slug"],
@@ -72,12 +72,12 @@ individually. Each tool factory requires the same
 [configuration options](#usage).
 
 ```typescript
-import { Worlds } from "@wazoo/worlds-sdk";
+import { Worlds } from "@worlds/client";
 import {
   createDiscoverSchemaTool,
   createExecuteSparqlTool,
   createSearchEntitiesTool,
-} from "@wazoo/worlds-ai-sdk";
+} from "@worlds/tools";
 
 const worlds = new Worlds({
   apiKey: process.env.WORLDS_API_KEY,

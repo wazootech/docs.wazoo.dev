@@ -34,8 +34,10 @@ queries, render derived content, and build static sites.
 
 ## Programmatic integration
 
-Wiki ships as an embeddable Python library and exposes JS-CLI bindings for
-JavaScript and TypeScript environments.
+Wiki ships as an embeddable Python library and a TypeScript SDK backed by the
+same CLI engine.
+
+### Python
 
 ```python
 from wazootech_wiki import Wiki
@@ -43,6 +45,17 @@ from wazootech_wiki import Wiki
 wiki = Wiki("./my-vault")
 wiki.check(strict=True)
 wiki.build()
+```
+
+### TypeScript
+
+```typescript
+import { Wiki } from "wazootech-wiki";
+
+const wiki = Wiki.load({ config: "wiki.yaml" });
+
+await wiki.check({ strict: true });
+await wiki.build();
 ```
 
 ## Install

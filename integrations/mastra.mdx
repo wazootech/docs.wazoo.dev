@@ -15,19 +15,19 @@ Install both the Mastra core and Worlds AI SDK:
 
 <CodeGroup>
   ```bash deno
-  deno add jsr:@mastra/core jsr:@wazoo/worlds-ai-sdk
+  deno add jsr:@mastra/core jsr:@worlds/tools
   ```
 
 ```bash npm
-npx jsr add @mastra/core @wazoo/worlds-ai-sdk
+npx jsr add @mastra/core @worlds/tools
 ```
 
 ```bash bun
-bunx jsr add @mastra/core @wazoo/worlds-ai-sdk
+bunx jsr add @mastra/core @worlds/tools
 ```
 
 ```bash pnpm
-pnpm i jsr:@mastra/core jsr:@wazoo/worlds-ai-sdk
+pnpm i jsr:@mastra/core jsr:@worlds/tools
 ```
 
 </CodeGroup>
@@ -39,8 +39,8 @@ You can pass Worlds tools directly to a Mastra `Agent`.
 ```typescript
 import { Agent } from "@mastra/core/agent";
 import { openai } from "@ai-sdk/openai";
-import { Worlds } from "@wazoo/worlds-sdk";
-import { createTools } from "@wazoo/worlds-ai-sdk";
+import { Worlds } from "@worlds/client";
+import { createTools } from "@worlds/tools";
 
 const worlds = new Worlds({
   apiKey: process.env.WORLDS_API_KEY,
@@ -75,8 +75,8 @@ individually:
 ```typescript
 import { Agent } from "@mastra/core/agent";
 import { openai } from "@ai-sdk/openai";
-import { Worlds } from "@wazoo/worlds-sdk";
-import { createSearchEntitiesTool } from "@wazoo/worlds-ai-sdk";
+import { Worlds } from "@worlds/client";
+import { createSearchEntitiesTool } from "@worlds/tools";
 
 const worlds = new Worlds({
   apiKey: process.env.WORLDS_API_KEY,

@@ -210,7 +210,7 @@
           },
           {
             "label": "TypeScript reference",
-            "href": "https://jsr.io/@wazoo/worlds-sdk"
+            "href": "https://jsr.io/@worlds/client"
           }
         ]
       },

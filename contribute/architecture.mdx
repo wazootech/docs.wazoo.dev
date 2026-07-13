@@ -12,7 +12,7 @@ management from the Worlds API for high-performance execution.
 
 The connection model uses composable components to scale system complexity:
 
-- Client: Use the `@wazoo/worlds-sdk` or standard HTTP requests inside an agent
+- Client: Use the `@worlds/client` or standard HTTP requests inside an agent
   like Claude, Gemini, or a custom script to connect to the Worlds API.
 - Memory: A World is an isolated sandbox for agent memories. You must target a
   specific World using an API key and the World ID for every request.
@@ -281,8 +281,8 @@ server.
 graph TD
     ROOT["Deno workspace root"]
     SERVER["@wazoo/worlds-server"]
-    API["@wazoo/worlds-sdk"]
-    AI_API["@wazoo/worlds-ai-sdk"]
+    API["@worlds/client"]
+    AI_API["@worlds/tools"]
     CLI["@wazoo/worlds-cli"]
     CONSOLE["worlds-console<br/>Next.js"]
 

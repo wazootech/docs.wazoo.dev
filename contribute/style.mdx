@@ -66,7 +66,7 @@ flavor (such as the memory metaphor) is essential for intuition.
   "robust", or "cutting-edge".
 - **Filler phrases**: Omit transitional cliches like "at its core", "it's
   important to note", or "in order to".
-- **Punctuation cliches**: Do not use em dashes (—) as a crutch to connect
+- **Punctuation cliches**: Do not use em dashes (ï¿½) as a crutch to connect
   thoughts.
 - **Excessive conjunctions**: Omit "moreover", "furthermore", or "additionally".
 - **Editorializing words**: Omit "obviously", "simply", "just", or "easily".
@@ -93,8 +93,8 @@ flavor (such as the memory metaphor) is essential for intuition.
 - **Lists**: Use unordered bullets by default. Use ordered lists only for
   sequences or step-by-step procedures. When a list item defines a term or
   feature, use a colon to separate the term from its description.
-  - _Good:_ “**API**: Programming interface for worlds.”
-  - _Bad:_ “**API**. Programming interface for worlds.”
+  - _Good:_ ï¿½**API**: Programming interface for worlds.ï¿½
+  - _Bad:_ ï¿½**API**. Programming interface for worlds.ï¿½
 
 ### Code examples
 
@@ -120,7 +120,7 @@ flavor (such as the memory metaphor) is essential for intuition.
 ### Imports
 
 - **Import grouping**: Group by module source path (e.g., `ai`,
-  `@wazoo/worlds-sdk`).
+  `@worlds/client`).
 - **Import separation**: Mandate separate `import type` and `import`
   declarations per source.
 - **Import ordering**: When importing from the same path, the `import type`
@@ -129,12 +129,12 @@ flavor (such as the memory metaphor) is essential for intuition.
     ```typescript
     import type { Tool } from "ai";
     import { tool } from "ai";
-    import type { World } from "@wazoo/worlds-sdk";
-    import { LocalWorlds } from "@wazoo/worlds-sdk";
+    import type { World } from "@worlds/client";
+    import { LocalWorlds } from "@worlds/client";
     ```
   - _Bad:_
     ```typescript
-    import { type World, LocalWorlds } from "@wazoo/worlds-sdk";
+    import { type World, LocalWorlds } from "@worlds/client";
     ```
 - **Tree-shaking optimization**: Use the most specific module entry points
   (e.g., `import { ulid } from "@std/ulid/ulid"`).

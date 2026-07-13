@@ -42,15 +42,15 @@ TypeScript SDK locally when you want embedded memory during development.
 
 <CodeGroup>
 ```bash Deno
-deno add jsr:@wazoo/worlds-sdk
+deno add jsr:@worlds/client
 ```
 
 ```bash npm
-npx jsr add @wazoo/worlds-sdk
+npx jsr add @worlds/client
 ```
 
 ```bash Bun
-bunx jsr add @wazoo/worlds-sdk
+bunx jsr add @worlds/client
 ```
 
 </CodeGroup>
@@ -58,7 +58,7 @@ bunx jsr add @wazoo/worlds-sdk
 ### Run a graph loop
 
 ```typescript index.ts
-import { Worlds } from "@wazoo/worlds-sdk";
+import { Worlds } from "@worlds/client";
 
 const worlds = new Worlds({
   apiKey: process.env.WORLDS_API_KEY!,
