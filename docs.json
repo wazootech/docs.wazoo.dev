@@ -54,12 +54,9 @@
   "navbar": {
     "links": [
       {
-        "type": "github",
+        "label": "GitHub",
+        "icon": "github",
         "href": "https://github.com/wazootech"
-      },
-      {
-        "label": "Website",
-        "href": "https://wazoo.dev"
       }
     ],
     "primary": {
@@ -218,16 +215,20 @@
         "header": "Community",
         "items": [
           {
-            "label": "GitHub",
-            "href": "https://github.com/wazootech"
-          },
-          {
-            "label": "Website",
-            "href": "https://wazoo.dev"
+            "label": "LinkedIn",
+            "href": "https://www.linkedin.com/company/wazootech/"
           },
           {
             "label": "X/Twitter",
             "href": "https://x.com/wazootech"
+          },
+          {
+            "label": "Instagram",
+            "href": "https://www.instagram.com/wazootech/"
+          },
+          {
+            "label": "GitHub",
+            "href": "https://github.com/wazootech"
           }
         ]
       }
