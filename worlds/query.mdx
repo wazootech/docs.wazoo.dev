@@ -71,6 +71,53 @@ In practice, the LLM decides what to ask. Worlds answers from the graph. The
 final response can still be natural language, but the facts come from a
 deterministic query path.
 
+## Operational tradeoff
+
+Graph grounding changes where the system spends resources. Instead of paying the
+model to reconstruct facts from long prompts on every answer, you store and
+index facts once, then retrieve them through short queries.
+
+```mermaid
+flowchart LR
+    User[User question] --> Agent[LLM agent]
+    Agent -->|Plans what to ask| Decision[Query decision]
+
+    Decision -->|Needs factual context| Graph[Worlds graph]
+    Graph -->|SPARQL result| Facts[Verified facts]
+
+    Facts --> Agent
+    Agent -->|Natural language answer| User
+```
+
+| Path        | Token cost | Latency     | Space cost | Freshness risk   | Best for                |
+| ----------- | ---------- | ----------- | ---------- | ---------------- | ----------------------- |
+| LLM-only    | High       | Model-bound | Low        | Prompt-dependent | Language and synthesis  |
+| Graph query | Low        | Query-bound | Medium     | Low              | Verified factual lookup |
+
+This tradeoff is deliberate. The system uses storage and indexes to reduce
+repeated inference cost while preserving an inspectable path back to the source
+facts.
+
+## Caching hot reads
+
+After facts move into a graph, caching can optimize repeated reads. A cache
+stores derived query results or materialized views for hot paths, while the
+graph remains the authoritative state.
+
+```mermaid
+flowchart LR
+    Query[Repeated query] --> Cache{Cache hit?}
+    Cache -->|Yes| Result[Cached graph result]
+    Cache -->|No| Graph[Worlds graph]
+    Graph -->|SPARQL result| Result
+    Graph -. source of truth .-> Cache
+```
+
+| Path                | Token cost | Latency     | Space cost | Freshness risk                | Best for                   |
+| ------------------- | ---------- | ----------- | ---------- | ----------------------------- | -------------------------- |
+| Graph query         | Low        | Query-bound | Medium     | Low                           | Verified factual lookup    |
+| Cached graph result | Lowest     | Low on hits | Higher     | Depends on cache invalidation | Hot repeated factual reads |
+
 ---
 
 ## High-stakes context
