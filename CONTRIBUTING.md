@@ -35,35 +35,10 @@ locally, and submit pull requests.
 
 ## Project structure
 
-```
-docs.wazoo.dev/
-├── docs.json                   # Site configuration (nav, theme, SEO)
-├── introduction.mdx             # Landing page
-├── what-were-building.mdx       # Product thesis
-├── projects.mdx                 # Ecosystem project map
-├── quickstart.mdx               # Conceptual starting point
-├── manifesto.mdx                # Worlds manifesto
-├── platform.mdx                 # Worlds Console overview
-├── openapi.yaml                 # Worlds API spec
-├── projects/                    # Project overview pages
-│   ├── worlds.mdx
-│   ├── wiki.mdx
-│   ├── wiki/templates/index.mdx
-│   ├── linked-markdown.mdx
-│   └── memsdk.mdx
-├── worlds/                      # Worlds user guides
-│   ├── index.mdx
-│   ├── search.mdx
-│   ├── query.mdx
-│   └── update.mdx
-├── integrations/                # Agent framework connectors
-├── contribute/                  # Architecture, security, self-host, style
-├── reference/                   # CLI and API reference
-│   └── cli/
-├── images/                      # Static assets
-├── logo/                        # Light and dark logo SVGs
-└── style.css                    # Custom styles
-```
+Top-level MDX files are landing pages and ecosystem overviews. Content lives in
+directories by category: `projects/`, `worlds/`, `integrations/`, `contribute/`,
+`reference/cli/`. Assets in `images/` and `logo/`. Site config in `docs.json`,
+API spec in `openapi.yaml`.
 
 ## Development workflow
 

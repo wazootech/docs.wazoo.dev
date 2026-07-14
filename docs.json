@@ -69,13 +69,7 @@
     "groups": [
       {
         "group": "Welcome",
-        "pages": [
-          "introduction",
-          "what-were-building",
-          "projects",
-          "quickstart",
-          "manifesto"
-        ]
+        "pages": ["introduction", "projects", "quickstart", "manifesto"]
       },
       {
         "group": "Platform",
@@ -232,6 +226,10 @@
           {
             "label": "GitHub",
             "href": "https://github.com/wazootech"
+          },
+          {
+            "label": "Discord",
+            "href": "https://discord.gg/wpaavgRMAE"
           }
         ]
       }
@@ -253,6 +251,10 @@
     {
       "source": "/memsdk/:slug*",
       "destination": "/projects/memsdk/:slug*"
+    },
+    {
+      "source": "/what-were-building",
+      "destination": "/projects"
     }
   ],
   "icons": {
