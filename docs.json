@@ -71,7 +71,6 @@
         "group": "Welcome",
         "pages": [
           "introduction",
-          "what-were-building",
           "projects",
           "quickstart",
           "platform",
@@ -250,6 +249,10 @@
     {
       "source": "/memsdk/:slug*",
       "destination": "/projects/memsdk/:slug*"
+    },
+    {
+      "source": "/what-were-building",
+      "destination": "/projects"
     }
   ],
   "icons": {
