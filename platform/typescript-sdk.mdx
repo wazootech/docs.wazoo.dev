@@ -1,0 +1,79 @@
+---
+title: "TypeScript SDK"
+description: "Use @wazoo/api to manage Wazoo platform resources."
+---
+
+`@wazoo/api` is the TypeScript SDK for the Wazoo Platform API. It manages
+platform resources; it does not replace `@worlds/client` for graph data
+operations.
+
+Use `@wazoo/api` for organizations, groups, world metadata, platform tokens,
+world auth tokens, and usage. Use `@worlds/client` for import, export, search,
+SPARQL, and graph updates.
+
+## Install
+
+```bash
+npm install @wazoo/api
+```
+
+## Create a client
+
+```typescript
+import { createClient } from "@wazoo/api";
+
+const wazoo = createClient({
+  org: "acme",
+  token: process.env.WAZOO_PLATFORM_TOKEN!,
+});
+```
+
+The token must be a platform token with the `wzp_` prefix.
+
+You can pass either an organization slug or an organization ID:
+
+```typescript
+const wazoo = createClient({
+  orgId: "org_123",
+  token: async () => getPlatformToken(),
+});
+```
+
+## Manage worlds
+
+```typescript
+const worlds = await wazoo.worlds.list();
+
+const world = await wazoo.worlds.create({
+  slug: "support-knowledge",
+  label: "Support Knowledge",
+});
+```
+
+This creates platform metadata for a world. Use the Worlds Data API or
+`@worlds/client` for graph data inside that world.
+
+## Create a world auth token
+
+```typescript
+const authToken = await wazoo.worlds.createToken(world.id);
+```
+
+World auth tokens are data-plane credentials with the `wzw_` prefix. Store them
+separately from platform tokens.
+
+## Read usage
+
+```typescript
+const usage = await wazoo.usage.get();
+const worldUsage = await wazoo.worlds.usage(world.id);
+```
+
+Usage records reflect what the Platform API knows today. Data-plane limit
+enforcement is a separate integration point.
+
+## Runtime
+
+The SDK is a fetch-based JavaScript package with ESM and CommonJS builds. The
+project is developed with Node.js and npm, but the SDK is intended to run in any
+modern JavaScript runtime that provides `fetch`.

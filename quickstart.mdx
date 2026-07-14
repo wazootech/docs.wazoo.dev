@@ -17,6 +17,18 @@ Wazoo starts from a simple sequence:
 
 The projects share this model, but each one starts at a different layer.
 
+## Platform and data APIs
+
+Hosted Wazoo separates management operations from graph data operations:
+
+- Use the [Wazoo Platform API](/platform/api) or `@wazoo/api` to manage
+  organizations, groups, world metadata, tokens, and usage.
+- Use the Worlds Data API or `@worlds/client` to import RDF, export RDF, search,
+  run SPARQL, and update graph state.
+
+Platform tokens use the `wzp_` prefix. World tokens use the `wzw_` prefix. Keep
+them separate.
+
 ## Choose your path
 
 <CardGroup cols={2}>

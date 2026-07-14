@@ -74,9 +74,12 @@
           "what-were-building",
           "projects",
           "quickstart",
-          "platform",
           "manifesto"
         ]
+      },
+      {
+        "group": "Platform",
+        "pages": ["platform", "platform/api", "platform/typescript-sdk"]
       },
       {
         "group": "Projects",
@@ -122,7 +125,7 @@
         ]
       },
       {
-        "group": "Worlds API",
+        "group": "Worlds Data API",
         "openapi": "openapi.yaml",
         "pages": [
           "GET /worlds",
