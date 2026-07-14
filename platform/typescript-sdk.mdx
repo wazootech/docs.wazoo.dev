@@ -8,8 +8,8 @@ platform resources; it does not replace `@worlds/client` for graph data
 operations.
 
 Use `@wazoo/api` for organizations, groups, world metadata, platform tokens,
-world auth tokens, and usage. Use `@worlds/client` for import, export, search,
-SPARQL, and graph updates.
+world auth tokens, usage, limits, and billing state. Use `@worlds/client` for
+import, export, search, SPARQL, and graph updates.
 
 ## Install
 
@@ -69,8 +69,18 @@ const usage = await wazoo.usage.get();
 const worldUsage = await wazoo.worlds.usage(world.id);
 ```
 
-Usage records reflect what the Platform API knows today. Data-plane limit
-enforcement is a separate integration point.
+Usage and limits are billed by compute time. Data-plane limit enforcement is a
+separate integration point: world operations should report compute-time usage,
+and the Platform API should aggregate it against organization and world limits.
+
+## Billing state
+
+Billing is part of the production Platform API. Stripe is the source of truth
+for billing and subscription state, while Wazoo mirrors the entitlement state
+needed for product behavior and limit enforcement.
+
+The SDK should expose billing and entitlement operations when the server
+supports the end-to-end Stripe-backed flow.
 
 ## Runtime
 

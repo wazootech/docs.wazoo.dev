@@ -3,25 +3,38 @@ title: "Self-host"
 description: "Host Worlds locally or via Docker"
 ---
 
-Documentation for local-first and Docker self-hosting architectures is coming
-soon.
+Worlds self-hosting is available through the respective GitHub repositories. Use
+the repository README and package docs for the component you are deploying.
 
 <Note>
-  Self-hosting and private deployment are active private-beta work. Complete
-  setup instructions are not published yet.
+  This page is a routing page. The canonical setup instructions live with each
+  implementation repository so they stay aligned with the code.
 </Note>
 
 ## Current status
 
-The current private deployment direction includes Docker Compose, private
-networking with Tailscale or Cloudflare Tunnel, and hosted platform management
-surfaces where appropriate.
+Self-hosting is not private beta. The supported path depends on which Worlds
+components you run:
 
-The exact setup depends on which pieces you run yourself:
+- [`worlds-client-ts`](https://github.com/wazootech/worlds-client-ts): local and
+  embedded Worlds client usage.
+- [`worlds-libsql`](https://github.com/wazootech/worlds-libsql): durable
+  SQLite-compatible storage through LibSQL/Turso-style backends.
+- [`worlds-denokv`](https://github.com/wazootech/worlds-denokv): Deno KV-backed
+  storage.
+
+Private networking patterns such as Docker Compose, Tailscale, or Cloudflare
+Tunnel depend on your deployment environment and should be configured alongside
+the repository-specific setup.
+
+## Deployment responsibilities
+
+When you self-host, you own:
 
 - Worlds data services and storage.
-- Platform metadata services.
 - Network ingress and access control.
 - Token issuance and rotation.
+- Backups, monitoring, and incident response.
 
-Do not assume a compliance posture from these docs alone. Treat private
+Do not assume a compliance posture from these docs alone. Treat each self-hosted
+deployment as an architecture review for your environment.

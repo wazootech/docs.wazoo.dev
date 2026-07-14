@@ -3,10 +3,10 @@ title: "Architecture"
 description: "How Worlds works"
 ---
 
-Wazoo separates platform management from graph data operations. The Platform API
-manages organizations, groups, world metadata, tokens, and usage. The Worlds
-Data API handles graph operations such as RDF import, RDF export, search, and
-SPARQL.
+Wazoo separates platform management from graph data operations. The
+public-facing Platform API manages organizations, groups, world metadata,
+tokens, usage, limits, and billing state. The Worlds Data API handles graph
+operations such as RDF import, RDF export, search, and SPARQL.
 
 ## The connection model
 
@@ -19,6 +19,8 @@ The connection model uses composable components to scale system complexity:
 - Platform management: Use the [Platform API](/platform/api) or `@wazoo/api` to
   manage organizations, world metadata, platform tokens, world auth tokens, and
   usage records.
+- Billing and limits: Usage and limits are billed by compute time. Stripe is the
+  source of truth for billing and subscription state.
 
 <Info>
   Agents should use world tokens to read and write facts. Platform tokens should
@@ -79,7 +81,8 @@ The platform splits operations into two primary layers:
 ### Wazoo Platform API
 
 The Wazoo Platform API is the management layer. It stores platform metadata and
-manages organizations, groups, world records, tokens, and usage.
+manages organizations, groups, world records, tokens, usage, limits, and billing
+state.
 
   </div>
 
@@ -99,6 +102,10 @@ The platform management layer is implemented as a Cloudflare Workers API using
 Hono and D1 for metadata. It currently records organizations, groups, worlds,
 tokens, and usage. The full production provisioning flow between platform
 metadata and data-plane services is still evolving.
+
+Billing is part of that production flow. Stripe owns subscription and billing
+state; Wazoo should mirror only the entitlement state required to enforce
+limits.
 
 <Note>
   Treat this page as the current architectural shape, not a guarantee that every
