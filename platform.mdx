@@ -1,15 +1,42 @@
 ---
-title: "Worlds Console"
+title: "Wazoo Platform"
 description:
-  "Worlds Console overview, organizations, worlds, billing, and platform status"
+  "Management surfaces for organizations, worlds, tokens, usage, and platform
+  status"
 ---
 
-The Worlds Console acts as the managed control plane for Worlds. Use the console
-to manage identity, handle organization-level provisioning, set up billing, and
-orchestrate your managed Worlds API instances.
+Wazoo has two API layers:
+
+- **Wazoo Platform API**: manages organizations, groups, world metadata,
+  platform tokens, world tokens, usage records, limits, and billing state.
+- **Worlds Data API**: reads and writes graph data through worlds, including
+  import, export, search, and SPARQL.
+
+Use the Platform API when you are provisioning or managing resources. Use the
+Worlds Data API when an application or agent needs to query or update graph
+state.
+
+The Platform API is public-facing. It is the production management surface Wazoo
+is building around, even while some implementation details continue to harden.
+
+Usage and limits are billed by compute time. Stripe is the source of truth for
+billing and subscription state; Wazoo mirrors the entitlement state needed to
+enforce platform and data-plane limits.
+
+The Console is the human-facing control surface for the same platform concepts.
+Some Console flows are still private-beta and may not be available to every
+user.
 
 <CardGroup cols={2}>
+  <Card title="Platform API" icon="waypoints" href="/platform/api">
+    Manage organizations, worlds, tokens, usage, limits, and billing state.
+  </Card>
+
+<Card title="TypeScript SDK" icon="braces" href="/platform/typescript-sdk">
+  Use `@wazoo/api` for platform management from JavaScript or TypeScript.
+</Card>
+
   <Card title="Open Console" icon="app-window" href="https://console.wazoo.dev">
-    Sign in to manage your organizations and explore your worlds visually.
+    Open the private-beta Console when your account has access.
   </Card>
 </CardGroup>

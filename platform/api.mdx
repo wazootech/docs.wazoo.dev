@@ -1,0 +1,91 @@
+---
+title: "Platform API"
+description: "Manage Wazoo organizations, worlds, tokens, and usage."
+---
+
+The Wazoo Platform API is the public-facing management API for hosted Wazoo
+resources. It is separate from the Worlds Data API.
+
+Use the Platform API to create and inspect organizations, groups, world
+metadata, platform tokens, world auth tokens, usage records, limits, and billing
+state. Use the Worlds Data API for graph operations such as search, SPARQL,
+import, and export.
+
+<Info>
+  The current Platform API reference is implemented as a route list at
+  `/openapi.json`. A complete schema-level OpenAPI document is not published
+  yet.
+</Info>
+
+## Authentication
+
+Platform API requests use platform tokens with the `wzp_` prefix.
+
+```http
+Authorization: Bearer wzp_...
+```
+
+Platform tokens can manage resources. They are not the same as world auth
+tokens. World auth tokens use the `wzw_` prefix and are intended for data-plane
+access to specific worlds.
+
+## Base URL
+
+```text
+https://api.wazoo.dev/v1/
+```
+
+For local development of the Platform API server, use the Wrangler dev URL for
+your Worker.
+
+## Current resources
+
+The Platform API currently covers these management resources:
+
+| Resource          | Routes                                                                                               |
+| ----------------- | ---------------------------------------------------------------------------------------------------- |
+| Organizations     | `/v1/organizations`, `/v1/organizations/:organizationId`                                             |
+| Groups            | `/v1/organizations/:organizationId/groups`                                                           |
+| Worlds            | `/v1/organizations/:organizationId/worlds`                                                           |
+| Platform tokens   | `/v1/auth/api-tokens`, `/v1/organizations/:organizationId/platform-tokens`                           |
+| World auth tokens | `/v1/organizations/:organizationId/worlds/:worldId/auth/tokens`                                      |
+| Usage             | `/v1/organizations/:organizationId/usage`, `/v1/organizations/:organizationId/worlds/:worldId/usage` |
+
+`organizationId` path parameters accept either an organization ID or slug.
+
+## Data-plane boundary
+
+The Platform API does not execute SPARQL, search triples, import RDF, or export
+RDF. Those operations belong to the Worlds Data API and `@worlds/client`.
+
+The intended production boundary is:
+
+- `wzp_` platform tokens manage organizations, worlds, tokens, and usage.
+- `wzw_` world tokens authorize world data access.
+- Data-plane services can integrate with platform usage and limits, but that
+  enforcement path is not fully documented yet.
+
+## Usage and limits
+
+Wazoo usage and limits are billed by compute time. Data-plane services should
+report the compute time consumed by world operations so the Platform API can
+aggregate usage and enforce limits.
+
+The production model is:
+
+- Worlds Data API operations consume compute time.
+- The Platform API records and aggregates compute-time usage.
+- Entitlements and limits decide whether an organization or world can continue
+  running work.
+
+## Billing state
+
+Billing is a production requirement for the Platform API. Stripe is the source
+of truth for billing and subscription state.
+
+Wazoo should not invent its own subscription ledger. The Platform API should use
+Stripe for customer, subscription, payment, and lifecycle state, then mirror
+only the entitlement data needed for product behavior and limit enforcement.
+
+The public API should expose billing and entitlement state once the end-to-end
+Stripe integration is implemented and verified.

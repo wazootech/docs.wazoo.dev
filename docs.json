@@ -69,13 +69,11 @@
     "groups": [
       {
         "group": "Welcome",
-        "pages": [
-          "introduction",
-          "projects",
-          "quickstart",
-          "platform",
-          "manifesto"
-        ]
+        "pages": ["introduction", "projects", "quickstart", "manifesto"]
+      },
+      {
+        "group": "Platform",
+        "pages": ["platform", "platform/api", "platform/typescript-sdk"]
       },
       {
         "group": "Projects",
@@ -121,7 +119,7 @@
         ]
       },
       {
-        "group": "Worlds API",
+        "group": "Worlds Data API",
         "openapi": "openapi.yaml",
         "pages": [
           "GET /worlds",
@@ -228,6 +226,10 @@
           {
             "label": "GitHub",
             "href": "https://github.com/wazootech"
+          },
+          {
+            "label": "Discord",
+            "href": "https://discord.gg/wpaavgRMAE"
           }
         ]
       }

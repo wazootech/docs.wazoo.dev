@@ -30,14 +30,21 @@ retrieve facts from a graph rather than infer them from model weights.
 
 ## Quickstart
 
-Start with the hosted API when you want managed storage, or use the same
-TypeScript SDK locally when you want embedded memory during development.
+Start with the hosted API when you want managed storage, or use `LocalWorlds`
+from the TypeScript SDK when you want embedded memory during development.
+
+Hosted Worlds has two surfaces:
+
+- `@wazoo/api` manages platform resources such as organizations, world metadata,
+  and tokens.
+- `@worlds/client` works with graph data through create, import, export, search,
+  and SPARQL operations.
 
 ### Prerequisites
 
-1. Sign up at the [Worlds Console](https://console.wazoo.dev).
-2. Generate an API key.
-3. Save it as `WORLDS_API_KEY`.
+1. Get access to a hosted Wazoo organization.
+2. Obtain a world token for the world you want to query.
+3. Save it as `WORLDS_TOKEN`.
 
 ### Install
 
@@ -62,7 +69,7 @@ bunx jsr add @worlds/client
 import { Worlds } from "@worlds/client";
 
 const worlds = new Worlds({
-  apiKey: process.env.WORLDS_API_KEY!,
+  apiKey: process.env.WORLDS_TOKEN!,
   baseUrl: "https://api.wazoo.dev",
 });
 
@@ -93,6 +100,9 @@ console.log(JSON.stringify(result, null, 2));
 
 For local or test workflows, use `LocalWorlds` from the same SDK. Switch to the
 hosted `Worlds` client when you need managed persistence.
+
+To provision hosted resources programmatically, use the
+[Platform TypeScript SDK](/platform/typescript-sdk).
 
 ### Next steps
 

@@ -3,10 +3,10 @@ title: "Architecture"
 description: "How Worlds works"
 ---
 
-The Worlds Platform utilizes a managed [neuro-symbolic](/manifesto)
-infrastructure designed for edge-distributed, agentic memory. Built on the
-[Deno](https://deno.com/) runtime, it separates the Worlds console for
-management from the Worlds API for high-performance execution.
+Wazoo separates platform management from graph data operations. The
+public-facing Platform API manages organizations, groups, world metadata,
+tokens, usage, limits, and billing state. The Worlds Data API handles graph
+operations such as RDF import, RDF export, search, and SPARQL.
 
 ## The connection model
 
@@ -15,11 +15,17 @@ The connection model uses composable components to scale system complexity:
 - Client: Use the `@worlds/client` or standard HTTP requests inside an agent
   like Claude, Gemini, or a custom script to connect to the Worlds API.
 - Memory: A World is an isolated sandbox for agent memories. You must target a
-  specific World using an API key and the World ID for every request.
-- Dashboard: Use the Worlds Console to generate API keys, explore data, and
-  manage billing.
+  specific World using a world token and the World ID for every request.
+- Platform management: Use the [Platform API](/platform/api) or `@wazoo/api` to
+  manage organizations, world metadata, platform tokens, world auth tokens, and
+  usage records.
+- Billing and limits: Usage and limits are billed by compute time. Stripe is the
+  source of truth for billing and subscription state.
 
-<Info>Agents use an API key to read and write facts to a specific World.</Info>
+<Info>
+  Agents should use world tokens to read and write facts. Platform tokens should
+  stay with management systems and trusted automation.
+</Info>
 
 ## High-level overview
 
@@ -66,80 +72,44 @@ graph LR
     Sync -->|Index update| DB
 ```
 
-## Worlds Console vs. Worlds API
+## Platform API vs. Worlds Data API
 
 The platform splits operations into two primary layers:
 
 <Columns>
   <div>
-### Worlds Console
+### Wazoo Platform API
 
-The Worlds Console acts as the system control plane. It manages identity through
-WorkOS, handles organization-level provisioning, and orchestrates Worlds API
-instances.
+The Wazoo Platform API is the management layer. It stores platform metadata and
+manages organizations, groups, world records, tokens, usage, limits, and billing
+state.
 
   </div>
 
   <div>
-### Worlds API
+### Worlds Data API
 
-The Worlds API Server handles RDF graph management, [SPARQL](/worlds/query)
+The Worlds Data API handles RDF graph management, [SPARQL](/worlds/query)
 execution, and [hybrid search](/worlds/search). This is the API layer where your
 information lives.
 
   </div>
 </Columns>
 
-## Automated provisioning
+## Provisioning status
 
-The connection between the Worlds Console and the Worlds API Server is automated
-through a provisioning layer. This ensures that every organization has a
-dedicated, isolated API instance.
+The platform management layer is implemented as a Cloudflare Workers API using
+Hono and D1 for metadata. It currently records organizations, groups, worlds,
+tokens, and usage. The full production provisioning flow between platform
+metadata and data-plane services is still evolving.
 
-### App management abstraction
-
-The system utilizes an `AppManager` interface (located in
-`packages/console/src/lib/apps`) to abstract the deployment of the Worlds API
-server. This allows the platform to seamlessly switch between local development
-and production environments:
-
-- Local development: Uses `LocalAppManager` to spawn background `deno serve`
-  processes. It manages port allocation and maps organization logins to local
-  child processes.
-- Production: Uses `DenoAppManager` to interact with the Deno Deploy API. It
-  leverages Deno sandboxes to orchestrate new projects and manage automated
-  deployments of the latest server builds.
-
-### Bootstrap flow
-
-The Worlds Console orchestrates the lifecycle of a Worlds API server from
-initial organization setup to production deployment.
-
-```mermaid
-sequenceDiagram
-    participant User as User
-    participant Console as Worlds Console
-    participant WorkOS as WorkOS
-    participant DB as Turso (SQLite)
-    participant Deno as Deno Deploy (Sandbox)
-
-    User->>Console: Create Organization
-    Console->>WorkOS: Provision Organization
-    WorkOS-->>Console: Org ID & Metadata
-    Console->>Console: Generate API Key
-    Console->>DB: Provision Database
-    DB-->>Console: DB URL & Auth Token
-    Console->>Deno: Create Sandbox & Deploy
-    Note over Deno: Entrypoint: jsr:@wazoo/worlds-server
-    Deno-->>Console: API Base URL
-    Console->>WorkOS: Update Metadata (URL, Keys, DB)
-    Console-->>User: Deployment Ready
-```
+Billing is part of that production flow. Stripe owns subscription and billing
+state; Wazoo should mirror only the entitlement state required to enforce
+limits.
 
 <Note>
-  The Worlds API is stateless by design. All state is persisted in the
-  provisioned SQLite/Turso databases, allowing the Worlds API server to be
-  re-provisioned or scaled instantly.
+  Treat this page as the current architectural shape, not a guarantee that every
+  deployment mode is publicly available today.
 </Note>
 
 ## Worlds API deep dive
@@ -255,63 +225,46 @@ Each World is a specific context or knowledge graph managed by the server.
 - Isolation: Access Worlds via `/worlds/{slug}` to ensure zero
   cross-contamination between contexts.
 
-## Deno runtime
+## Runtime status
 
-Worlds uses the [Deno](https://deno.com/) runtime for its
-[security](https://docs.deno.com/runtime/fundamentals/security/) and runtime
-capabilities:
+Wazoo uses TypeScript across the current public clients and platform management
+surface. The current Platform API server runs on Cloudflare Workers with Hono
+and D1. Worlds data-plane packages are published separately and may target
+different JavaScript runtimes depending on the adapter.
 
-- Secure by default: Deno's permission model requires explicit grants for
-  network, file system, and environment access. This reduces the attack surface
-  of each deployment.
-- Web-standard APIs: The server exports a standard `fetch` handler, making it
-  natively compatible with edge distribution platforms like Deno Deploy.
-- TypeScript-native: No build step or transpiler configuration required. The
-  entire codebase is TypeScript from source to execution.
-- Edge-ready: Native support for Deno Deploy enables low-latency distribution
-  close to users.
+## Repository topology
 
-## Monorepo topology
-
-The ecosystem uses a Deno workspace. The API package serves as the primary
-bridge for the CLI, AI-API, and Console to communicate with the Worlds API
-server.
+The ecosystem is split across focused repositories. The important boundary is
+between platform management packages and Worlds data-plane packages.
 
 ```mermaid
 graph TD
-    ROOT["Deno workspace root"]
-    SERVER["@wazoo/worlds-server"]
-    API["@worlds/client"]
-    AI_API["@worlds/tools"]
-    CLI["@wazoo/worlds-cli"]
-    CONSOLE["worlds-console<br/>Next.js"]
+    PLATFORM_SERVER["wazoo-api<br/>Platform API server"]
+    PLATFORM_SDK["@wazoo/api<br/>Platform SDK"]
+    WORLDS_CLIENT["@worlds/client<br/>Worlds data client"]
+    WORLDS_TOOLS["@worlds/tools<br/>Agent tools"]
+    WORLDS_ADAPTERS["Worlds storage adapters"]
 
-    ROOT --> SERVER
-    ROOT --> API
-    ROOT --> AI_API
-    ROOT --> CLI
-    ROOT -.-> CONSOLE
-
-    CLI --> API
-    AI_API --> API
-    CONSOLE --> API
-    API --> SERVER
+    PLATFORM_SDK --> PLATFORM_SERVER
+    WORLDS_TOOLS --> WORLDS_CLIENT
+    WORLDS_CLIENT --> WORLDS_ADAPTERS
+    PLATFORM_SERVER -.-> WORLDS_CLIENT
 ```
 
-The server follows a modular layout organized by service and resource:
+The current Platform API server is organized by management resource:
 
-- `storage/`: Resource managers for database instrumentations and bootstrap
-  logic.
-- `plugins/`: Feature extensions and internally managed worlds (like the
-  Registry).
-- `world/`: Core data access repositories for world-scoped knowledge.
-- `middleware/`: Authentication guards and request interceptors.
-- `routes/`: Implementation of the v1 API endpoints.
+- Organizations.
+- Groups.
+- Worlds metadata.
+- Platform tokens.
+- World auth tokens.
+- Usage records.
 
 ## Request flow
 
-The Worlds Server follows a structured lifecycle for initialization and request
-handling.
+Platform requests authenticate with `wzp_` tokens and operate on management
+metadata. Data-plane requests should authenticate with `wzw_` world tokens and
+operate on graph data.
 
 ## Semantic data model
 
@@ -443,18 +396,17 @@ This recursive approach to alignment is supported by major AI research:
 
 ### Polymorphic resource managers
 
-A key design feature is the use of hot-swappable resource managers. The core
-logic remains identical, while the implementation swaps based on the
-environment:
+A design goal is to keep storage and deployment choices swappable without
+changing the public API shape. The exact production matrix is still evolving.
 
-| Resource | Local development     | Production                       |
-| :------- | :-------------------- | :------------------------------- |
-| Compute  | Local child processes | Deno Deploy (via Deno Sandboxes) |
-| Storage  | Local SQLite files    | SQLite / Turso                   |
-| Identity | Mock identity file    | WorkOS                           |
+| Resource             | Current direction                                                 |
+| :------------------- | :---------------------------------------------------------------- |
+| Platform API compute | Cloudflare Workers                                                |
+| Platform metadata    | D1                                                                |
+| Worlds data storage  | Adapter-specific SQLite-compatible storage                        |
+| Private deployment   | Docker Compose, private networking, and tunnels where appropriate |
 
-This pattern allows the entire stack to run locally with zero cloud
-dependencies.
+Do not assume every deployment mode is public or fully documented yet.
 
 The Worlds API integrates symbolic precision with the statistical power of large
 language models. By reifying facts and aligning state through human feedback,

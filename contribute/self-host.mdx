@@ -3,30 +3,38 @@ title: "Self-host"
 description: "Host Worlds locally or via Docker"
 ---
 
-Documentation for local-first and Docker self-hosting architectures is coming
-soon.
+Worlds self-hosting is available through the respective GitHub repositories. Use
+the repository README and package docs for the component you are deploying.
 
 <Note>
-  Future updates will document all relevant friction points (Docker
-  configuration, database setup, authentication) to contextualize deployment
-  architectures.
+  This page is a routing page. The canonical setup instructions live with each
+  implementation repository so they stay aligned with the code.
 </Note>
 
-## Data sovereignty and compliance
+## Current status
 
-Self-hosting Worlds guarantees absolute data sovereignty. By deploying the
-Worlds API and its isolated components entirely within your own Virtual Private
-Cloud (VPC), your AI agents never transmit proprietary context, Personally
-Identifiable Information (PII), or Protected Health Information (PHI) to
-third-party databases.
+Self-hosting is not private beta. The supported path depends on which Worlds
+components you run:
 
-This architecture fundamentally simplifies regulatory compliance:
+- [`worlds-client-ts`](https://github.com/wazootech/worlds-client-ts): local and
+  embedded Worlds client usage.
+- [`worlds-libsql`](https://github.com/wazootech/worlds-libsql): durable
+  SQLite-compatible storage through LibSQL/Turso-style backends.
+- [`worlds-denokv`](https://github.com/wazootech/worlds-denokv): Deno KV-backed
+  storage.
 
-- **SOC 2 & ISO 27001**: Context graphs remain deeply nested behind your
-  existing firewalls and identity access management.
-- **GDPR & CCPA**: Since you control the persistence layer directly, you retain
-  complete authority over data residency, right-to-be-forgotten requests, and
-  administrative audit logs.
-- **HIPAA**: Medical data never leaves your infrastructure, enabling you to
-  build neuro-symbolic healthcare agents without requiring complex Business
-  Associate Agreements (BAAs) with external vector search providers.
+Private networking patterns such as Docker Compose, Tailscale, or Cloudflare
+Tunnel depend on your deployment environment and should be configured alongside
+the repository-specific setup.
+
+## Deployment responsibilities
+
+When you self-host, you own:
+
+- Worlds data services and storage.
+- Network ingress and access control.
+- Token issuance and rotation.
+- Backups, monitoring, and incident response.
+
+Do not assume a compliance posture from these docs alone. Treat each self-hosted
+deployment as an architecture review for your environment.

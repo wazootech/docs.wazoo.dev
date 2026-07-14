@@ -45,7 +45,7 @@ import { Worlds } from "@worlds/client";
 import { createTools } from "@worlds/tools";
 
 const worlds = new Worlds({
-  apiKey: process.env.WORLDS_API_KEY,
+  apiKey: process.env.WORLDS_TOKEN,
 });
 
 // @worlds/tools
@@ -80,7 +80,7 @@ import {
 } from "@worlds/tools";
 
 const worlds = new Worlds({
-  apiKey: process.env.WORLDS_API_KEY,
+  apiKey: process.env.WORLDS_TOKEN,
 });
 
 const sources = ["my-world-slug"];

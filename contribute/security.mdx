@@ -1,57 +1,61 @@
 ---
 title: "Security"
-description: "Manage API keys and security boundaries"
+description: "Manage tokens and security boundaries"
 ---
 
-Worlds provides an authentication layer and strict tenant isolation to ensure
-your data remains secure.
+Wazoo separates management credentials from world data credentials. Treat them
+as different secrets with different blast radii.
 
 ## Authentication strategies
 
-The platform uses two primary authentication strategies depending on the use
-case.
+The platform uses two token types depending on the use case.
 
-### API keys
+### Platform tokens
 
-AI agents and background services authenticate using scoped API keys. You can
-generate and manage these keys via the **Console**.
+Platform tokens use the `wzp_` prefix. They authenticate management operations
+against the Wazoo Platform API, including organizations, groups, world metadata,
+platform tokens, world auth tokens, and usage records.
 
-Include your API key in the `Authorization` header of your requests:
+Include the token in the `Authorization` header:
 
 ```bash
-Authorization: Bearer <your-api-key>
+Authorization: Bearer wzp_...
 ```
+
+### World tokens
+
+World tokens use the `wzw_` prefix. They are data-plane credentials for access
+to specific worlds. Agents and applications should use world tokens when they
+query or update graph data.
+
+Store world tokens separately from platform tokens. A world token should not be
+able to manage organizations or mint new platform credentials.
 
 ### Identity service
 
-The Console uses an identity service, such as WorkOS, to manage human users and
-organizations. This layer handles MFA, SSO, and team-based access control.
+The Console is the human-facing control surface for Wazoo. Identity and team
+management are separate from bearer tokens used by APIs and agents.
 
 ## Tenant isolation
 
-The platform enforces security at the organization level. Provisioning an
-organization initializes a dedicated API server instance and a primary metadata
-database.
+The platform enforces resource boundaries at the organization and world level.
+The current Platform API stores management metadata separately from world graph
+data.
 
-- **Dedicated Worlds**: Each World maintains its own SQLite database for triples
-  and embeddings.
-- **Resource boundaries**: Agents only access Worlds within their authorized
-  organization. Zero cross-contamination occurs between different tenants.
+- **Platform boundary**: Platform tokens manage metadata and credentials.
+- **World boundary**: World tokens authorize data-plane access to specific
+  worlds.
+- **Resource boundary**: Applications should only receive the narrowest token
+  needed for the task.
 
-## Unprotected mode
+## Local development
 
-For self-hosters or local development, you can disable authentication by
-omitting specific environment variables.
+Local and self-hosted deployments may use different authentication settings
+while they are being developed. Do not expose a deployment publicly unless token
+validation is enabled and secrets are stored outside source control.
 
 <Warning>
-  **Unprotected mode** removes all security boundaries. Never use this mode in a
-  production environment or when exposing the API to the public internet. Use it
-  only for local-first, offline contexts.
+  Never commit platform tokens, world tokens, database credentials, or tunnel
+  credentials. Rotate any token that appears in logs, source control,
+  screenshots, or shared chat transcripts.
 </Warning>
-
-To enable unprotected mode, set the following environment variable to an empty
-string:
-
-```bash
-WORLDS_API_KEY=""
-```
