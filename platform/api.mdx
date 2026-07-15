@@ -77,18 +77,50 @@ The intended production boundary is:
 
 ## Usage and limits
 
-Wazoo usage and limits are billed by compute time. Data-plane services should
-report the compute time consumed by world operations so the Platform API can
-aggregate usage and enforce limits.
+Wazoo usage and limits use transparent resource accounting. Data-plane services
+should report the underlying resources consumed by world operations so the
+Platform API can aggregate usage and enforce limits.
 
 The production model is:
 
-- Worlds Data API operations consume compute time.
-- The Platform API records and aggregates compute-time usage.
+- Worlds Data API operations consume resources such as database operations,
+  import bytes, query duration, storage bytes, and egress bytes.
+- The Platform API records and aggregates integer resource usage.
 - Entitlements and limits decide whether an organization or world can continue
   running work.
-- If a configured compute-time limit would be exceeded, usage ingestion returns
+- If a configured resource limit would be exceeded, usage ingestion returns
   `RESOURCE_EXHAUSTED`.
+
+Private beta usage is not deducted from a paid balance. When provider cost is
+known, Wazoo records it as an estimate; when it is unknown, cost fields stay
+empty rather than pretending precision.
+
+Usage events include:
+
+```text
+metric
+quantity
+unit
+providerCostMicrocents
+wazooMarkupMicrocents
+estimatedCostMicrocents
+billingSource
+```
+
+During private beta, quota policies are code-defined and resource-based. The
+default policy starts with a maximum active Worlds ceiling and can expand as
+data-plane resource meters come online.
+
+## Provisioning status
+
+World responses expose both product lifecycle state and infrastructure state.
+Until full Turso provisioning is wired end-to-end, newly created Worlds can show
+`provisioning.state = "PENDING"`; this means platform metadata exists but the
+per-World Turso database has not been verified by the Platform API yet.
+
+`POST /v1/organizations/:organizationId/worlds/:worldId:sync` returns a
+`syncReport`. Before real reconciliation ships, the report is explicit when
+Turso provisioning is not implemented instead of pretending the World is healthy.
 
 ## Billing state
 

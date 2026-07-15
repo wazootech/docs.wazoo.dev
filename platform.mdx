@@ -19,9 +19,10 @@ state.
 The Platform API is public-facing. It is the production management surface Wazoo
 is building around, even while some implementation details continue to harden.
 
-Usage and limits are billed by compute time. Stripe is the source of truth for
-billing and subscription state; Wazoo mirrors the entitlement state needed to
-enforce platform and data-plane limits.
+Usage and limits use transparent resource accounting: Wazoo records the
+underlying resources consumed by Worlds operations, such as database operations,
+import bytes, query duration, and storage bytes. Stripe is the billing source of
+truth, but private beta access does not require live payment enforcement.
 
 Groups are postponed for v1. Worlds are direct children of Organizations;
 project, folder, or group boundaries can return later if they need distinct

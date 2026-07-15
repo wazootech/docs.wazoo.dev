@@ -19,8 +19,8 @@ The connection model uses composable components to scale system complexity:
 - Platform management: Use the [Platform API](/platform/api) or `@wazoo/api` to
   manage organizations, world metadata, platform tokens, world auth tokens, and
   usage records.
-- Billing and limits: Usage and limits are billed by compute time. Stripe is the
-  source of truth for billing and subscription state.
+- Billing and limits: Usage and limits use transparent resource accounting.
+  Stripe is the source of truth for billing and subscription state.
 
 <Info>
   Agents should use world tokens to read and write facts. Platform tokens should
@@ -101,6 +101,11 @@ The platform management layer is implemented as a Cloudflare Workers API using
 Hono and Turso/libSQL for metadata. It currently records organizations, worlds,
 tokens, usage, and limits. The full production provisioning flow between
 platform metadata and data-plane services is still evolving.
+
+The public contract distinguishes platform metadata from verified data-plane
+infrastructure: a World can exist in platform metadata while its provisioning
+status is still pending or blocked. Real per-World Turso provisioning and sync
+reconciliation are implemented after the public contract is honest.
 
 Billing is part of that production flow. Stripe owns subscription and billing
 state; Wazoo should mirror only the entitlement state required to enforce
@@ -228,8 +233,8 @@ Each World is a specific context or knowledge graph managed by the server.
 
 Wazoo uses TypeScript across the current public clients and platform management
 surface. The current Platform API server runs on Cloudflare Workers with Hono
-and D1. Worlds data-plane packages are published separately and may target
-different JavaScript runtimes depending on the adapter.
+and Turso/libSQL metadata. Worlds data-plane packages are published separately
+and may target different JavaScript runtimes depending on the adapter.
 
 ## Repository topology
 
@@ -400,7 +405,7 @@ changing the public API shape. The exact production matrix is still evolving.
 | Resource             | Current direction                                                 |
 | :------------------- | :---------------------------------------------------------------- |
 | Platform API compute | Cloudflare Workers                                                |
-| Platform metadata    | D1                                                                |
+| Platform metadata    | Turso/libSQL                                                      |
 | Worlds data storage  | Adapter-specific SQLite-compatible storage                        |
 | Private deployment   | Docker Compose, private networking, and tunnels where appropriate |
 

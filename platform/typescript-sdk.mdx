@@ -72,11 +72,32 @@ const limits = await wazoo.usage.limits();
 const worldUsage = await wazoo.worlds.usage("support-knowledge");
 ```
 
-Usage and limits are billed by compute time. Data-plane limit enforcement is a
-separate integration point: world operations should report compute-time usage,
-and the Platform API should aggregate it against organization and world limits.
-If a configured compute-time limit would be exceeded, the API returns
+Usage and limits use transparent resource accounting. Data-plane limit
+enforcement is a separate integration point: world operations should report
+resource usage, and the Platform API should aggregate it against organization
+and world limits. If a configured resource limit would be exceeded, the API returns
 `RESOURCE_EXHAUSTED`.
+
+Internal ingestion can record transparent resource-accounting fields:
+
+```typescript
+await wazoo.usage.record({
+  metric: "world.import.bytes",
+  quantity: 1024,
+  unit: "byte",
+  worldId: "support-knowledge",
+  providerCostMicrocents: 12,
+});
+```
+
+## Sync status
+
+```typescript
+const { world, syncReport } = await wazoo.worlds.sync("support-knowledge");
+```
+
+Until hosted Turso provisioning is fully wired, `syncReport` can explicitly say
+that reconciliation is blocked or not implemented yet.
 
 ## Billing state
 
