@@ -49,6 +49,7 @@ The Platform API currently covers these management resources:
 | Platform tokens   | `/v1/auth/api-tokens`, `/v1/organizations/:organizationId/platform-tokens`                           |
 | World auth tokens | `/v1/organizations/:organizationId/worlds/:worldId/auth/tokens`                                      |
 | Usage             | `/v1/organizations/:organizationId/usage`, `/v1/organizations/:organizationId/worlds/:worldId/usage` |
+| Limits            | `/v1/organizations/:organizationId/limits`                                                           |
 
 `organizationId` path parameters accept either an organization ID or slug.
 
@@ -86,6 +87,8 @@ The production model is:
 - The Platform API records and aggregates compute-time usage.
 - Entitlements and limits decide whether an organization or world can continue
   running work.
+- If a configured compute-time limit would be exceeded, usage ingestion returns
+  `RESOURCE_EXHAUSTED`.
 
 ## Billing state
 

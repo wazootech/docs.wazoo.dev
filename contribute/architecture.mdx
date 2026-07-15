@@ -98,9 +98,9 @@ information lives.
 ## Provisioning status
 
 The platform management layer is implemented as a Cloudflare Workers API using
-Hono and D1 for metadata. It currently records organizations, worlds, tokens,
-and usage. The full production provisioning flow between platform metadata and
-data-plane services is still evolving.
+Hono and Turso/libSQL for metadata. It currently records organizations, worlds,
+tokens, usage, and limits. The full production provisioning flow between
+platform metadata and data-plane services is still evolving.
 
 Billing is part of that production flow. Stripe owns subscription and billing
 state; Wazoo should mirror only the entitlement state required to enforce

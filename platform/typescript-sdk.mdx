@@ -36,7 +36,7 @@ You can pass either an organization slug or an organization ID:
 
 ```typescript
 const wazoo = createClient({
-  orgId: "org_123",
+  org: "acme",
   token: async () => getPlatformToken(),
 });
 ```
@@ -47,8 +47,8 @@ const wazoo = createClient({
 const worlds = await wazoo.worlds.list();
 
 const world = await wazoo.worlds.create({
-  slug: "support-knowledge",
-  label: "Support Knowledge",
+  worldId: "support-knowledge",
+  world: { displayName: "Support Knowledge" },
 });
 ```
 
@@ -58,7 +58,7 @@ This creates platform metadata for a world. Use the Worlds Data API or
 ## Create a world auth token
 
 ```typescript
-const authToken = await wazoo.worlds.createToken(world.id);
+const authToken = await wazoo.worlds.createToken("support-knowledge");
 ```
 
 World auth tokens are data-plane credentials with the `wzw_` prefix. Store them
@@ -68,12 +68,15 @@ separately from platform tokens.
 
 ```typescript
 const usage = await wazoo.usage.get();
-const worldUsage = await wazoo.worlds.usage(world.id);
+const limits = await wazoo.usage.limits();
+const worldUsage = await wazoo.worlds.usage("support-knowledge");
 ```
 
 Usage and limits are billed by compute time. Data-plane limit enforcement is a
 separate integration point: world operations should report compute-time usage,
 and the Platform API should aggregate it against organization and world limits.
+If a configured compute-time limit would be exceeded, the API returns
+`RESOURCE_EXHAUSTED`.
 
 ## Billing state
 
