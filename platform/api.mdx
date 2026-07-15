@@ -51,7 +51,19 @@ The Platform API currently covers these management resources:
 | Usage             | `/v1/organizations/:organizationId/usage`, `/v1/organizations/:organizationId/worlds/:worldId/usage` |
 | Limits            | `/v1/organizations/:organizationId/limits`                                                           |
 
-`organizationId` path parameters accept either an organization ID or slug.
+`organizationId` path parameters accept either the public organization ID, such
+as `acme`, or the canonical resource name `organizations/acme`.
+
+The public API follows AIP-style naming:
+
+```text
+name = organizations/{organization} or organizations/{organization}/worlds/{world}
+uid = output-only internal support ID, such as org_... or w_...
+displayName = mutable human label
+```
+
+The control schema mirrors that model with `organization_id`, `world_id`, and
+`display_name` columns instead of ambiguous `slug` or human-name fields.
 
 Groups are postponed for v1. The v1 hierarchy is:
 
@@ -62,6 +74,10 @@ organizations/{organization}/worlds/{world}
 
 Intra-organization projects, folders, groups, tags, or collections can be added
 later if they carry distinct policy, quota, or organization behavior.
+
+Organization and World deletes are soft-retained. Delete records `deleteTime`,
+`expireTime`, and internal purge state; list endpoints exclude deleted resources
+by default, while direct get can return retained deleted resources until purge.
 
 ## Data-plane boundary
 
@@ -98,6 +114,9 @@ empty rather than pretending precision.
 Usage events include:
 
 ```text
+name
+organization
+world
 metric
 quantity
 unit

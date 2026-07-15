@@ -102,6 +102,11 @@ Hono and Turso/libSQL for metadata. It currently records organizations, worlds,
 tokens, usage, and limits. The full production provisioning flow between
 platform metadata and data-plane services is still evolving.
 
+The control database uses AIP-aligned terminology: public immutable IDs are
+stored as `organization_id` and `world_id`, mutable labels as `display_name`,
+and internal support identities as `uid`. Public resource names are computed
+from the public IDs and never from internal UIDs.
+
 The public contract distinguishes platform metadata from verified data-plane
 infrastructure: a World can exist in platform metadata while its provisioning
 status is pending, active, failed, or deleted. The Platform API provisions one

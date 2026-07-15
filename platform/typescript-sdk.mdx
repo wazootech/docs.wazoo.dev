@@ -25,18 +25,18 @@ npm install @wazoo/api
 import { createClient } from "@wazoo/api";
 
 const wazoo = createClient({
-  org: "acme",
+  organization: "acme",
   token: process.env.WAZOO_PLATFORM_TOKEN!,
 });
 ```
 
 The token must be a platform token with the `wzp_` prefix.
 
-You can pass either an organization slug or an organization ID:
+You can pass either an organization ID or a canonical organization resource name:
 
 ```typescript
 const wazoo = createClient({
-  org: "acme",
+  organization: "organizations/acme",
   token: async () => getPlatformToken(),
 });
 ```
