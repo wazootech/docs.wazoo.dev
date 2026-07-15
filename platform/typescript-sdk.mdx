@@ -96,8 +96,8 @@ await wazoo.usage.record({
 const { world, syncReport } = await wazoo.worlds.sync("support-knowledge");
 ```
 
-Until hosted Turso provisioning is fully wired, `syncReport` can explicitly say
-that reconciliation is blocked or not implemented yet.
+`syncReport` describes whether the per-World Turso database was already healthy
+or repaired by reconciliation.
 
 ## Billing state
 

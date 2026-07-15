@@ -114,13 +114,14 @@ data-plane resource meters come online.
 ## Provisioning status
 
 World responses expose both product lifecycle state and infrastructure state.
-Until full Turso provisioning is wired end-to-end, newly created Worlds can show
-`provisioning.state = "PENDING"`; this means platform metadata exists but the
-per-World Turso database has not been verified by the Platform API yet.
+New Worlds are provisioned as one Turso/libSQL database per World. During
+creation, the Platform API creates the Turso database, mints a short-lived
+database auth token, initializes the World schema metadata, and then marks
+`provisioning.state = "ACTIVE"`.
 
 `POST /v1/organizations/:organizationId/worlds/:worldId:sync` returns a
-`syncReport`. Before real reconciliation ships, the report is explicit when
-Turso provisioning is not implemented instead of pretending the World is healthy.
+`syncReport`. Sync verifies that the deterministic Turso database exists and
+re-initializes the safe schema/identity metadata when needed.
 
 ## Billing state
 
