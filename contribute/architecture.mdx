@@ -4,9 +4,9 @@ description: "How Worlds works"
 ---
 
 Wazoo separates platform management from graph data operations. The
-public-facing Platform API manages organizations, groups, world metadata,
-tokens, usage, limits, and billing state. The Worlds Data API handles graph
-operations such as RDF import, RDF export, search, and SPARQL.
+public-facing Platform API manages organizations, world metadata, tokens, usage,
+limits, and billing state. The Worlds Data API handles graph operations such as
+RDF import, RDF export, search, and SPARQL.
 
 ## The connection model
 
@@ -81,8 +81,7 @@ The platform splits operations into two primary layers:
 ### Wazoo Platform API
 
 The Wazoo Platform API is the management layer. It stores platform metadata and
-manages organizations, groups, world records, tokens, usage, limits, and billing
-state.
+manages organizations, world records, tokens, usage, limits, and billing state.
 
   </div>
 
@@ -99,9 +98,9 @@ information lives.
 ## Provisioning status
 
 The platform management layer is implemented as a Cloudflare Workers API using
-Hono and D1 for metadata. It currently records organizations, groups, worlds,
-tokens, and usage. The full production provisioning flow between platform
-metadata and data-plane services is still evolving.
+Hono and D1 for metadata. It currently records organizations, worlds, tokens,
+and usage. The full production provisioning flow between platform metadata and
+data-plane services is still evolving.
 
 Billing is part of that production flow. Stripe owns subscription and billing
 state; Wazoo should mirror only the entitlement state required to enforce
@@ -254,7 +253,6 @@ graph TD
 The current Platform API server is organized by management resource:
 
 - Organizations.
-- Groups.
 - Worlds metadata.
 - Platform tokens.
 - World auth tokens.

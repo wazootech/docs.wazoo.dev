@@ -6,10 +6,10 @@ description: "Manage Wazoo organizations, worlds, tokens, and usage."
 The Wazoo Platform API is the public-facing management API for hosted Wazoo
 resources. It is separate from the Worlds Data API.
 
-Use the Platform API to create and inspect organizations, groups, world
-metadata, platform tokens, world auth tokens, usage records, limits, and billing
-state. Use the Worlds Data API for graph operations such as search, SPARQL,
-import, and export.
+Use the Platform API to create and inspect organizations, world metadata,
+platform tokens, world auth tokens, usage records, limits, and billing state.
+Use the Worlds Data API for graph operations such as search, SPARQL, import, and
+export.
 
 <Info>
   The current Platform API reference is implemented as a route list at
@@ -45,13 +45,22 @@ The Platform API currently covers these management resources:
 | Resource          | Routes                                                                                               |
 | ----------------- | ---------------------------------------------------------------------------------------------------- |
 | Organizations     | `/v1/organizations`, `/v1/organizations/:organizationId`                                             |
-| Groups            | `/v1/organizations/:organizationId/groups`                                                           |
 | Worlds            | `/v1/organizations/:organizationId/worlds`                                                           |
 | Platform tokens   | `/v1/auth/api-tokens`, `/v1/organizations/:organizationId/platform-tokens`                           |
 | World auth tokens | `/v1/organizations/:organizationId/worlds/:worldId/auth/tokens`                                      |
 | Usage             | `/v1/organizations/:organizationId/usage`, `/v1/organizations/:organizationId/worlds/:worldId/usage` |
 
 `organizationId` path parameters accept either an organization ID or slug.
+
+Groups are postponed for v1. The v1 hierarchy is:
+
+```text
+organizations/{organization}
+organizations/{organization}/worlds/{world}
+```
+
+Intra-organization projects, folders, groups, tags, or collections can be added
+later if they carry distinct policy, quota, or organization behavior.
 
 ## Data-plane boundary
 

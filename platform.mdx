@@ -7,8 +7,8 @@ description:
 
 Wazoo has two API layers:
 
-- **Wazoo Platform API**: manages organizations, groups, world metadata,
-  platform tokens, world tokens, usage records, limits, and billing state.
+- **Wazoo Platform API**: manages organizations, world metadata, platform
+  tokens, world tokens, usage records, limits, and billing state.
 - **Worlds Data API**: reads and writes graph data through worlds, including
   import, export, search, and SPARQL.
 
@@ -22,6 +22,10 @@ is building around, even while some implementation details continue to harden.
 Usage and limits are billed by compute time. Stripe is the source of truth for
 billing and subscription state; Wazoo mirrors the entitlement state needed to
 enforce platform and data-plane limits.
+
+Groups are postponed for v1. Worlds are direct children of Organizations;
+project, folder, or group boundaries can return later if they need distinct
+policy, quota, or organization behavior.
 
 The Console is the human-facing control surface for the same platform concepts.
 Some Console flows are still private-beta and may not be available to every
