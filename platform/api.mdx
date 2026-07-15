@@ -111,6 +111,14 @@ During private beta, quota policies are code-defined and resource-based. The
 default policy starts with a maximum active Worlds ceiling and can expand as
 data-plane resource meters come online.
 
+The Platform API records management-plane usage for hosted Worlds operations:
+
+```text
+world.create.count
+world.provision.count
+world.sync.count
+```
+
 ## Provisioning status
 
 World responses expose both product lifecycle state and infrastructure state.

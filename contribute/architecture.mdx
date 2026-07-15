@@ -108,6 +108,10 @@ status is pending, active, failed, or deleted. The Platform API provisions one
 Turso/libSQL database per World and `:sync` reconciles the deterministic database
 and schema metadata.
 
+Management-plane operations also feed the usage ledger. World creation,
+provisioning, and sync record count metrics so quota/accounting reports include
+hosted control-plane resource allocation, not only future data-plane traffic.
+
 Billing is part of that production flow. Stripe owns subscription and billing
 state; Wazoo should mirror only the entitlement state required to enforce
 limits.
