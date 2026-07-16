@@ -7,7 +7,7 @@ description: "Use @wazoo/api to manage Wazoo platform resources."
 platform resources; it does not replace `@worlds/client` for graph data
 operations.
 
-Use `@wazoo/api` for organizations, world metadata, platform tokens, world auth
+Use `@wazoo/api` for beta applications, organizations, world metadata, platform tokens, world auth
 tokens, usage, limits, and billing state. Use `@worlds/client` for import,
 export, search, SPARQL, and graph updates.
 
@@ -58,6 +58,34 @@ await wazoo.worlds.patch("support-knowledge", {
 
 This creates platform metadata for a world. Use the Worlds Data API or
 `@worlds/client` for graph data inside that world.
+
+## Review beta applications
+
+```typescript
+const pending = await wazoo.betaApplications.list({ state: "PENDING" });
+
+await wazoo.betaApplications.approve(pending[0].uid, {
+  organizationId: "acme",
+  displayName: "Acme",
+});
+```
+
+Public beta forms can submit without a platform token:
+
+```typescript
+import { submitBetaApplication } from "@wazoo/api";
+
+await submitBetaApplication({
+  email: "founder@example.com",
+  applicantName: "Ada Lovelace",
+  company: "Example Co",
+  useCase: "Hosted Worlds for support agents",
+  turnstileToken,
+});
+```
+
+Approval creates an Organization only. Create the first World after the user is
+accepted.
 
 ## Create a world auth token
 

@@ -7,6 +7,14 @@ This checklist is the minimum operational path for a private-beta Wazoo Platform
 API launch. It assumes the Platform API is the public management plane and that
 Worlds data-plane operations remain separate.
 
+Canonical beta surfaces:
+
+```text
+console.wazoo.dev      Wazoo Console
+api.wazoo.dev          Wazoo Platform API
+api.worlds.wazoo.dev   Worlds Data API
+```
+
 ## Launch surface
 
 Private beta includes:
@@ -15,6 +23,7 @@ Private beta includes:
 - One Turso/libSQL database provisioned per hosted World.
 - Platform tokens with the `wzp_` prefix.
 - World auth tokens with the `wzw_` prefix for data-plane access.
+- Turnstile-protected private beta applications through Wazoo Console.
 - Usage, limits, and Stripe-shaped billing visibility.
 - Soft-delete, undelete, and sync for World lifecycle recovery.
 
@@ -41,9 +50,13 @@ TURSO_ORGANIZATION_SLUG
 TURSO_GROUP
 WAZOO_ENV
 STRIPE_WEBHOOK_SECRET
+TURNSTILE_SECRET_KEY
 ```
 
 4. Manually seed one global admin platform token.
+5. Deploy `wazoo-console` with `NEXT_PUBLIC_WAZOO_API_BASE_URL`,
+   `NEXT_PUBLIC_TURNSTILE_SITE_KEY`, and server-only
+   `WAZOO_PLATFORM_ADMIN_TOKEN`.
 
 Admin token invariants:
 
@@ -112,12 +125,19 @@ npm run build
 
 # docs.wazoo.dev
 npm run check
+
+# wazoo-console
+npm run typecheck
+npm run build
 ```
 
 ## Support Playbook
 
 Common operator actions:
 
+- **Approve beta access**: approve the beta application; this creates an
+  Organization only. Create a World after the user is accepted.
+- **Reject beta access**: reject the beta application with an internal note.
 - **Recover failed provisioning**: run World `:sync`, then inspect `syncReport`.
 - **Suspend an organization**: patch `Organization.state = SUSPENDED` with a
   global admin token.
