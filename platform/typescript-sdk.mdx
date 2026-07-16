@@ -50,6 +50,10 @@ const world = await wazoo.worlds.create({
   worldId: "support-knowledge",
   world: { displayName: "Support Knowledge" },
 });
+
+await wazoo.worlds.patch("support-knowledge", {
+  displayName: "Support Knowledge Base",
+});
 ```
 
 This creates platform metadata for a world. Use the Worlds Data API or
@@ -59,10 +63,13 @@ This creates platform metadata for a world. Use the Worlds Data API or
 
 ```typescript
 const authToken = await wazoo.worlds.createToken("support-knowledge");
+const replacement = await wazoo.worlds.rotateTokens("support-knowledge");
+await wazoo.worlds.revokeToken("support-knowledge", replacement.uid);
 ```
 
 World auth tokens are data-plane credentials with the `wzw_` prefix. Store them
-separately from platform tokens.
+separately from platform tokens. Rotation atomically revokes existing World
+tokens and returns one replacement token once.
 
 ## Read usage
 
@@ -85,7 +92,7 @@ await wazoo.usage.record({
   metric: "world.import.bytes",
   quantity: 1024,
   unit: "byte",
-  worldId: "support-knowledge",
+  world: "organizations/acme/worlds/support-knowledge",
   providerCostMicrocents: 12,
 });
 ```

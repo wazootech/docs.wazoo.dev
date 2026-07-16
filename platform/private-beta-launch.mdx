@@ -1,0 +1,130 @@
+---
+title: "Private Beta Launch"
+description: "Operational checklist for launching the Wazoo Platform API private beta."
+---
+
+This checklist is the minimum operational path for a private-beta Wazoo Platform
+API launch. It assumes the Platform API is the public management plane and that
+Worlds data-plane operations remain separate.
+
+## Launch surface
+
+Private beta includes:
+
+- Organization and World management through the Platform API.
+- One Turso/libSQL database provisioned per hosted World.
+- Platform tokens with the `wzp_` prefix.
+- World auth tokens with the `wzw_` prefix for data-plane access.
+- Usage, limits, and Stripe-shaped billing visibility.
+- Soft-delete, undelete, and sync for World lifecycle recovery.
+
+Private beta does not yet include:
+
+- Live Stripe payment enforcement.
+- Public audit log APIs.
+- Groups, projects, or folders.
+- Full data-plane quota enforcement.
+- R2 backup/restore flows.
+- A schema-level OpenAPI document for the Platform API.
+
+## Bootstrap
+
+1. Create the Turso/libSQL control database.
+2. Apply `wazoo-api/schema.sql` to the control database.
+3. Configure the Worker environment:
+
+```text
+TURSO_DATABASE_URL
+TURSO_AUTH_TOKEN
+TURSO_PLATFORM_API_TOKEN
+TURSO_ORGANIZATION_SLUG
+TURSO_GROUP
+WAZOO_ENV
+STRIPE_WEBHOOK_SECRET
+```
+
+4. Manually seed one global admin platform token.
+
+Admin token invariants:
+
+```text
+kind = ADMIN
+organization_uid = NULL
+scope includes admin
+```
+
+Public token creation endpoints must never mint admin tokens.
+
+## Smoke Test
+
+Run the management-plane smoke test from `wazoo-api`:
+
+```bash
+API_BASE_URL="https://api.wazoo.dev" \
+WAZOO_ADMIN_TOKEN="wzp_..." \
+npm run smoke:beta
+```
+
+The smoke test verifies:
+
+- Health endpoint.
+- Organization create/get.
+- World create and Turso provisioning.
+- World sync.
+- World token create, atomic rotate, and revoke.
+- Usage, limits, and billing reads.
+- World soft-delete, undelete, and final soft-delete.
+
+Use a dedicated smoke organization by setting:
+
+```bash
+WAZOO_SMOKE_ORG="beta-smoke"
+```
+
+## Manual Verification
+
+Before inviting beta users, verify one fresh org/world by hand:
+
+1. Create an organization.
+2. Create a World.
+3. Confirm the control DB stores the deterministic Turso database name.
+4. Confirm the Turso database exists.
+5. Run `:sync` and inspect the `syncReport`.
+6. Create a world token.
+7. Rotate the world token and confirm one replacement token remains.
+8. Revoke the replacement token.
+9. Soft-delete and undelete the World.
+10. Inspect usage rows and admin audit rows.
+
+## Launch Gates
+
+All of these must pass before beta access expands:
+
+```bash
+# wazoo-api
+npm run typecheck
+npm run smoke:beta
+
+# wazoo-api-client-ts
+npm run typecheck
+npm test
+npm run build
+
+# docs.wazoo.dev
+npm run check
+```
+
+## Support Playbook
+
+Common operator actions:
+
+- **Recover failed provisioning**: run World `:sync`, then inspect `syncReport`.
+- **Suspend an organization**: patch `Organization.state = SUSPENDED` with a
+  global admin token.
+- **Unsuspend an organization**: patch `Organization.state = ACTIVE` with a
+  global admin token.
+- **Reduce access**: revoke world tokens or platform tokens.
+- **Investigate support action history**: inspect internal `admin_audit_events`.
+
+Do not use data-plane routes to bypass quota or suspension during private beta.
+Admin bypass is for management/support operations only.

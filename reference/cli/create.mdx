@@ -5,21 +5,20 @@ description: "Create a new knowledge graph context"
 
 The `create` command requests a new persistent World instance on the server.
 
-<ParamField path="--label" type="string" required>
-  The human-readable title of your world. *Alias:* `-l`
+<ParamField path="--world-id" type="string" required>
+  The immutable public World ID. It must match `^[a-z][a-z0-9-]{2,62}$`.
 </ParamField>
 
-<ParamField path="--slug" type="string">
-  A unique URL-friendly string identifier. If omitted, the CLI will
-  automatically slugify your `--label`. *Alias:* `-s`
+<ParamField path="--display-name" type="string" required>
+  The mutable human-readable title of your World.
 </ParamField>
 
-<ParamField path="--description" type="string">
-  An optional descriptive summary of the world's purpose. *Alias:* `-d`
+<ParamField path="--region" type="string">
+  Optional hosted region hint. Defaults to `auto`.
 </ParamField>
 
 ### Usage
 
 ```bash
-worlds create --label "My First World" --description "A test environment."
+worlds create --world-id my-world --display-name "My First World"
 ```

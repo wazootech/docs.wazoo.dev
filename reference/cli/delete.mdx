@@ -3,11 +3,12 @@ title: "delete"
 description: "Delete a graph and its indices"
 ---
 
-Permanently deletes a world and all of its associated facts and items. This
-action cannot be undone.
+Soft-deletes a World and starts its retention window. Direct get can still return
+the retained World until purge, and `:undelete` can restore it while
+`restorable = true`.
 
 <ParamField path="--world" type="string" required>
-  The unique system identifier of the target world. *Alias:* `-w`
+  The public World ID or canonical resource name. *Alias:* `-w`
 </ParamField>
 
 ### Usage

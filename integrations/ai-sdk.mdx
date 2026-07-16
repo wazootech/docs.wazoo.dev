@@ -51,7 +51,7 @@ const worlds = new Worlds({
 // @worlds/tools
 const tools = createTools({
   worlds,
-  sources: ["my-world-slug"],
+  sources: ["my-world"],
 });
 
 const { text } = await generateText({
@@ -83,7 +83,7 @@ const worlds = new Worlds({
   apiKey: process.env.WORLDS_TOKEN,
 });
 
-const sources = ["my-world-slug"];
+const sources = ["my-world"];
 
 const discoverSchema = createDiscoverSchemaTool({ worlds, sources });
 const executeSparql = createExecuteSparqlTool({ worlds, sources });

@@ -50,9 +50,20 @@ The Platform API currently covers these management resources:
 | World auth tokens | `/v1/organizations/:organizationId/worlds/:worldId/auth/tokens`                                      |
 | Usage             | `/v1/organizations/:organizationId/usage`, `/v1/organizations/:organizationId/worlds/:worldId/usage` |
 | Limits            | `/v1/organizations/:organizationId/limits`                                                           |
+| Billing           | `/v1/organizations/:organizationId/billing`, `/v1/organizations/:organizationId/billing:openPortal`   |
+| Stripe webhook    | `/v1/stripe/webhook`                                                                                  |
 
 `organizationId` path parameters accept either the public organization ID, such
 as `acme`, or the canonical resource name `organizations/acme`.
+
+Public `organizationId` and `worldId` values must match:
+
+```text
+^[a-z][a-z0-9-]{2,62}$
+```
+
+Internal `uid` values intentionally use prefixes such as `org_...` and `w_...`
+so they cannot be confused with public path IDs.
 
 The public API follows AIP-style naming:
 
@@ -79,6 +90,17 @@ Organization and World deletes are soft-retained. Delete records `deleteTime`,
 `expireTime`, and internal purge state; list endpoints exclude deleted resources
 by default, while direct get can return retained deleted resources until purge.
 
+World lifecycle routes include:
+
+```http
+DELETE /v1/organizations/:organizationId/worlds/:worldId
+POST /v1/organizations/:organizationId/worlds/:worldId:undelete
+POST /v1/organizations/:organizationId/worlds/:worldId:sync
+```
+
+World delete revokes world auth tokens. World undelete runs reconciliation before
+reactivating the World and does not restore revoked tokens.
+
 ## Data-plane boundary
 
 The Platform API does not execute SPARQL, search triples, import RDF, or export
@@ -104,12 +126,13 @@ The production model is:
 - The Platform API records and aggregates integer resource usage.
 - Entitlements and limits decide whether an organization or world can continue
   running work.
-- If a configured resource limit would be exceeded, usage ingestion returns
-  `RESOURCE_EXHAUSTED`.
+- If a configured resource limit would be exceeded, the API returns
+  `RESOURCE_EXHAUSTED` with a quota object.
 
-Private beta usage is not deducted from a paid balance. When provider cost is
-known, Wazoo records it as an estimate; when it is unknown, cost fields stay
-empty rather than pretending precision.
+Private beta usage is recorded for accounting and entitlement evaluation only.
+No credits are deducted and no live payment enforcement occurs. When provider
+cost is known, Wazoo records it as an estimate; when it is unknown, cost fields
+stay empty rather than pretending precision.
 
 Usage events include:
 
@@ -124,11 +147,33 @@ providerCostMicrocents
 wazooMarkupMicrocents
 estimatedCostMicrocents
 billingSource
+createTime
 ```
 
 During private beta, quota policies are code-defined and resource-based. The
 default policy starts with a maximum active Worlds ceiling and can expand as
 data-plane resource meters come online.
+
+Effective quota states are:
+
+```text
+OK
+WARN
+THROTTLED
+SUSPENDED
+MANUAL_REVIEW
+```
+
+Management gates in v1:
+
+| Operation          | OK/WARN | THROTTLED                  | SUSPENDED                  |
+| ------------------ | ------- | -------------------------- | -------------------------- |
+| Create World       | Allowed | Blocked                    | Blocked                    |
+| Sync World         | Allowed | Allowed with `worlds.admin`| Admin/support only         |
+| Undelete World     | Allowed | Allowed if within limits   | Blocked except admin       |
+| Create World token | Allowed | Blocked                    | Blocked                    |
+| Revoke World token | Allowed | Allowed                    | Allowed                    |
+| Rotate World token | Allowed | Revoke-and-replace only    | Blocked                    |
 
 The Platform API records management-plane usage for hosted Worlds operations:
 
@@ -149,9 +194,15 @@ creation, the Platform API creates the Turso database, mints a short-lived
 database auth token, initializes the World schema metadata, and then marks
 `provisioning.state = "ACTIVE"`.
 
+The control DB stores each World's deterministic Turso database name. It is
+derived from the Wazoo environment and immutable World `uid`, then reused by
+provisioning and sync rather than rediscovered from mutable public IDs.
+
 `POST /v1/organizations/:organizationId/worlds/:worldId:sync` returns a
 `syncReport`. Sync verifies that the deterministic Turso database exists and
 re-initializes the safe schema/identity metadata when needed.
+
+Sync report statuses are `HEALTHY`, `REPAIRED`, `BLOCKED`, and `FAILED`.
 
 ## Billing state
 
@@ -162,5 +213,30 @@ Wazoo should not invent its own subscription ledger. The Platform API should use
 Stripe for customer, subscription, payment, and lifecycle state, then mirror
 only the entitlement data needed for product behavior and limit enforcement.
 
-The public API should expose billing and entitlement state once the end-to-end
-Stripe integration is implemented and verified.
+Current beta billing routes expose Stripe-shaped state without payment
+enforcement:
+
+```http
+GET /v1/organizations/:organizationId/billing
+POST /v1/organizations/:organizationId/billing:openPortal
+POST /v1/stripe/webhook
+```
+
+Most private beta organizations return `state = "BETA_FREE"`,
+`provider = "STRIPE"`, and `paymentRequired = false`. Portal creation returns a
+clear precondition error until a Stripe customer exists.
+
+## Admin tokens and audit
+
+Global admin platform tokens are manually seeded. They use `kind = "ADMIN"`,
+`organization_uid = NULL`, and include the `admin` scope. Public token creation
+endpoints cannot mint admin tokens.
+
+Admin-only actions and admin quota bypasses write internal audit events. There
+is no public audit API in v1.
+
+## World token rotation
+
+World auth token rotation is an atomic revoke-and-replace operation. Under
+`THROTTLED`, rotation is allowed only when it revokes existing World tokens and
+returns one replacement without expanding access duration or count.

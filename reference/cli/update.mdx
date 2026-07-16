@@ -8,23 +8,19 @@ modify the graph data inside the World; for that, use the [sparql](./sparql.mdx)
 command.
 
 <ParamField path="--world" type="string" required>
-  The unique system identifier of the target world. *Alias:* `-w`
+  The public World ID or canonical resource name. *Alias:* `-w`
 </ParamField>
 
-<ParamField path="--slug" type="string">
-  A new human-readable, URL-friendly identifier for the world. *Alias:* `-s`
+<ParamField path="--display-name" type="string">
+  A new mutable human-readable name for the World.
 </ParamField>
 
-<ParamField path="--label" type="string">
-  A new human-readable name for the world. *Alias:* `-l`
-</ParamField>
-
-<ParamField path="--description" type="string">
-  A new detailed description of the world's contents. *Alias:* `-d`
+<ParamField path="--state" type="string">
+  Set the lifecycle state to `ACTIVE` or `SUSPENDED`.
 </ParamField>
 
 ### Usage
 
 ```bash
-worlds update --world my-world --label "Renamed World"
+worlds update --world my-world --display-name "Renamed World"
 ```

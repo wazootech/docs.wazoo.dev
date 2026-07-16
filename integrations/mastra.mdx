@@ -49,7 +49,7 @@ const worlds = new Worlds({
 // Initialize the Worlds toolset
 const { executeSparql, searchEntities } = createTools({
   worlds,
-  sources: ["my-world-slug"],
+  sources: ["my-world"],
 });
 
 // Create a Mastra agent with Worlds tools
@@ -82,7 +82,7 @@ const worlds = new Worlds({
   apiKey: process.env.WORLDS_TOKEN,
 });
 
-const sources = ["my-world-slug"];
+const sources = ["my-world"];
 
 const agent = new Agent({
   name: "SearchAgent",
