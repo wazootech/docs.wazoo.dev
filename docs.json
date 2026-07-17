@@ -209,11 +209,24 @@
         ]
       },
       {
+        "header": "Company",
+        "items": [
+          {
+            "label": "Brand",
+            "href": "https://wazoo.dev/brand"
+          }
+        ]
+      },
+      {
         "header": "Community",
         "items": [
           {
             "label": "LinkedIn",
             "href": "https://www.linkedin.com/company/wazootech/"
+          },
+          {
+            "label": "Discord",
+            "href": "https://discord.gg/wpaavgRMAE"
           },
           {
             "label": "X/Twitter",
@@ -226,10 +239,6 @@
           {
             "label": "GitHub",
             "href": "https://github.com/wazootech"
-          },
-          {
-            "label": "Discord",
-            "href": "https://discord.gg/wpaavgRMAE"
           }
         ]
       }
