@@ -7,8 +7,7 @@ The Wazoo Platform API is the public-facing management API for hosted Wazoo
 resources at `api.wazoo.dev`. It is separate from the Worlds Data API at
 `api.worlds.wazoo.dev` and the human Console at `console.wazoo.dev`.
 
-Use the Platform API to create and inspect beta applications, organizations,
-world metadata, platform tokens, world auth tokens, usage records, limits, and billing state.
+Use the Platform API to manage organizations, worlds, tokens, usage, limits, and billing.
 Use the Worlds Data API for graph operations such as search, SPARQL, import, and
 export.
 
@@ -52,7 +51,9 @@ The Platform API currently covers these management resources:
 | Usage             | `/v1/organizations/:organizationId/usage`, `/v1/organizations/:organizationId/worlds/:worldId/usage` |
 | Limits            | `/v1/organizations/:organizationId/limits`                                                           |
 | Billing           | `/v1/organizations/:organizationId/billing`, `/v1/organizations/:organizationId/billing:openPortal`   |
-| Beta applications | `/v1/betaApplications`, `/v1/betaApplications/:applicationUid:approve`                                |
+| Billing           | `/v1/organizations/:organizationId/billing`, `/v1/organizations/:organizationId/billing/openPortal`   |
+| Users             | `/v1/users/me`                                                                                        |
+| Beta allowlist    | `/v1/betaAllowlist`, `/v1/betaAllowlist/:email`                                                       |
 | Stripe webhook    | `/v1/stripe/webhook`                                                                                  |
 
 `organizationId` path parameters accept either the public organization ID, such
@@ -96,8 +97,8 @@ World lifecycle routes include:
 
 ```http
 DELETE /v1/organizations/:organizationId/worlds/:worldId
-POST /v1/organizations/:organizationId/worlds/:worldId:undelete
-POST /v1/organizations/:organizationId/worlds/:worldId:sync
+POST /v1/organizations/:organizationId/worlds/:worldId/undelete
+POST /v1/organizations/:organizationId/worlds/:worldId/sync
 ```
 
 World delete revokes world auth tokens. World undelete runs reconciliation before
@@ -119,38 +120,23 @@ The intended production boundary is:
 - Data-plane services can integrate with platform usage and limits, but that
   enforcement path is not fully documented yet.
 
-## Beta applications
+## Users and beta access
 
-Private beta applications are public submissions protected by Cloudflare
-Turnstile. Review actions require a manually seeded global admin platform token.
+The Console at `console.wazoo.dev` provides a human interface for creating and
+managing organizations. Access is gated by Cloudflare Access with email OTP.
+
+Users on the beta allowlist can sign in to the Console and create organizations.
+The `GET /v1/users/me?email=...` endpoint returns the current user or creates one on first access.
+
+The beta allowlist is managed by admin tokens:
 
 ```http
-POST /v1/betaApplications
-GET /v1/betaApplications?state=PENDING
-POST /v1/betaApplications/:applicationUid:approve
-POST /v1/betaApplications/:applicationUid:reject
+GET /v1/betaAllowlist
+POST /v1/betaAllowlist
+DELETE /v1/betaAllowlist/:email
 ```
 
-Public submission accepts:
-
-```json
-{
-  "email": "founder@example.com",
-  "applicantName": "Ada Lovelace",
-  "company": "Example Co",
-  "useCase": "Hosted Worlds for support agents",
-  "turnstileToken": "..."
-}
-```
-
-Approval creates an Organization only. It does not create a starter World.
-
-```json
-{
-  "organizationId": "example-co",
-  "displayName": "Example Co",
-  "reviewNote": "Approved for private beta"
-}
+Organizations created through the Console are linked to the user via `owner_user_uid`.
 ```
 
 ## Usage and limits
@@ -258,7 +244,7 @@ enforcement:
 
 ```http
 GET /v1/organizations/:organizationId/billing
-POST /v1/organizations/:organizationId/billing:openPortal
+POST /v1/organizations/:organizationId/billing/openPortal
 POST /v1/stripe/webhook
 ```
 
