@@ -76,8 +76,7 @@
         "pages": [
           "platform",
           "platform/api",
-          "platform/typescript-sdk",
-          "platform/private-beta-launch"
+          "platform/typescript-sdk"
         ]
       },
       {
