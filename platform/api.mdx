@@ -7,9 +7,9 @@ The Wazoo Platform API is the public-facing management API for hosted Wazoo
 resources at `api.wazoo.dev`. It is separate from the Worlds Data API at
 `api.worlds.wazoo.dev` and the human Console at `console.wazoo.dev`.
 
-Use the Platform API to manage organizations, worlds, tokens, usage, limits, and billing.
-Use the Worlds Data API for graph operations such as search, SPARQL, import, and
-export.
+Use the Platform API to manage organizations, worlds, tokens, usage, limits, and
+billing. Use the Worlds Data API for graph operations such as search, SPARQL,
+import, and export.
 
 <Info>
   The current Platform API reference is implemented as a route list at
@@ -50,11 +50,11 @@ The Platform API currently covers these management resources:
 | World auth tokens | `/v1/organizations/:organizationId/worlds/:worldId/auth/tokens`                                      |
 | Usage             | `/v1/organizations/:organizationId/usage`, `/v1/organizations/:organizationId/worlds/:worldId/usage` |
 | Limits            | `/v1/organizations/:organizationId/limits`                                                           |
-| Billing           | `/v1/organizations/:organizationId/billing`, `/v1/organizations/:organizationId/billing:openPortal`   |
-| Billing           | `/v1/organizations/:organizationId/billing`, `/v1/organizations/:organizationId/billing/openPortal`   |
-| Users             | `/v1/users/me`                                                                                        |
-| Beta allowlist    | `/v1/betaAllowlist`, `/v1/betaAllowlist/:email`                                                       |
-| Stripe webhook    | `/v1/stripe/webhook`                                                                                  |
+| Billing           | `/v1/organizations/:organizationId/billing`, `/v1/organizations/:organizationId/billing:openPortal`  |
+| Billing           | `/v1/organizations/:organizationId/billing`, `/v1/organizations/:organizationId/billing/openPortal`  |
+| Users             | `/v1/users/me`                                                                                       |
+| Beta allowlist    | `/v1/betaAllowlist`, `/v1/betaAllowlist/:email`                                                      |
+| Stripe webhook    | `/v1/stripe/webhook`                                                                                 |
 
 `organizationId` path parameters accept either the public organization ID, such
 as `acme`, or the canonical resource name `organizations/acme`.
@@ -101,8 +101,8 @@ POST /v1/organizations/:organizationId/worlds/:worldId/undelete
 POST /v1/organizations/:organizationId/worlds/:worldId/sync
 ```
 
-World delete revokes world auth tokens. World undelete runs reconciliation before
-reactivating the World and does not restore revoked tokens.
+World delete revokes world auth tokens. World undelete runs reconciliation
+before reactivating the World and does not restore revoked tokens.
 
 ## Data-plane boundary
 
@@ -114,7 +114,8 @@ The intended production boundary is:
 - Wazoo Console runs at `console.wazoo.dev` for human beta application and
   management flows.
 - Wazoo Platform API runs at `api.wazoo.dev` for management/control-plane calls.
-- Worlds Data API runs at `api.worlds.wazoo.dev` for graph/search/SPARQL/import/export.
+- Worlds Data API runs at `api.worlds.wazoo.dev` for
+  graph/search/SPARQL/import/export.
 - `wzp_` platform tokens manage organizations, worlds, tokens, and usage.
 - `wzw_` world tokens authorize world data access.
 - Data-plane services can integrate with platform usage and limits, but that
@@ -126,7 +127,8 @@ The Console at `console.wazoo.dev` provides a human interface for creating and
 managing organizations. Access is gated by Cloudflare Access with email OTP.
 
 Users on the beta allowlist can sign in to the Console and create organizations.
-The `GET /v1/users/me?email=...` endpoint returns the current user or creates one on first access.
+The `GET /v1/users/me?email=...` endpoint returns the current user or creates
+one on first access.
 
 The beta allowlist is managed by admin tokens:
 
@@ -136,8 +138,10 @@ POST /v1/betaAllowlist
 DELETE /v1/betaAllowlist/:email
 ```
 
-Organizations created through the Console are linked to the user via `owner_user_uid`.
-```
+Organizations created through the Console are linked to the user via
+`owner_user_uid`.
+
+````
 
 ## Usage and limits
 
@@ -174,7 +178,7 @@ wazooMarkupMicrocents
 estimatedCostMicrocents
 billingSource
 createTime
-```
+````
 
 During private beta, quota policies are code-defined and resource-based. The
 default policy starts with a maximum active Worlds ceiling and can expand as
@@ -192,14 +196,14 @@ MANUAL_REVIEW
 
 Management gates in v1:
 
-| Operation          | OK/WARN | THROTTLED                  | SUSPENDED                  |
-| ------------------ | ------- | -------------------------- | -------------------------- |
-| Create World       | Allowed | Blocked                    | Blocked                    |
-| Sync World         | Allowed | Allowed with `worlds.admin`| Admin/support only         |
-| Undelete World     | Allowed | Allowed if within limits   | Blocked except admin       |
-| Create World token | Allowed | Blocked                    | Blocked                    |
-| Revoke World token | Allowed | Allowed                    | Allowed                    |
-| Rotate World token | Allowed | Revoke-and-replace only    | Blocked                    |
+| Operation          | OK/WARN | THROTTLED                   | SUSPENDED            |
+| ------------------ | ------- | --------------------------- | -------------------- |
+| Create World       | Allowed | Blocked                     | Blocked              |
+| Sync World         | Allowed | Allowed with `worlds.admin` | Admin/support only   |
+| Undelete World     | Allowed | Allowed if within limits    | Blocked except admin |
+| Create World token | Allowed | Blocked                     | Blocked              |
+| Revoke World token | Allowed | Allowed                     | Allowed              |
+| Rotate World token | Allowed | Revoke-and-replace only     | Blocked              |
 
 The Platform API records management-plane usage for hosted Worlds operations:
 

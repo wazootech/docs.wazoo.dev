@@ -110,8 +110,8 @@ from the public IDs and never from internal UIDs.
 The public contract distinguishes platform metadata from verified data-plane
 infrastructure: a World can exist in platform metadata while its provisioning
 status is pending, active, failed, or deleted. The Platform API provisions one
-Turso/libSQL database per World and `:sync` reconciles the deterministic database
-and schema metadata.
+Turso/libSQL database per World and `:sync` reconciles the deterministic
+database and schema metadata.
 
 Management-plane operations also feed the usage ledger. World creation,
 provisioning, and sync record count metrics so quota/accounting reports include
@@ -236,8 +236,8 @@ Each World is a specific context or knowledge graph managed by the server.
 
 - Dedicated storage: Each World maintains its own secondary SQLite database for
   [triples](/worlds#facts), chunks, and embeddings.
-- Isolation: Access Worlds by public World ID or canonical resource name to ensure zero
-  cross-contamination between contexts.
+- Isolation: Access Worlds by public World ID or canonical resource name to
+  ensure zero cross-contamination between contexts.
 
 ## Runtime status
 

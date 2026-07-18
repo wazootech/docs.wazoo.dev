@@ -7,9 +7,9 @@ description: "Use @wazoo/api to manage Wazoo platform resources."
 platform resources; it does not replace `@worlds/client` for graph data
 operations.
 
-Use `@wazoo/api` for beta applications, organizations, world metadata, platform tokens, world auth
-tokens, usage, limits, and billing state. Use `@worlds/client` for import,
-export, search, SPARQL, and graph updates.
+Use `@wazoo/api` for beta applications, organizations, world metadata, platform
+tokens, world auth tokens, usage, limits, and billing state. Use
+`@worlds/client` for import, export, search, SPARQL, and graph updates.
 
 Groups are postponed for v1. Worlds are direct children of Organizations.
 
@@ -32,7 +32,8 @@ const wazoo = createClient({
 
 The token must be a platform token with the `wzp_` prefix.
 
-You can pass either an organization ID or a canonical organization resource name:
+You can pass either an organization ID or a canonical organization resource
+name:
 
 ```typescript
 const wazoo = createClient({
@@ -110,8 +111,8 @@ const worldUsage = await wazoo.worlds.usage("support-knowledge");
 Usage and limits use transparent resource accounting. Data-plane limit
 enforcement is a separate integration point: world operations should report
 resource usage, and the Platform API should aggregate it against organization
-and world limits. If a configured resource limit would be exceeded, the API returns
-`RESOURCE_EXHAUSTED`.
+and world limits. If a configured resource limit would be exceeded, the API
+returns `RESOURCE_EXHAUSTED`.
 
 Internal ingestion can record transparent resource-accounting fields:
 
