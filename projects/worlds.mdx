@@ -9,6 +9,10 @@ exposes search and SPARQL query paths, and provides APIs that let agents
 retrieve and update verifiable context. Worlds lets models use tool calls to
 retrieve facts from a graph rather than infer them from model weights.
 
+Worlds is designed for curated memory, not transcript accumulation. Use
+[Memory appraisal](/worlds/memory-appraisal) to decide what belongs in a world,
+what belongs in another source system, and what should be discarded.
+
 ## What Worlds provides
 
 - **Graph storage** - RDF triples and named graphs for durable facts.
@@ -109,4 +113,5 @@ To provision hosted resources programmatically, use the
 - [Search](/worlds/search)
 - [Query](/worlds/query)
 - [Update](/worlds/update)
+- [Memory appraisal](/worlds/memory-appraisal)
 - [Worlds API](/reference)

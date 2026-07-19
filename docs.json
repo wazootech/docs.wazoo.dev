@@ -89,6 +89,7 @@
         "group": "Worlds",
         "pages": [
           "worlds/index",
+          "worlds/memory-appraisal",
           "worlds/search",
           "worlds/query",
           "worlds/update"

@@ -1,0 +1,79 @@
+---
+title: "Memory appraisal"
+description:
+  "How to decide what belongs in agent memory, source systems, or nowhere."
+---
+
+Memory is not saved chat history. Memory is the result of deciding what has
+durable value, where it belongs, and what should disappear after the durable
+record exists.
+
+Worlds treats agent memory as curated world state. A world should preserve the
+facts, relationships, provenance, and preferences an agent needs to act later
+without rereading every prior transcript.
+
+## Appraise before storing
+
+Before adding material to a world, decide what kind of record it is.
+
+| Material             | Better destination                    | Why                                                                             |
+| -------------------- | ------------------------------------- | ------------------------------------------------------------------------------- |
+| Raw chat transcript  | Temporary logs or an external archive | Most turns are context for the moment, not durable state.                       |
+| Stable preference    | World fact                            | Future agents should not ask again or infer it from stale chat.                 |
+| Durable decision     | World fact with provenance            | Later actions need to know what was decided and why.                            |
+| Source-of-truth data | The source system                     | Worlds should reference or synchronize the durable fact, not replace the owner. |
+| Recurring blocker    | World fact or issue tracker           | Repeated friction should become inspectable state or actionable work.           |
+| Duplicate summary    | Existing canonical record             | Extra summaries increase context burden.                                        |
+| Temporary report     | Scratch space                         | Promote the useful conclusion, then discard the report.                         |
+
+## Keep memory small enough to use
+
+A useful world reduces future context burden. It should make later work cheaper
+by preserving stable facts and deleting noise.
+
+Good memory captures:
+
+- durable facts and relationships
+- stable preferences
+- accepted decisions
+- recurring blockers
+- corrected assumptions
+- provenance for claims that matter
+
+Poor memory captures:
+
+- full transcripts by default
+- duplicate summaries
+- temporary status reports
+- stale hypotheses without evidence
+- data that already belongs in another source system
+
+## Preserve provenance
+
+When a fact matters, store enough provenance to explain why it exists.
+Provenance can point to a source document, an issue, an API record, an import
+batch, or a human decision.
+
+This lets agents answer different questions without guessing:
+
+- What do we believe is true?
+- Where did that fact come from?
+- Which source owns the durable record?
+- What changed since the last run?
+- Which facts are stale or superseded?
+
+## Use Worlds as the curated layer
+
+Worlds is a substrate for curated state, not a dumping ground for every token an
+agent has seen. Use imports, updates, search, and SPARQL to keep important facts
+inspectable and queryable.
+
+When another system is the source of truth, keep that boundary. Store the fact,
+pointer, or synchronization result that helps the agent act, and leave the owned
+record where it belongs.
+
+## Next steps
+
+- Use [Search](/worlds/search) to retrieve relevant facts from a world.
+- Use [Query](/worlds/query) to inspect relationships and provenance.
+- Use [Update](/worlds/update) to change durable state deliberately.
