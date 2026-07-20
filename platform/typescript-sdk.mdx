@@ -1,151 +1,166 @@
 ---
 title: "TypeScript SDK"
-description: "Use @wazoo/api to manage Wazoo platform resources."
+description: "Use @wazoo/client to manage Wazoo platform resources."
 ---
 
-`@wazoo/api` is the TypeScript SDK for the Wazoo Platform API. It manages
-platform resources; it does not replace `@worlds/client` for graph data
-operations.
+`@wazoo/client` is the generated TypeScript SDK for the Wazoo Platform API. It covers
+management-plane operations: users, Worlds, platform tokens, World data-plane tokens,
+usage, limits, and billing.
 
-Use `@wazoo/api` for beta applications, organizations, world metadata, platform
-tokens, world auth tokens, usage, limits, and billing state. Use
-`@worlds/client` for import, export, search, SPARQL, and graph updates.
-
-Groups are postponed for v1. Worlds are direct children of Organizations.
+For data-plane graph operations (search, SPARQL, import, export), use
+[`@worlds/client`](https://jsr.io/@worlds/client).
 
 ## Install
 
 ```bash
-npm install @wazoo/api
+npx jsr add @wazoo/client
 ```
 
 ## Create a client
 
 ```typescript
-import { createClient } from "@wazoo/api";
+import { createClient } from "@wazoo/client";
 
-const wazoo = createClient({
-  organization: "acme",
-  token: process.env.WAZOO_PLATFORM_TOKEN!,
+const client = createClient({
+  baseUrl: "https://api.wazoo.dev",
+  auth: process.env.WAZOO_PLATFORM_TOKEN,
 });
 ```
 
-The token must be a platform token with the `wzp_` prefix.
+The token must be a platform token with the `wzp_` prefix. The client is a
+`@hey-api/client-fetch` instance — use `throwOnError: true` if you prefer exceptions
+over discriminated unions.
 
-You can pass either an organization ID or a canonical organization resource
-name:
+## Worlds
 
 ```typescript
-const wazoo = createClient({
-  organization: "organizations/acme",
-  token: async () => getPlatformToken(),
+import { listWorlds, createWorld, getWorld, updateWorld, deleteWorld } from "@wazoo/client";
+
+// List active worlds
+const { data } = await listWorlds({ client });
+console.log(data?.worlds);
+
+// Create a world
+const created = await createWorld({
+  client,
+  body: {
+    worldId: "support-knowledge",
+    world: { displayName: "Support Knowledge", region: "auto" },
+  },
+});
+
+// Get a world by ID
+const world = await getWorld({ client, path: { worldId: "support-knowledge" } });
+
+// Update display name
+await updateWorld({
+  client,
+  path: { worldId: "support-knowledge" },
+  body: {
+    updateMask: "displayName",
+    world: { displayName: "Support Knowledge Base" },
+  },
+});
+
+// Soft-delete (recoverable for 30 days)
+await deleteWorld({ client, path: { worldId: "support-knowledge" } });
+```
+
+Creating a platform world provisions a per-World Turso database. Use `worlds-api.wazoo.dev`
+or `@worlds/client` for graph data operations inside that world.
+
+## Platform API tokens
+
+```typescript
+import { listPlatformTokens, createPlatformToken, deletePlatformToken } from "@wazoo/client";
+
+// List tokens
+const { data } = await listPlatformTokens({ client });
+
+// Create a token (secret shown once)
+const created = await createPlatformToken({
+  client,
+  body: {
+    name: "my-read-token",
+    scope: "users.read worlds.read usage.read",
+  },
+});
+console.log(created.data?.token); // wzp_...
+
+// Revoke a token by name
+await deletePlatformToken({ client, path: { tokenName: "my-read-token" } });
+```
+
+## World auth tokens
+
+World data-plane tokens use the `wzw_` prefix. They are scoped to a single namespace
+and optionally a single world.
+
+```typescript
+import { listWorldTokens, createWorldToken, deleteWorldToken } from "@wazoo/client";
+
+const { data } = await listWorldTokens({
+  client,
+  path: { worldId: "support-knowledge" },
+});
+
+const created = await createWorldToken({
+  client,
+  path: { worldId: "support-knowledge" },
+});
+console.log(created.data?.token); // one-time secret
+
+await deleteWorldToken({
+  client,
+  path: { worldId: "support-knowledge", tokenUid: created.data!.token.uid },
 });
 ```
 
-## Manage worlds
+## Usage and limits
 
 ```typescript
-const worlds = await wazoo.worlds.list();
+import { getWorldUsage, getWorldLimits } from "@wazoo/client";
 
-const world = await wazoo.worlds.create({
-  worldId: "support-knowledge",
-  world: { displayName: "Support Knowledge" },
+const usage = await getWorldUsage({
+  client,
+  path: { worldId: "support-knowledge" },
 });
+console.log(usage.data?.usage.total);
 
-await wazoo.worlds.patch("support-knowledge", {
-  displayName: "Support Knowledge Base",
-});
-```
-
-This creates platform metadata for a world. Use the Worlds Data API or
-`@worlds/client` for graph data inside that world.
-
-## Review beta applications
-
-```typescript
-const pending = await wazoo.betaApplications.list({ state: "PENDING" });
-
-await wazoo.betaApplications.approve(pending[0].uid, {
-  organizationId: "acme",
-  displayName: "Acme",
+const limits = await getWorldLimits({
+  client,
+  path: { worldId: "support-knowledge" },
 });
 ```
 
-Public beta forms can submit without a platform token:
+## Billing
 
 ```typescript
-import { submitBetaApplication } from "@wazoo/api";
+import { getWorldBilling } from "@wazoo/client";
 
-await submitBetaApplication({
-  email: "founder@example.com",
-  applicantName: "Ada Lovelace",
-  company: "Example Co",
-  useCase: "Hosted Worlds for support agents",
-  turnstileToken,
+const billing = await getWorldBilling({
+  client,
+  path: { worldId: "support-knowledge" },
 });
+console.log(billing.data?.billing.state);
 ```
 
-Approval creates an Organization only. Create the first World after the user is
-accepted.
+## Error handling
 
-## Create a world auth token
+The SDK returns a discriminated union by default:
 
 ```typescript
-const authToken = await wazoo.worlds.createToken("support-knowledge");
-const replacement = await wazoo.worlds.rotateTokens("support-knowledge");
-await wazoo.worlds.revokeToken("support-knowledge", replacement.uid);
+const r = await listWorlds({ client });
+if (r.error) {
+  console.error(r.error.error.code, r.error.error.message);
+} else {
+  console.log(r.data?.worlds);
+}
 ```
 
-World auth tokens are data-plane credentials with the `wzw_` prefix. Store them
-separately from platform tokens. Rotation atomically revokes existing World
-tokens and returns one replacement token once.
-
-## Read usage
-
-```typescript
-const usage = await wazoo.usage.get();
-const limits = await wazoo.usage.limits();
-const worldUsage = await wazoo.worlds.usage("support-knowledge");
-```
-
-Usage and limits use transparent resource accounting. Data-plane limit
-enforcement is a separate integration point: world operations should report
-resource usage, and the Platform API should aggregate it against organization
-and world limits. If a configured resource limit would be exceeded, the API
-returns `RESOURCE_EXHAUSTED`.
-
-Internal ingestion can record transparent resource-accounting fields:
-
-```typescript
-await wazoo.usage.record({
-  metric: "world.import.bytes",
-  quantity: 1024,
-  unit: "byte",
-  world: "organizations/acme/worlds/support-knowledge",
-  providerCostMicrocents: 12,
-});
-```
-
-## Sync status
-
-```typescript
-const { world, syncReport } = await wazoo.worlds.sync("support-knowledge");
-```
-
-`syncReport` describes whether the per-World Turso database was already healthy
-or repaired by reconciliation.
-
-## Billing state
-
-Billing is part of the production Platform API. Stripe is the source of truth
-for billing and subscription state, while Wazoo mirrors the entitlement state
-needed for product behavior and limit enforcement.
-
-The SDK should expose billing and entitlement operations when the server
-supports the end-to-end Stripe-backed flow.
+Set `throwOnError: true` on the client for exception-based handling.
 
 ## Runtime
 
-The SDK is a fetch-based JavaScript package with ESM and CommonJS builds. The
-project is developed with Node.js and npm, but the SDK is intended to run in any
-modern JavaScript runtime that provides `fetch`.
+The SDK is a fetch-based ESM package published on JSR. It runs in any modern JavaScript
+runtime that provides `fetch`: Node.js, Cloudflare Workers, Deno, Bun, and browsers.
