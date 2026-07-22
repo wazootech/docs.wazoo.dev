@@ -14,8 +14,8 @@ results without probabilistic guessing.
 
 ### Symbolic logic
 
-Given triples such as `user:person wazoo:worksFor wazoo:organization`, query for
-the organization:
+Given triples such as `user:person wazoo:uses wazoo:worlds`, query for the
+resource:
 
 ```typescript TypeScript
 import { Worlds } from "@worlds/client";
@@ -29,8 +29,8 @@ const response = await worlds.sparql(
   "my-world-id",
   `PREFIX wazoo: <https://wazoo.dev/#>
 
-  SELECT ?wazoo WHERE {
-    <https://etok.me/#person> wazoo:worksFor ?wazoo .
+  SELECT ?resource WHERE {
+    <https://etok.me/#person> wazoo:uses ?resource .
   }`,
 );
 ```

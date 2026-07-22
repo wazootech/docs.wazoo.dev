@@ -39,14 +39,13 @@ from the TypeScript SDK when you want embedded memory during development.
 
 Hosted Worlds has two surfaces:
 
-- `@wazoo/api` manages platform resources such as organizations, world metadata,
-  and tokens.
+- `@wazoo/api` manages platform resources such as user-owned Worlds and tokens.
 - `@worlds/client` works with graph data through create, import, export, search,
   and SPARQL operations.
 
 ### Prerequisites
 
-1. Get access to a hosted Wazoo organization.
+1. Get access to the hosted Wazoo private beta.
 2. Obtain a world token for the world you want to query.
 3. Save it as `WORLDS_TOKEN`.
 
@@ -87,15 +86,15 @@ await worlds.import(
   `@prefix user: <https://example.org/user/> .
    @prefix wazoo: <https://wazoo.dev/#> .
 
-   user:person wazoo:worksFor wazoo:organization .`,
+   user:person wazoo:uses wazoo:worlds .`,
   { contentType: "text/turtle" },
 );
 
 const result = await worlds.sparql(
   "quickstart-cloud",
   `PREFIX wazoo: <https://wazoo.dev/#>
-   SELECT ?organization WHERE {
-     <https://example.org/user/person> wazoo:worksFor ?organization
+   SELECT ?resource WHERE {
+     <https://example.org/user/person> wazoo:uses ?resource
    }`,
 );
 

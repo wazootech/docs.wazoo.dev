@@ -4,9 +4,9 @@ description: "How Worlds works"
 ---
 
 Wazoo separates platform management from graph data operations. The
-public-facing Platform API manages organizations, world metadata, tokens, usage,
-limits, and billing state. The Worlds Data API handles graph operations such as
-RDF import, RDF export, search, and SPARQL.
+public-facing Platform API manages users, world metadata, tokens, usage, limits,
+and billing state. The Worlds Data API handles graph operations such as RDF
+import, RDF export, search, and SPARQL.
 
 ## The connection model
 
@@ -17,8 +17,7 @@ The connection model uses composable components to scale system complexity:
 - Memory: A World is an isolated sandbox for agent memories. You must target a
   specific World using a world token and the World ID for every request.
 - Platform management: Use the [Platform API](/platform/api) or `@wazoo/api` to
-  manage organizations, world metadata, platform tokens, world auth tokens, and
-  usage records.
+  manage world metadata, platform tokens, world auth tokens, and usage records.
 - Billing and limits: Usage and limits use transparent resource accounting.
   Stripe is the source of truth for billing and subscription state.
 
@@ -81,7 +80,7 @@ The platform splits operations into two primary layers:
 ### Wazoo Platform API
 
 The Wazoo Platform API is the management layer. It stores platform metadata and
-manages organizations, world records, tokens, usage, limits, and billing state.
+manages user-owned World records, tokens, usage, limits, and billing state.
 
   </div>
 
@@ -98,14 +97,13 @@ information lives.
 ## Provisioning status
 
 The platform management layer is implemented as a Cloudflare Workers API using
-Hono and Turso/libSQL for metadata. It currently records organizations, worlds,
-tokens, usage, and limits. The full production provisioning flow between
-platform metadata and data-plane services is still evolving.
+Hono and Turso/libSQL for metadata. It currently records users, Worlds, tokens,
+usage, and limits. The full production provisioning flow between platform
+metadata and data-plane services is still evolving.
 
-The control database uses AIP-aligned terminology: public immutable IDs are
-stored as `organization_id` and `world_id`, mutable labels as `display_name`,
-and internal support identities as `uid`. Public resource names are computed
-from the public IDs and never from internal UIDs.
+The control database keeps public World IDs separate from internal support
+identities. Public resource names are computed from public IDs and never from
+internal UIDs.
 
 The public contract distinguishes platform metadata from verified data-plane
 infrastructure: a World can exist in platform metadata while its provisioning
@@ -218,12 +216,14 @@ relevance ranking. Structural graph constraints further restrict these results.
 
 ## Resource hierarchy
 
-Organizations host Worlds to ensure strict data isolation and scale.
+Users own Worlds directly in the private beta. The Worlds Data API treats the
+user ID as an internal namespace so data-plane storage stays isolated without
+exposing namespace management in the public product model.
 
 ```mermaid
 graph LR
-    Org[Organization] --> Server[API server]
-    Org --> MetaDB[(Primary DB)]
+    User[User] --> Server[API server]
+    User --> MetaDB[(Primary DB)]
     Server --> W1[World 1]
     Server --> W2[World 2]
     W1 --> W1DB[(World 1 DB)]
@@ -267,7 +267,6 @@ graph TD
 
 The current Platform API server is organized by management resource:
 
-- Organizations.
 - Worlds metadata.
 - Platform tokens.
 - World auth tokens.
@@ -336,7 +335,7 @@ fact as an entity with its own metadata.
 
   <Step title="The raw assertion">
     Consider the flat relationship:
-    `@prefix user: <https://etok.me/#> . @prefix worlds: <https://schema.wazoo.dev#> . user:person worlds:worksFor <https://wazoo.dev/#organization> .`
+    `@prefix user: <https://etok.me/#> . @prefix worlds: <https://schema.wazoo.dev#> . user:person worlds:uses <https://wazoo.dev/#worlds> .`
   </Step>
   <Step title="Creation of the fact entity">
     Worlds creates a `worlds:Fact` item to represent this unique statement.

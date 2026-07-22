@@ -3,9 +3,9 @@ title: "TypeScript SDK"
 description: "Use @wazoo/client to manage Wazoo platform resources."
 ---
 
-`@wazoo/client` is the generated TypeScript SDK for the Wazoo Platform API. It covers
-management-plane operations: users, Worlds, platform tokens, World data-plane tokens,
-usage, limits, and billing.
+`@wazoo/client` is the generated TypeScript SDK for the Wazoo Platform API. It
+covers management-plane operations: users, Worlds, platform tokens, World
+data-plane tokens, usage, limits, and billing.
 
 For data-plane graph operations (search, SPARQL, import, export), use
 [`@worlds/client`](https://jsr.io/@worlds/client).
@@ -28,13 +28,19 @@ const client = createClient({
 ```
 
 The token must be a platform token with the `wzp_` prefix. The client is a
-`@hey-api/client-fetch` instance — use `throwOnError: true` if you prefer exceptions
-over discriminated unions.
+`@hey-api/client-fetch` instance — use `throwOnError: true` if you prefer
+exceptions over discriminated unions.
 
 ## Worlds
 
 ```typescript
-import { listWorlds, createWorld, getWorld, updateWorld, deleteWorld } from "@wazoo/client";
+import {
+  listWorlds,
+  createWorld,
+  getWorld,
+  updateWorld,
+  deleteWorld,
+} from "@wazoo/client";
 
 // List active worlds
 const { data } = await listWorlds({ client });
@@ -50,7 +56,10 @@ const created = await createWorld({
 });
 
 // Get a world by ID
-const world = await getWorld({ client, path: { worldId: "support-knowledge" } });
+const world = await getWorld({
+  client,
+  path: { worldId: "support-knowledge" },
+});
 
 // Update display name
 await updateWorld({
@@ -66,13 +75,18 @@ await updateWorld({
 await deleteWorld({ client, path: { worldId: "support-knowledge" } });
 ```
 
-Creating a platform world provisions a per-World Turso database. Use `worlds-api.wazoo.dev`
-or `@worlds/client` for graph data operations inside that world.
+Creating a platform world provisions a per-World Turso database. Use
+`worlds-api.wazoo.dev` or `@worlds/client` for graph data operations inside that
+world.
 
 ## Platform API tokens
 
 ```typescript
-import { listPlatformTokens, createPlatformToken, deletePlatformToken } from "@wazoo/client";
+import {
+  listPlatformTokens,
+  createPlatformToken,
+  deletePlatformToken,
+} from "@wazoo/client";
 
 // List tokens
 const { data } = await listPlatformTokens({ client });
@@ -93,11 +107,15 @@ await deletePlatformToken({ client, path: { tokenName: "my-read-token" } });
 
 ## World auth tokens
 
-World data-plane tokens use the `wzw_` prefix. They are scoped to a single namespace
-and optionally a single world.
+World data-plane tokens use the `wzw_` prefix. They are scoped to a single
+namespace and optionally a single world.
 
 ```typescript
-import { listWorldTokens, createWorldToken, deleteWorldToken } from "@wazoo/client";
+import {
+  listWorldTokens,
+  createWorldToken,
+  deleteWorldToken,
+} from "@wazoo/client";
 
 const { data } = await listWorldTokens({
   client,
@@ -162,5 +180,6 @@ Set `throwOnError: true` on the client for exception-based handling.
 
 ## Runtime
 
-The SDK is a fetch-based ESM package published on JSR. It runs in any modern JavaScript
-runtime that provides `fetch`: Node.js, Cloudflare Workers, Deno, Bun, and browsers.
+The SDK is a fetch-based ESM package published on JSR. It runs in any modern
+JavaScript runtime that provides `fetch`: Node.js, Cloudflare Workers, Deno,
+Bun, and browsers.

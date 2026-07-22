@@ -1,13 +1,13 @@
 ---
 title: "Platform API"
-description: "Manage Wazoo organizations, worlds, tokens, and usage."
+description: "Manage Wazoo Worlds, tokens, and usage."
 ---
 
 The Wazoo Platform API is the public-facing management API for hosted Wazoo
 resources at `api.wazoo.dev`. It is separate from the Worlds Data API at
-`api.worlds.wazoo.dev` and the human Console at `console.wazoo.dev`.
+`worlds-api.wazoo.dev` and the human Console at `console.wazoo.dev`.
 
-Use the Platform API to manage organizations, worlds, tokens, usage, limits, and
+Use the Platform API to manage user-owned Worlds, tokens, usage, limits, and
 billing. Use the Worlds Data API for graph operations such as search, SPARQL,
 import, and export.
 
@@ -42,63 +42,36 @@ your Worker.
 
 The Platform API currently covers these management resources:
 
-| Resource          | Routes                                                                                               |
-| ----------------- | ---------------------------------------------------------------------------------------------------- |
-| Organizations     | `/v1/organizations`, `/v1/organizations/:organizationId`                                             |
-| Worlds            | `/v1/organizations/:organizationId/worlds`                                                           |
-| Platform tokens   | `/v1/auth/api-tokens`, `/v1/organizations/:organizationId/platform-tokens`                           |
-| World auth tokens | `/v1/organizations/:organizationId/worlds/:worldId/auth/tokens`                                      |
-| Usage             | `/v1/organizations/:organizationId/usage`, `/v1/organizations/:organizationId/worlds/:worldId/usage` |
-| Limits            | `/v1/organizations/:organizationId/limits`                                                           |
-| Billing           | `/v1/organizations/:organizationId/billing`, `/v1/organizations/:organizationId/billing:openPortal`  |
-| Billing           | `/v1/organizations/:organizationId/billing`, `/v1/organizations/:organizationId/billing/openPortal`  |
-| Users             | `/v1/users/me`                                                                                       |
-| Beta allowlist    | `/v1/betaAllowlist`, `/v1/betaAllowlist/:email`                                                      |
-| Stripe webhook    | `/v1/stripe/webhook`                                                                                 |
+| Resource          | Routes                                                                  |
+| ----------------- | ----------------------------------------------------------------------- |
+| Worlds            | `/v1/worlds`, `/v1/worlds/:worldId`                                     |
+| Platform tokens   | `/v1/auth/api-tokens`                                                   |
+| World auth tokens | `/v1/worlds/:worldId/auth/tokens`                                       |
+| Usage             | `/v1/worlds/:worldId/usage`                                             |
+| Limits            | `/v1/worlds/:worldId/limits`                                            |
+| Billing           | `/v1/worlds/:worldId/billing`, `/v1/worlds/:worldId/billing/openPortal` |
+| Users             | `/v1/users/me`                                                          |
+| Stripe webhook    | `/v1/stripe/webhook`                                                    |
 
-`organizationId` path parameters accept either the public organization ID, such
-as `acme`, or the canonical resource name `organizations/acme`.
-
-Public `organizationId` and `worldId` values must match:
+Public `worldId` values must match:
 
 ```text
 ^[a-z][a-z0-9-]{2,62}$
 ```
 
-Internal `uid` values intentionally use prefixes such as `org_...` and `w_...`
-so they cannot be confused with public path IDs.
+Internal `uid` values intentionally use prefixes such as `w_...` so they cannot
+be confused with public path IDs.
 
-The public API follows AIP-style naming:
-
-```text
-name = organizations/{organization} or organizations/{organization}/worlds/{world}
-uid = output-only internal support ID, such as org_... or w_...
-displayName = mutable human label
-```
-
-The control schema mirrors that model with `organization_id`, `world_id`, and
-`display_name` columns instead of ambiguous `slug` or human-name fields.
-
-Groups are postponed for v1. The v1 hierarchy is:
-
-```text
-organizations/{organization}
-organizations/{organization}/worlds/{world}
-```
-
-Intra-organization projects, folders, groups, tags, or collections can be added
-later if they carry distinct policy, quota, or organization behavior.
-
-Organization and World deletes are soft-retained. Delete records `deleteTime`,
-`expireTime`, and internal purge state; list endpoints exclude deleted resources
-by default, while direct get can return retained deleted resources until purge.
+World deletes are soft-retained. Delete records internal retention state; list
+endpoints exclude deleted resources by default, while direct get can return
+retained deleted resources until purge.
 
 World lifecycle routes include:
 
 ```http
-DELETE /v1/organizations/:organizationId/worlds/:worldId
-POST /v1/organizations/:organizationId/worlds/:worldId/undelete
-POST /v1/organizations/:organizationId/worlds/:worldId/sync
+DELETE /v1/worlds/:worldId
+POST /v1/worlds/:worldId/undelete
+POST /v1/worlds/:worldId/sync
 ```
 
 World delete revokes world auth tokens. World undelete runs reconciliation
@@ -114,34 +87,21 @@ The intended production boundary is:
 - Wazoo Console runs at `console.wazoo.dev` for human beta application and
   management flows.
 - Wazoo Platform API runs at `api.wazoo.dev` for management/control-plane calls.
-- Worlds Data API runs at `api.worlds.wazoo.dev` for
+- Worlds Data API runs at `worlds-api.wazoo.dev` for
   graph/search/SPARQL/import/export.
-- `wzp_` platform tokens manage organizations, worlds, tokens, and usage.
+- `wzp_` platform tokens manage users, Worlds, tokens, and usage.
 - `wzw_` world tokens authorize world data access.
 - Data-plane services can integrate with platform usage and limits, but that
   enforcement path is not fully documented yet.
 
 ## Users and beta access
 
-The Console at `console.wazoo.dev` provides a human interface for creating and
-managing organizations. Access is gated by Cloudflare Access with email OTP.
+The Console at `console.wazoo.dev` provides a human interface for viewing and
+managing Worlds. Access is gated by Cloudflare Access with email OTP.
 
-Users on the beta allowlist can sign in to the Console and create organizations.
-The `GET /v1/users/me?email=...` endpoint returns the current user or creates
-one on first access.
-
-The beta allowlist is managed by admin tokens:
-
-```http
-GET /v1/betaAllowlist
-POST /v1/betaAllowlist
-DELETE /v1/betaAllowlist/:email
-```
-
-Organizations created through the Console are linked to the user via
-`owner_user_uid`.
-
-````
+Users on the beta allowlist can sign in to the Console. The
+`GET /v1/users/me?email=...` endpoint returns the current user or creates one on
+first access.
 
 ## Usage and limits
 
@@ -154,8 +114,7 @@ The production model is:
 - Worlds Data API operations consume resources such as database operations,
   import bytes, query duration, storage bytes, and egress bytes.
 - The Platform API records and aggregates integer resource usage.
-- Entitlements and limits decide whether an organization or world can continue
-  running work.
+- Entitlements and limits decide whether a World can continue running work.
 - If a configured resource limit would be exceeded, the API returns
   `RESOURCE_EXHAUSTED` with a quota object.
 
@@ -168,7 +127,6 @@ Usage events include:
 
 ```text
 name
-organization
 world
 metric
 quantity
@@ -178,7 +136,7 @@ wazooMarkupMicrocents
 estimatedCostMicrocents
 billingSource
 createTime
-````
+```
 
 During private beta, quota policies are code-defined and resource-based. The
 default policy starts with a maximum active Worlds ceiling and can expand as
@@ -220,17 +178,18 @@ billing source, and optional provider-cost estimate fields.
 
 World responses expose both product lifecycle state and infrastructure state.
 New Worlds are provisioned as one Turso/libSQL database per World. During
-creation, the Platform API creates the Turso database, mints a short-lived
-database auth token, initializes the World schema metadata, and then marks
-`provisioning.state = "ACTIVE"`.
+creation, the Platform API creates the Turso database, mints a data-plane
+database auth token, and registers the World with the Worlds Data API. The data
+plane initializes a libSQL hexastore schema for import, export, search, and
+SPARQL.
 
 The control DB stores each World's deterministic Turso database name. It is
 derived from the Wazoo environment and immutable World `uid`, then reused by
 provisioning and sync rather than rediscovered from mutable public IDs.
 
-`POST /v1/organizations/:organizationId/worlds/:worldId:sync` returns a
-`syncReport`. Sync verifies that the deterministic Turso database exists and
-re-initializes the safe schema/identity metadata when needed.
+`POST /v1/worlds/:worldId/sync` returns a `syncReport`. Sync verifies that the
+deterministic Turso database exists and re-initializes the safe schema/identity
+metadata when needed.
 
 Sync report statuses are `HEALTHY`, `REPAIRED`, `BLOCKED`, and `FAILED`.
 
@@ -247,19 +206,19 @@ Current beta billing routes expose Stripe-shaped state without payment
 enforcement:
 
 ```http
-GET /v1/organizations/:organizationId/billing
-POST /v1/organizations/:organizationId/billing/openPortal
+GET /v1/worlds/:worldId/billing
+POST /v1/worlds/:worldId/billing/openPortal
 POST /v1/stripe/webhook
 ```
 
-Most private beta organizations return `state = "BETA_FREE"`,
-`provider = "STRIPE"`, and `paymentRequired = false`. Portal creation returns a
-clear precondition error until a Stripe customer exists.
+Most private beta Worlds return `state = "BETA_FREE"`, `provider = "STRIPE"`,
+and `paymentRequired = false`. Portal creation returns a clear precondition
+error until a Stripe customer exists.
 
 ## Admin tokens and audit
 
 Global admin platform tokens are manually seeded. They use `kind = "ADMIN"`,
-`organization_uid = NULL`, and include the `admin` scope. Public token creation
+`user_uid = NULL`, and include the `admin` scope. Public token creation
 endpoints cannot mint admin tokens.
 
 Admin-only actions and admin quota bypasses write internal audit events. There

@@ -13,8 +13,8 @@ The platform uses separate token kinds depending on the use case.
 ### Platform tokens
 
 Platform tokens use the `wzp_` prefix. They authenticate management operations
-against the Wazoo Platform API, including organizations, world metadata,
-platform tokens, world auth tokens, and usage records.
+against the Wazoo Platform API, including user-owned World metadata, platform
+tokens, world auth tokens, and usage records.
 
 Include the token in the `Authorization` header:
 
@@ -29,17 +29,17 @@ to specific worlds. Agents and applications should use world tokens when they
 query or update graph data.
 
 Store world tokens separately from platform tokens. A world token should not be
-able to manage organizations or mint new platform credentials.
+able to manage platform metadata or mint new platform credentials.
 
 World token rotation is revoke-and-replace. The rotation operation revokes the
 existing World tokens and returns one replacement token once; it must not expand
-the active token count or access duration when an organization is throttled.
+the active token count or access duration when a World is throttled.
 
 ### Admin platform tokens
 
 Admin platform tokens are global operator credentials for private-beta support.
 They are manually seeded, never created through public token endpoints, and must
-use `kind = "ADMIN"`, `organization_uid = NULL`, and include the `admin` scope.
+use `kind = "ADMIN"`, `user_uid = NULL`, and include the `admin` scope.
 
 Admin-only operations and quota bypasses write internal audit events. There is
 no public audit log API in v1.
@@ -51,8 +51,8 @@ management are separate from bearer tokens used by APIs and agents.
 
 ## Tenant isolation
 
-The platform enforces resource boundaries at the organization and world level.
-The current Platform API stores management metadata separately from world graph
+The platform enforces resource boundaries at the user and World level. The
+current Platform API stores management metadata separately from world graph
 data.
 
 - **Platform boundary**: Platform tokens manage metadata and credentials.
