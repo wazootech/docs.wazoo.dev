@@ -80,19 +80,19 @@
         "openapi": "https://api.wazoo.dev/openapi.json",
         "pages": [
           "GET /health",
-          "GET /users/me",
-          "GET /worlds",
-          "POST /worlds",
-          "GET /worlds/{worldId}",
-          "PATCH /worlds/{worldId}",
-          "DELETE /worlds/{worldId}",
-          "POST /worlds/{worldId}/undelete",
-          "POST /worlds/{worldId}/sync",
-          "GET /worlds/{worldId}/auth/tokens",
-          "POST /worlds/{worldId}/auth/tokens",
-          "GET /auth/api-tokens",
-          "POST /auth/api-tokens",
-          "GET /auth/api-tokens/validate"
+          "GET /v1/users/me",
+          "GET /v1/worlds",
+          "POST /v1/worlds",
+          "GET /v1/worlds/{worldId}",
+          "PATCH /v1/worlds/{worldId}",
+          "DELETE /v1/worlds/{worldId}",
+          "POST /v1/worlds/{worldId}/undelete",
+          "POST /v1/worlds/{worldId}/sync",
+          "GET /v1/worlds/{worldId}/auth/tokens",
+          "POST /v1/worlds/{worldId}/auth/tokens",
+          "GET /v1/auth/api-tokens",
+          "POST /v1/auth/api-tokens",
+          "GET /v1/auth/api-tokens/validate"
         ]
       },
       {
