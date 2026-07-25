@@ -63,18 +63,58 @@ curl -s -X POST "https://api.wazoo.dev/v1/worlds" \
 
 ---
 
-## Installing Agent Skills & Tooling
+## Installing Agent Skills (`SKILL.md`)
 
-To give your local AI agents (such as Claude Code, Cursor, or custom agent
-runtimes) direct memory capability:
+Agent Skills allow AI coding agents (Claude Code, Cursor, OpenCode, Antigravity)
+to query and manage Wazoo memory directly. A skill consists of a `SKILL.md` file
+located inside `.agents/skills/<skill-name>/SKILL.md` (or
+`~/.gemini/config/skills/`).
 
-1. **MemSDK / Worlds Integration**: Install `@wazootech/memsdk` or
-   `@wazootech/memsdk-worlds`.
-2. **Add Agent Rules**: Reference your Wazoo platform token `wzp_...` in your
-   local environment (`.env`).
-3. **Agent Skills**: If you are using agent skills, copy or mount the relevant
-   skill module (e.g., `wiki` or `memsdk`) into your local `.agents/skills/`
-   directory.
+### How AI Agents Access the API via `SKILL.md`
+
+Your `SKILL.md` equips the agent with instructions and terminal command patterns
+(cURL or CLI) to read and write context:
+
+````markdown
+---
+name: wazoo-memory
+description: Read and write persistent knowledge and memories in Wazoo Worlds.
+---
+
+# Wazoo Memory Skill
+
+Use this skill when saving durable context, user preferences, or project
+decisions to Wazoo.
+
+## Environment Setup
+
+Ensure `WAZOO_PLATFORM_TOKEN` (starts with `wzp_`) is exported in your
+environment.
+
+## 1. List Active Worlds
+
+```bash
+curl -s -X GET "https://api.wazoo.dev/v1/worlds" \
+  -H "Authorization: Bearer $WAZOO_PLATFORM_TOKEN"
+```
+````
+
+## 2. Store Context in a World
+
+```bash
+curl -s -X POST "https://api.wazoo.dev/v1/worlds" \
+  -H "Authorization: Bearer $WAZOO_PLATFORM_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "worldId": "project-context",
+    "world": { "displayName": "Project Context Graph" }
+  }'
+```
+
+```
+
+To install, simply place the skill folder in your project's `.agents/skills/wazoo-memory/SKILL.md` or global agent configuration directory.
+
 
 ---
 
@@ -96,3 +136,4 @@ runtimes) direct memory capability:
     Backend-agnostic memory interface for AI agents.
   </Card>
 </CardGroup>
+```
