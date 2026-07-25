@@ -76,7 +76,7 @@
         "pages": ["platform", "platform/api", "platform/typescript-sdk"]
       },
       {
-        "group": "Platform API reference",
+        "group": "Platform API (Control Plane)",
         "openapi": "https://api.wazoo.dev/openapi.json",
         "pages": [
           "GET /health",
@@ -93,6 +93,23 @@
           "GET /v1/auth/api-tokens",
           "POST /v1/auth/api-tokens",
           "GET /v1/auth/api-tokens/validate"
+        ]
+      },
+      {
+        "group": "Worlds Data API (Data Plane)",
+        "openapi": "https://worlds-api.wazoo.dev/openapi.json",
+        "pages": [
+          "GET /worlds",
+          "POST /worlds",
+          "GET /worlds/{id}",
+          "PATCH /worlds/{id}",
+          "DELETE /worlds/{id}",
+          "GET /worlds/{id}/export",
+          "POST /worlds/{id}/import",
+          "POST /worlds/{id}/search",
+          "POST /worlds/{id}/sparql",
+          "GET /api-keys",
+          "POST /api-keys"
         ]
       },
       {
@@ -113,23 +130,6 @@
           "worlds/search",
           "worlds/query",
           "worlds/update"
-        ]
-      },
-      {
-        "group": "Worlds Data API reference",
-        "openapi": "https://worlds-api.wazoo.dev/openapi.json",
-        "pages": [
-          "GET /worlds",
-          "POST /worlds",
-          "GET /worlds/{id}",
-          "PATCH /worlds/{id}",
-          "DELETE /worlds/{id}",
-          "GET /worlds/{id}/export",
-          "POST /worlds/{id}/import",
-          "POST /worlds/{id}/search",
-          "POST /worlds/{id}/sparql",
-          "GET /api-keys",
-          "POST /api-keys"
         ]
       },
       {
