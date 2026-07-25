@@ -29,24 +29,23 @@ Hosted Wazoo separates management operations from graph data operations:
 Platform tokens use the `wzp_` prefix. World tokens use the `wzw_` prefix. Keep
 them separate.
 
-## Quick Start with cURL & API Keys
+## Quickstart with cURL and API keys
 
-If you prefer to call the Wazoo Platform API directly using HTTP/cURL or from
-your terminal scripts:
+If you prefer calling the Wazoo Platform API directly using HTTP/cURL:
 
-### 1. Get your Platform API Token (`wzp_`)
+### 1. Get your platform token (`wzp_`)
 
 Generate your `wzp_` token from [console.wazoo.dev](https://console.wazoo.dev)
 under **Tokens**.
 
-### 2. List Your Worlds
+### 2. List your worlds
 
 ```bash
 curl -s -X GET "https://api.wazoo.dev/v1/worlds" \
   -H "Authorization: Bearer wzp_YOUR_PLATFORM_TOKEN"
 ```
 
-### 3. Create a New World
+### 3. Create a new world
 
 ```bash
 curl -s -X POST "https://api.wazoo.dev/v1/worlds" \
@@ -63,14 +62,14 @@ curl -s -X POST "https://api.wazoo.dev/v1/worlds" \
 
 ---
 
-## Installing Agent Skills (`SKILL.md`)
+## Agent skills (`SKILL.md`)
 
-Agent Skills allow AI coding agents (Claude Code, Cursor, OpenCode, Antigravity)
+Agent skills allow AI coding agents (Claude Code, Cursor, OpenCode, Antigravity)
 to query and manage Wazoo memory directly. A skill consists of a `SKILL.md` file
 located inside `.agents/skills/<skill-name>/SKILL.md` (or
 `~/.gemini/config/skills/`).
 
-### How AI Agents Access the API via `SKILL.md`
+### How AI agents access the API via `SKILL.md`
 
 Your `SKILL.md` equips the agent with instructions and terminal command patterns
 (cURL or CLI) to read and write context:
