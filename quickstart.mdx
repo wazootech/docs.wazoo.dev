@@ -33,32 +33,31 @@ them separate.
 
 If you prefer calling the Wazoo Platform API directly using HTTP/cURL:
 
-### 1. Get your platform token (`wzp_`)
-
-Generate your `wzp_` token from [console.wazoo.dev](https://console.wazoo.dev)
-under **Tokens**.
-
-### 2. List your worlds
-
-```bash
-curl -s -X GET "https://api.wazoo.dev/v1/worlds" \
-  -H "Authorization: Bearer wzp_YOUR_PLATFORM_TOKEN"
-```
-
-### 3. Create a new world
-
-```bash
-curl -s -X POST "https://api.wazoo.dev/v1/worlds" \
-  -H "Authorization: Bearer wzp_YOUR_PLATFORM_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "worldId": "my-agent-world",
-    "world": {
-      "displayName": "My Agent World",
-      "region": "auto"
-    }
-  }'
-```
+<Steps>
+  <Step title="Get your platform token">
+    Generate your `wzp_` token from [console.wazoo.dev](https://console.wazoo.dev) under **Tokens**.
+  </Step>
+  <Step title="List your worlds">
+    ```bash
+    curl -s -X GET "https://api.wazoo.dev/v1/worlds" \
+      -H "Authorization: Bearer wzp_YOUR_PLATFORM_TOKEN"
+    ```
+  </Step>
+  <Step title="Create a new world">
+    ```bash
+    curl -s -X POST "https://api.wazoo.dev/v1/worlds" \
+      -H "Authorization: Bearer wzp_YOUR_PLATFORM_TOKEN" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "worldId": "my-agent-world",
+        "world": {
+          "displayName": "My Agent World",
+          "region": "auto"
+        }
+      }'
+    ```
+  </Step>
+</Steps>
 
 ---
 
