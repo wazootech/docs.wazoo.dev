@@ -76,26 +76,6 @@
         "pages": ["platform", "platform/api", "platform/typescript-sdk"]
       },
       {
-        "group": "Wazoo Platform API",
-        "openapi": "https://api.wazoo.dev/openapi.json",
-        "pages": [
-          "GET /health",
-          "GET /v1/users/me",
-          "GET /v1/worlds",
-          "POST /v1/worlds",
-          "GET /v1/worlds/{worldId}",
-          "PATCH /v1/worlds/{worldId}",
-          "DELETE /v1/worlds/{worldId}",
-          "POST /v1/worlds/{worldId}/undelete",
-          "POST /v1/worlds/{worldId}/sync",
-          "GET /v1/worlds/{worldId}/auth/tokens",
-          "POST /v1/worlds/{worldId}/auth/tokens",
-          "GET /v1/auth/api-tokens",
-          "POST /v1/auth/api-tokens",
-          "GET /v1/auth/api-tokens/validate"
-        ]
-      },
-      {
         "group": "Projects",
         "pages": [
           "projects/worlds",
@@ -137,39 +117,6 @@
           "contribute/style",
           "contribute/security",
           "contribute/self-host"
-        ]
-      },
-      {
-        "group": "Worlds Data API",
-        "openapi": "https://worlds-api.wazoo.dev/openapi.json",
-        "pages": [
-          "GET /worlds",
-          "POST /worlds",
-          "GET /worlds/{id}",
-          "PATCH /worlds/{id}",
-          "DELETE /worlds/{id}",
-          "GET /worlds/{id}/export",
-          "POST /worlds/{id}/import",
-          "POST /worlds/{id}/search",
-          "POST /worlds/{id}/sparql",
-          "GET /api-keys",
-          "POST /api-keys"
-        ]
-      },
-      {
-        "group": "Worlds CLI reference",
-        "icon": "book-open",
-        "pages": [
-          "reference/cli/create",
-          "reference/cli/get",
-          "reference/cli/list",
-          "reference/cli/update",
-          "reference/cli/import",
-          "reference/cli/export",
-          "reference/cli/search",
-          "reference/cli/sparql",
-          "reference/cli/delete",
-          "reference/cli/chat"
         ]
       }
     ]

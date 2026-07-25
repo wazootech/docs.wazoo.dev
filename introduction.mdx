@@ -1,56 +1,52 @@
 ---
 title: "Introduction"
-description:
-  "Wazoo builds tools for verifiable context, semantic documents, agent memory,
-  and world models."
+description: "Verifiable context engine for AI."
 ---
 
-Wazoo builds open tools for software that needs memory, provenance, and
-structured context. The projects share one thesis: AI systems need more than
-prompts. They need inspectable world models, semantic documents, queryable
-memory, and deployment paths that keep humans in control.
+Wazoo is an open-source verifiable context engine for edge knowledge graphs.
 
-## The Wazoo stack
+It gives agents a deterministic context graph with source provenance,
+explainability, and traceable reasoning—without vector-only opacity.
+
+## Core surfaces
 
 <CardGroup cols={2}>
-  <Card title="Worlds" icon="network" href="/projects/worlds">
-    Persistent, edge-native knowledge graphs for agents, with search, SPARQL,
-    and API access.
+  <Card title="Quickstart" icon="bolt" href="/quickstart">
+    Connect and run queries in 2 minutes.
   </Card>
-  <Card title="Wiki" icon="book-open" href="/projects/wiki">
-    A verifiable Markdown wiki toolchain with SHACL validation, SPARQL queries,
-    and static publishing.
+  <Card title="Platform API" icon="waypoints" href="/platform/api">
+    Manage Worlds, tokens, usage, and billing.
   </Card>
-  <Card title="Linked Markdown" icon="braces" href="/projects/linked-markdown">
-    A specification for Markdown documents with semantic frontmatter that can
-    become RDF graph nodes.
+  <Card title="TypeScript SDK" icon="code" href="/platform/typescript-sdk">
+    Use `@wazoo/client` for platform management.
   </Card>
-  <Card title="MemSDK" icon="database" href="/projects/memsdk">
-    A Supermemory-compatible interface for portable AI memory backends such as
-    Letta and Worlds.
+  <Card
+    title="Wazoo Console"
+    icon="app-window"
+    href="https://console.wazoo.dev"
+  >
+    Visual platform for graph management.
   </Card>
 </CardGroup>
 
-## Why these projects belong together
+## Core capabilities
 
-- **World models** give agents a durable substrate for facts, relationships, and
-  provenance.
-- **Semantic documents** let human-authored Markdown participate in graph
-  workflows.
-- **Portable memory interfaces** reduce coupling between apps and AI memory
-  vendors.
-- **Templates and examples** make the stack practical across docs, wikis,
-  agents, and static sites.
+<CardGroup cols={2}>
+  <Card title="Verifiable provenance" icon="shield-check">
+    Deterministic graph logic and decision traces.
+  </Card>
+  <Card title="Hybrid search" icon="search">
+    Vectors fused with full-text and RDF traversal.
+  </Card>
+  <Card title="Provider agnostic" icon="brain">
+    Connect your own LLMs and embeddings.
+  </Card>
+  <Card title="Edge native" icon="cloud">
+    Low-latency graph architecture for edge runtimes.
+  </Card>
+</CardGroup>
 
-## Featured projects
+## Next steps
 
-- [Worlds](/projects/worlds) - The flagship context engine for agents.
-- [Wiki](/projects/wiki) - A command-line system for trustworthy Markdown wikis.
-- [Linked Markdown](/projects/linked-markdown) - A portable document format for
-  semantic infrastructure.
-- [MemSDK](/projects/memsdk) - A backend-agnostic SDK contract for AI memory.
-
-## Where to next
-
-- [Projects](/projects) - Browse the Wazoo ecosystem.
-- [Quickstart](/quickstart) - Understand the Wazoo stack.
+- [Quickstart](/quickstart) - Execute your first query.
+- [Projects](/projects) - Browse ecosystem libraries.

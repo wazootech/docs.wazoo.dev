@@ -29,33 +29,109 @@ Hosted Wazoo separates management operations from graph data operations:
 Platform tokens use the `wzp_` prefix. World tokens use the `wzw_` prefix. Keep
 them separate.
 
+## Quickstart with cURL and API keys
+
+If you prefer calling the Wazoo Platform API directly using HTTP/cURL:
+
+<Steps>
+  <Step title="Get your platform token">
+    Generate your `wzp_` token from [console.wazoo.dev](https://console.wazoo.dev) under **Tokens**.
+  </Step>
+  <Step title="List your worlds">
+    ```bash
+    curl -s -X GET "https://api.wazoo.dev/v1/worlds" \
+      -H "Authorization: Bearer wzp_YOUR_PLATFORM_TOKEN"
+    ```
+  </Step>
+  <Step title="Create a new world">
+    ```bash
+    curl -s -X POST "https://api.wazoo.dev/v1/worlds" \
+      -H "Authorization: Bearer wzp_YOUR_PLATFORM_TOKEN" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "worldId": "my-agent-world",
+        "world": {
+          "displayName": "My Agent World",
+          "region": "auto"
+        }
+      }'
+    ```
+  </Step>
+</Steps>
+
+---
+
+## Agent skills (`SKILL.md`)
+
+Agent skills allow AI coding agents (Claude Code, Cursor, OpenCode, Antigravity)
+to query and manage Wazoo memory directly. A skill consists of a `SKILL.md` file
+located inside `.agents/skills/<skill-name>/SKILL.md` (or
+`~/.gemini/config/skills/`).
+
+### How AI agents access the API via `SKILL.md`
+
+Your `SKILL.md` equips the agent with instructions and terminal command patterns
+(cURL or CLI) to read and write context:
+
+````markdown
+---
+name: wazoo-memory
+description: Read and write persistent knowledge and memories in Wazoo Worlds.
+---
+
+# Wazoo Memory Skill
+
+Use this skill when saving durable context, user preferences, or project
+decisions to Wazoo.
+
+## Environment Setup
+
+Ensure `WAZOO_PLATFORM_TOKEN` (starts with `wzp_`) is exported in your
+environment.
+
+## 1. List Active Worlds
+
+```bash
+curl -s -X GET "https://api.wazoo.dev/v1/worlds" \
+  -H "Authorization: Bearer $WAZOO_PLATFORM_TOKEN"
+```
+````
+
+## 2. Store Context in a World
+
+```bash
+curl -s -X POST "https://api.wazoo.dev/v1/worlds" \
+  -H "Authorization: Bearer $WAZOO_PLATFORM_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "worldId": "project-context",
+    "world": { "displayName": "Project Context Graph" }
+  }'
+```
+
+```
+
+To install, simply place the skill folder in your project's `.agents/skills/wazoo-memory/SKILL.md` or global agent configuration directory.
+
+
+---
+
 ## Choose your path
 
 <CardGroup cols={2}>
-  <Card title="Worlds" icon="network" href="/projects/worlds">
-    Use Worlds when your agent or application needs a persistent graph of facts,
-    search, SPARQL, and API access.
+  <Card title="Platform API" icon="waypoints" href="/platform/api">
+    Manage your Worlds, API tokens, resource usage, and billing via HTTP
+    endpoints.
   </Card>
-  <Card title="Wiki" icon="book-open" href="/projects/wiki">
-    Use Wiki when you want a Markdown knowledge base that can be checked,
-    queried, and published.
+  <Card title="TypeScript SDK" icon="code" href="/platform/typescript-sdk">
+    Use `@wazoo/client` for typed TypeScript/Node.js management.
   </Card>
-  <Card title="Linked Markdown" icon="braces" href="/projects/linked-markdown">
-    Use Linked Markdown when Markdown documents need typed frontmatter that can
-    become graph data.
+  <Card title="Worlds Data Engine" icon="network" href="/projects/worlds">
+    Interact with persistent knowledge graphs, SPARQL queries, and vector
+    search.
   </Card>
   <Card title="MemSDK" icon="database" href="/projects/memsdk">
-    Use MemSDK when your app needs portable AI memory across backends.
+    Backend-agnostic memory interface for AI agents.
   </Card>
 </CardGroup>
-
-## What to read first
-
-- [Worlds](/projects/worlds): Build with the context engine.
-- [Wiki](/projects/wiki): Validate and publish a semantic Markdown wiki.
-- [Linked Markdown](/projects/linked-markdown): Structure Markdown as graph
-  nodes.
-- [MemSDK](/projects/memsdk): Target a portable AI memory interface.
-
-Start with Worlds if you are building an agent or application and want one
-concrete entry point into the Wazoo stack.
+```
