@@ -38,14 +38,24 @@ If you prefer calling the Wazoo Platform API directly using HTTP/cURL:
 ## Agent skills (`SKILL.md`)
 
 Agent skills allow AI coding agents (Claude Code, Cursor, OpenCode, Antigravity)
-to query and manage Wazoo memory directly. A skill consists of a `SKILL.md` file
-located inside `.agents/skills/<skill-name>/SKILL.md` (or
-`~/.gemini/config/skills/`).
+to query and manage Wazoo memory directly.
+
+Wazoo hosts its main official skill statically at
+[`https://docs.wazoo.dev/skills/wazoo-memory/SKILL.md`](https://docs.wazoo.dev/skills/wazoo-memory/SKILL.md).
+
+### Installation
+
+Install the main Wazoo Memory Skill directly into your local agent environment:
+
+```bash
+npx skills add wazootech/docs.wazoo.dev@wazoo-memory -g -y
+```
+
+Or manually place
+[`SKILL.md`](https://docs.wazoo.dev/skills/wazoo-memory/SKILL.md) inside
+`.agents/skills/wazoo-memory/SKILL.md` (or `~/.gemini/config/skills/`).
 
 ### How AI agents access the API via `SKILL.md`
-
-Your `SKILL.md` equips the agent with instructions and terminal command patterns
-(cURL or CLI) to read and write context:
 
 ````markdown
 ---
@@ -82,9 +92,6 @@ curl -s -X POST "https://api.wazoo.dev/v1/worlds" \
   }'
 ```
 ````
-
-To install, simply place the skill folder in your project's
-`.agents/skills/wazoo-memory/SKILL.md` or global agent configuration directory.
 
 ---
 
