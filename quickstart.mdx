@@ -41,32 +41,33 @@ Agent skills allow AI coding agents (Claude Code, Cursor, OpenCode, Antigravity)
 to query and manage Wazoo memory directly.
 
 Wazoo hosts its main official skill statically at
-[`https://docs.wazoo.dev/skills/wazoo-memory/SKILL.md`](https://docs.wazoo.dev/skills/wazoo-memory/SKILL.md).
+[`https://docs.wazoo.dev/skills/wazoo/SKILL.md`](https://docs.wazoo.dev/skills/wazoo/SKILL.md).
 
 ### Installation
 
-Install the main Wazoo Memory Skill directly into your local agent environment:
+Install the main Wazoo skill directly into your local agent environment:
 
 ```bash
-npx skills add wazootech/docs.wazoo.dev@wazoo-memory -g -y
+npx skills add wazootech/docs.wazoo.dev@wazoo -g -y
 ```
 
-Or manually place
-[`SKILL.md`](https://docs.wazoo.dev/skills/wazoo-memory/SKILL.md) inside
-`.agents/skills/wazoo-memory/SKILL.md` (or `~/.gemini/config/skills/`).
+Or manually place [`SKILL.md`](https://docs.wazoo.dev/skills/wazoo/SKILL.md)
+inside `.agents/skills/wazoo/SKILL.md` (or `~/.gemini/config/skills/`).
 
 ### How AI agents access the API via `SKILL.md`
 
 ````markdown
 ---
-name: wazoo-memory
-description: Read and write persistent knowledge and memories in Wazoo Worlds.
+name: wazoo
+description:
+  Manage Wazoo Worlds, provision knowledge graphs, manage tokens, and save
+  persistent agent context.
 ---
 
-# Wazoo Memory Skill
+# Wazoo Skill
 
-Use this skill when saving durable context, user preferences, or project
-decisions to Wazoo.
+Use this skill when interacting with the Wazoo platform, managing worlds, or
+saving durable context, user preferences, and project decisions.
 
 ## Environment setup
 
