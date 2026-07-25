@@ -1,57 +1,59 @@
 ---
 title: "Introduction"
-description:
-  "Open-source verifiable context engine & semantic infrastructure for AI."
+description: "Open-source verifiable context engine for AI."
 ---
 
-Wazoo is an open-source verifiable context engine designed to manage, query, and
-prove interoperable knowledge bases at the edge.
+Wazoo is the open-source verifiable context engine designed to manage, query,
+and prove interoperable knowledge bases at the edge.
 
-Instead of relying on fuzzy text blobs or uninspectable vector-only memory,
-Wazoo gives agents a deterministic context graph that offers complete
-explainability and source provenance—ensuring traceable reasoning and
-continually improving output quality.
+It provides agents with a deterministic context graph that offers complete
+explainability and source provenance—ensuring continually improving output
+quality and traceable reasoning without relying on uninspectable vector-only
+memory.
 
-## The Wazoo platform & ecosystem
-
-Wazoo provides the core context platform alongside an ecosystem of standalone
-open-source projects that share the same standards, patterns, and semantic
-model:
+## Quick Start & Core Surfaces
 
 <CardGroup cols={2}>
-  <Card title="Worlds" icon="network" href="/projects/worlds">
-    The flagship context engine: persistent knowledge graphs with hybrid vector
-    search, SPARQL, and low-latency edge deployment.
+  <Card title="Quickstart" icon="bolt" href="/quickstart">
+    Connect to the API and run your first query in 2 minutes.
   </Card>
-  <Card title="Wiki" icon="book-open" href="/projects/wiki">
-    An open-source Markdown wiki toolchain with SHACL validation, SPARQL
-    queries, and static site publishing.
+  <Card title="Platform API" icon="waypoints" href="/platform/api">
+    Manage Worlds, platform tokens, usage, and billing.
   </Card>
-  <Card title="Linked Markdown" icon="braces" href="/projects/linked-markdown">
-    A specification and library for Markdown documents with typed frontmatter
-    that convert seamlessly into RDF graph nodes.
+  <Card title="TypeScript SDK" icon="code" href="/platform/typescript-sdk">
+    Use `@wazoo/client` for typed TypeScript platform management.
   </Card>
-  <Card title="MemSDK" icon="database" href="/projects/memsdk">
-    A portable, backend-agnostic memory interface for AI applications to swap
-    memory providers without code rewrites.
+  <Card
+    title="Wazoo Console"
+    icon="app-window"
+    href="https://console.wazoo.dev"
+  >
+    Visual web platform for exploring and managing resources.
   </Card>
 </CardGroup>
 
-## Architectural pillars
+## Core Capabilities
 
-- **Verifiable world models**: Give agents a durable, auditable substrate for
-  facts, relationships, and decision provenance.
-- **Semantic Markdown**: Allow human-authored Markdown documents to participate
-  natively in graph workflows.
-- **Provider & LLM agnostic**: Strictly provider-agnostic infrastructure.
-  Connect your own LLM, embedding models, and memory stores.
-- **Edge-native & local-first**: Designed for fast, low-latency execution in
-  microkernel and serverless environments.
+<CardGroup cols={2}>
+  <Card title="Verifiable Provenance" icon="shield-check">
+    Symbolic reasoning powered by deterministic graph logic and verifiable
+    decision traces.
+  </Card>
+  <Card title="Hybrid Search" icon="search">
+    Vector embeddings fused with full-text search and RDF graph traversal.
+  </Card>
+  <Card title="Provider Agnostic" icon="brain">
+    Strictly provider-agnostic infrastructure. Connect your own LLMs and
+    embedding models.
+  </Card>
+  <Card title="Edge Native" icon="cloud">
+    Serverless-native, global low-latency graph architecture built for edge
+    runtimes.
+  </Card>
+</CardGroup>
 
 ## Where to next
 
-- [Quickstart](/quickstart) - Connect to Wazoo and run your first query in 2
-  minutes.
-- [Platform API](/platform/api) - Explore hosted management endpoints.
-- [TypeScript SDK](/platform/typescript-sdk) - Manage platform resources with
-  `@wazoo/client`.
+- [Quickstart](/quickstart) - Build a world and execute your first query.
+- [Open Source Projects](/projects) - Browse independent ecosystem libraries and
+  tools.
