@@ -81,35 +81,35 @@
         "pages": [
           "GET /health",
           "GET /v1/users/me",
-          "[List worlds] GET /v1/worlds",
-          "[Create world] POST /v1/worlds",
-          "[Get world] GET /v1/worlds/{worldId}",
-          "[Update world] PATCH /v1/worlds/{worldId}",
-          "[Delete world] DELETE /v1/worlds/{worldId}",
-          "[Undelete world] POST /v1/worlds/{worldId}/undelete",
-          "[Sync world] POST /v1/worlds/{worldId}/sync",
-          "[List world tokens] GET /v1/worlds/{worldId}/auth/tokens",
-          "[Create world token] POST /v1/worlds/{worldId}/auth/tokens",
-          "[List platform tokens] GET /v1/auth/api-tokens",
-          "[Create platform token] POST /v1/auth/api-tokens",
-          "[Validate token] GET /v1/auth/api-tokens/validate"
+          "GET /v1/worlds",
+          "POST /v1/worlds",
+          "GET /v1/worlds/{worldId}",
+          "PATCH /v1/worlds/{worldId}",
+          "DELETE /v1/worlds/{worldId}",
+          "POST /v1/worlds/{worldId}/undelete",
+          "POST /v1/worlds/{worldId}/sync",
+          "GET /v1/worlds/{worldId}/auth/tokens",
+          "POST /v1/worlds/{worldId}/auth/tokens",
+          "GET /v1/auth/api-tokens",
+          "POST /v1/auth/api-tokens",
+          "GET /v1/auth/api-tokens/validate"
         ]
       },
       {
         "group": "Worlds Data API (Data Plane)",
         "openapi": "https://worlds-api.wazoo.dev/openapi.json",
         "pages": [
-          "[List worlds] GET /worlds",
-          "[Create world] POST /worlds",
-          "[Get world] GET /worlds/{id}",
-          "[Update world] PATCH /worlds/{id}",
-          "[Delete world] DELETE /worlds/{id}",
-          "[Export graph] GET /worlds/{id}/export",
-          "[Import graph] POST /worlds/{id}/import",
-          "[Search world] POST /worlds/{id}/search",
-          "[Execute SPARQL] POST /worlds/{id}/sparql",
-          "[List API keys] GET /api-keys",
-          "[Create API key] POST /api-keys"
+          "GET /worlds",
+          "POST /worlds",
+          "GET /worlds/{id}",
+          "PATCH /worlds/{id}",
+          "DELETE /worlds/{id}",
+          "GET /worlds/{id}/export",
+          "POST /worlds/{id}/import",
+          "POST /worlds/{id}/search",
+          "POST /worlds/{id}/sparql",
+          "GET /api-keys",
+          "POST /api-keys"
         ]
       },
       {
