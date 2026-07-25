@@ -1,49 +1,48 @@
 ---
-title: "Projects"
-description: "A map of public Wazoo projects and how they fit together."
+title: "Open Source Projects"
+description: "Standalone open-source projects in the Wazoo ecosystem."
 ---
 
-Wazoo projects are organized around verifiable context: representing knowledge,
-validating it, storing it, and connecting it to agents.
+Wazoo maintains an ecosystem of independent open-source projects. While
+**Wazoo** powers hosted verifiable context infrastructure, these child projects
+exist as standalone libraries, CLI tools, specs, and adapters that developers
+can use independently.
 
 <CardGroup cols={2}>
-  <Card title="Worlds" icon="network" href="/projects/worlds">
+  <Card title="Worlds Engine" icon="network" href="/projects/worlds">
     Context infrastructure for agents: knowledge graphs, hybrid search, SPARQL,
-    REST APIs, and edge-native storage.
+    and low-latency edge storage.
   </Card>
-  <Card title="Wiki" icon="book-open" href="/projects/wiki">
-    Command-line tooling and templates for semantic Markdown wikis: validate,
-    lint, query, render, build, and publish.
+  <Card title="Wiki CLI & Toolchain" icon="book-open" href="/projects/wiki">
+    Command-line tooling for semantic Markdown wikis: validate, lint, query,
+    render, build, and publish.
   </Card>
-  <Card title="Linked Markdown" icon="braces" href="/projects/linked-markdown">
-    A spec and implementations for Markdown as semantic graph infrastructure.
+  <Card
+    title="Linked Markdown Spec"
+    icon="braces"
+    href="/projects/linked-markdown"
+  >
+    A specification and language-specific implementations for parsing Markdown
+    as graph nodes.
   </Card>
   <Card title="MemSDK" icon="database" href="/projects/memsdk">
-    A Supermemory-compatible interface for portable memory backends.
+    A backend-agnostic memory interface for AI agents across Letta, Supermemory,
+    and Worlds.
   </Card>
 </CardGroup>
 
-## Public repositories
+## Ecosystem Repositories
 
-| Project                | Repository                                                              | Role                                         |
-| ---------------------- | ----------------------------------------------------------------------- | -------------------------------------------- |
-| Wazoo Platform SDK     | [wazoo-api-client-ts](https://github.com/wazootech/wazoo-api-client-ts) | TypeScript SDK for platform management       |
-| Worlds client          | [worlds-client-ts](https://github.com/wazootech/worlds-client-ts)       | Core TypeScript client and in-memory backend |
-| Worlds LibSQL          | [worlds-libsql](https://github.com/wazootech/worlds-libsql)             | Durable LibSQL/Turso adapter                 |
-| Worlds Deno KV         | [worlds-denokv](https://github.com/wazootech/worlds-denokv)             | Durable Deno KV adapter                      |
-| Wiki                   | [wiki](https://github.com/wazootech/wiki)                               | Semantic Markdown wiki toolchain             |
-| Linked Markdown        | [linked-markdown](https://github.com/wazootech/linked-markdown)         | Specification and conformance suite          |
-| Linked Markdown TS     | [linked-markdown-ts](https://github.com/wazootech/linked-markdown-ts)   | TypeScript implementation                    |
-| Linked Markdown Python | [linked-markdown-py](https://github.com/wazootech/linked-markdown-py)   | Python implementation                        |
-| MemSDK                 | [memsdk](https://github.com/wazootech/memsdk)                           | Backend-agnostic AI memory contract          |
-| MemSDK Letta           | [memsdk-letta](https://github.com/wazootech/memsdk-letta)               | Letta adapter                                |
-| MemSDK Worlds          | [memsdk-worlds](https://github.com/wazootech/memsdk-worlds)             | Worlds adapter                               |
+Each repository is independently versioned and published:
 
-## Private and evolving work
-
-Some Wazoo projects are private or experimental while product surfaces are still
-changing. These docs focus on public repositories and stable concepts first,
-then link into platform docs where appropriate.
-
-The Platform API server is currently private. Its public SDK is
-`wazoo-api-client-ts`.
+| Project                    | Repository                                                              | Scope & Description                                       |
+| :------------------------- | :---------------------------------------------------------------------- | :-------------------------------------------------------- |
+| **Wazoo SDK**              | [`wazoo-client-ts`](https://github.com/wazootech/wazoo-client-ts)       | Primary TypeScript client for Platform API management     |
+| **Worlds Client**          | [`worlds-client-ts`](https://github.com/wazootech/worlds-client-ts)     | Graph engine client & embedded in-memory database         |
+| **Worlds Adapters**        | [`worlds-libsql`](https://github.com/wazootech/worlds-libsql)           | Storage adapters for LibSQL / Turso                       |
+| **Wiki Toolchain**         | [`wiki`](https://github.com/wazootech/wiki)                             | Semantic Markdown validator and static generator          |
+| **Linked Markdown**        | [`linked-markdown`](https://github.com/wazootech/linked-markdown)       | Specification & conformance suite for semantic Markdown   |
+| **Linked Markdown TS**     | [`linked-markdown-ts`](https://github.com/wazootech/linked-markdown-ts) | TypeScript parser & AST transformer                       |
+| **Linked Markdown Python** | [`linked-markdown-py`](https://github.com/wazootech/linked-markdown-py) | Python implementation of Linked Markdown                  |
+| **MemSDK**                 | [`memsdk`](https://github.com/wazootech/memsdk)                         | Portable memory interface for agent framework integration |
+| **MemSDK Adapters**        | [`memsdk-worlds`](https://github.com/wazootech/memsdk-worlds)           | Native MemSDK driver for Wazoo Worlds                     |

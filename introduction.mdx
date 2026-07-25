@@ -1,56 +1,57 @@
 ---
 title: "Introduction"
 description:
-  "Wazoo builds tools for verifiable context, semantic documents, agent memory,
-  and world models."
+  "Open-source verifiable context engine & semantic infrastructure for AI."
 ---
 
-Wazoo builds open tools for software that needs memory, provenance, and
-structured context. The projects share one thesis: AI systems need more than
-prompts. They need inspectable world models, semantic documents, queryable
-memory, and deployment paths that keep humans in control.
+Wazoo is an open-source verifiable context engine designed to manage, query, and
+prove interoperable knowledge bases at the edge.
 
-## The Wazoo stack
+Instead of relying on fuzzy text blobs or uninspectable vector-only memory,
+Wazoo gives agents a deterministic context graph that offers complete
+explainability and source provenance—ensuring traceable reasoning and
+continually improving output quality.
+
+## The Wazoo platform & ecosystem
+
+Wazoo provides the core context platform alongside an ecosystem of standalone
+open-source projects that share the same standards, patterns, and semantic
+model:
 
 <CardGroup cols={2}>
   <Card title="Worlds" icon="network" href="/projects/worlds">
-    Persistent, edge-native knowledge graphs for agents, with search, SPARQL,
-    and API access.
+    The flagship context engine: persistent knowledge graphs with hybrid vector
+    search, SPARQL, and low-latency edge deployment.
   </Card>
   <Card title="Wiki" icon="book-open" href="/projects/wiki">
-    A verifiable Markdown wiki toolchain with SHACL validation, SPARQL queries,
-    and static publishing.
+    An open-source Markdown wiki toolchain with SHACL validation, SPARQL
+    queries, and static site publishing.
   </Card>
   <Card title="Linked Markdown" icon="braces" href="/projects/linked-markdown">
-    A specification for Markdown documents with semantic frontmatter that can
-    become RDF graph nodes.
+    A specification and library for Markdown documents with typed frontmatter
+    that convert seamlessly into RDF graph nodes.
   </Card>
   <Card title="MemSDK" icon="database" href="/projects/memsdk">
-    A Supermemory-compatible interface for portable AI memory backends such as
-    Letta and Worlds.
+    A portable, backend-agnostic memory interface for AI applications to swap
+    memory providers without code rewrites.
   </Card>
 </CardGroup>
 
-## Why these projects belong together
+## Architectural pillars
 
-- **World models** give agents a durable substrate for facts, relationships, and
-  provenance.
-- **Semantic documents** let human-authored Markdown participate in graph
-  workflows.
-- **Portable memory interfaces** reduce coupling between apps and AI memory
-  vendors.
-- **Templates and examples** make the stack practical across docs, wikis,
-  agents, and static sites.
-
-## Featured projects
-
-- [Worlds](/projects/worlds) - The flagship context engine for agents.
-- [Wiki](/projects/wiki) - A command-line system for trustworthy Markdown wikis.
-- [Linked Markdown](/projects/linked-markdown) - A portable document format for
-  semantic infrastructure.
-- [MemSDK](/projects/memsdk) - A backend-agnostic SDK contract for AI memory.
+- **Verifiable world models**: Give agents a durable, auditable substrate for
+  facts, relationships, and decision provenance.
+- **Semantic Markdown**: Allow human-authored Markdown documents to participate
+  natively in graph workflows.
+- **Provider & LLM agnostic**: Strictly provider-agnostic infrastructure.
+  Connect your own LLM, embedding models, and memory stores.
+- **Edge-native & local-first**: Designed for fast, low-latency execution in
+  microkernel and serverless environments.
 
 ## Where to next
 
-- [Projects](/projects) - Browse the Wazoo ecosystem.
-- [Quickstart](/quickstart) - Understand the Wazoo stack.
+- [Quickstart](/quickstart) - Connect to Wazoo and run your first query in 2
+  minutes.
+- [Platform API](/platform/api) - Explore hosted management endpoints.
+- [TypeScript SDK](/platform/typescript-sdk) - Manage platform resources with
+  `@wazoo/client`.
