@@ -1,33 +1,7 @@
 ---
 title: "Quickstart"
-description: "Start with Wazoo's model for structured context."
+description: "Connect to Wazoo API and query context in 2 minutes."
 ---
-
-Wazoo helps agents and applications work with context as structured, verifiable,
-portable data instead of opaque text blobs.
-
-## The mental model
-
-Wazoo starts from a simple sequence:
-
-- Author context in Markdown when humans need to read and maintain it.
-- Add typed frontmatter when machines need to validate and query it.
-- Load verified facts into worlds when agents need graph search and traversal.
-- Use portable memory interfaces when applications need to swap memory backends.
-
-The projects share this model, but each one starts at a different layer.
-
-## Platform and data APIs
-
-Hosted Wazoo separates management operations from graph data operations:
-
-- Use the [Wazoo Platform API](/platform/api) or `@wazoo/api` to manage
-  user-owned Worlds, tokens, and usage.
-- Use the Worlds Data API or `@worlds/client` to import RDF, export RDF, search,
-  run SPARQL, and update graph state.
-
-Platform tokens use the `wzp_` prefix. World tokens use the `wzw_` prefix. Keep
-them separate.
 
 ## Quickstart with cURL and API keys
 
