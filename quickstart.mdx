@@ -1,33 +1,7 @@
 ---
 title: "Quickstart"
-description: "Start with Wazoo's model for structured context."
+description: "Connect to Wazoo API and query context in 2 minutes."
 ---
-
-Wazoo helps agents and applications work with context as structured, verifiable,
-portable data instead of opaque text blobs.
-
-## The mental model
-
-Wazoo starts from a simple sequence:
-
-- Author context in Markdown when humans need to read and maintain it.
-- Add typed frontmatter when machines need to validate and query it.
-- Load verified facts into worlds when agents need graph search and traversal.
-- Use portable memory interfaces when applications need to swap memory backends.
-
-The projects share this model, but each one starts at a different layer.
-
-## Platform and data APIs
-
-Hosted Wazoo separates management operations from graph data operations:
-
-- Use the [Wazoo Platform API](/platform/api) or `@wazoo/api` to manage
-  user-owned Worlds, tokens, and usage.
-- Use the Worlds Data API or `@worlds/client` to import RDF, export RDF, search,
-  run SPARQL, and update graph state.
-
-Platform tokens use the `wzp_` prefix. World tokens use the `wzw_` prefix. Keep
-them separate.
 
 ## Quickstart with cURL and API keys
 
@@ -64,40 +38,50 @@ If you prefer calling the Wazoo Platform API directly using HTTP/cURL:
 ## Agent skills (`SKILL.md`)
 
 Agent skills allow AI coding agents (Claude Code, Cursor, OpenCode, Antigravity)
-to query and manage Wazoo memory directly. A skill consists of a `SKILL.md` file
-located inside `.agents/skills/<skill-name>/SKILL.md` (or
-`~/.gemini/config/skills/`).
+to query and manage Wazoo memory directly.
+
+Wazoo hosts its main official skill statically at
+[`https://docs.wazoo.dev/skills/wazoo/SKILL.md`](https://docs.wazoo.dev/skills/wazoo/SKILL.md).
+
+### Installation
+
+Install the main Wazoo skill directly into your local agent environment:
+
+```bash
+npx skills add wazootech/docs.wazoo.dev@wazoo -g -y
+```
+
+Or manually place [`SKILL.md`](https://docs.wazoo.dev/skills/wazoo/SKILL.md)
+inside `.agents/skills/wazoo/SKILL.md` (or `~/.gemini/config/skills/`).
 
 ### How AI agents access the API via `SKILL.md`
 
-Your `SKILL.md` equips the agent with instructions and terminal command patterns
-(cURL or CLI) to read and write context:
-
 ````markdown
 ---
-name: wazoo-memory
-description: Read and write persistent knowledge and memories in Wazoo Worlds.
+name: wazoo
+description:
+  Manage Wazoo Worlds, provision knowledge graphs, manage tokens, and save
+  persistent agent context.
 ---
 
-# Wazoo Memory Skill
+# Wazoo Skill
 
-Use this skill when saving durable context, user preferences, or project
-decisions to Wazoo.
+Use this skill when interacting with the Wazoo platform, managing worlds, or
+saving durable context, user preferences, and project decisions.
 
-## Environment Setup
+## Environment setup
 
 Ensure `WAZOO_PLATFORM_TOKEN` (starts with `wzp_`) is exported in your
 environment.
 
-## 1. List Active Worlds
+## 1. List active worlds
 
 ```bash
 curl -s -X GET "https://api.wazoo.dev/v1/worlds" \
   -H "Authorization: Bearer $WAZOO_PLATFORM_TOKEN"
 ```
-````
 
-## 2. Store Context in a World
+## 2. Store context in a world
 
 ```bash
 curl -s -X POST "https://api.wazoo.dev/v1/worlds" \
@@ -108,11 +92,7 @@ curl -s -X POST "https://api.wazoo.dev/v1/worlds" \
     "world": { "displayName": "Project Context Graph" }
   }'
 ```
-
-```
-
-To install, simply place the skill folder in your project's `.agents/skills/wazoo-memory/SKILL.md` or global agent configuration directory.
-
+````
 
 ---
 
