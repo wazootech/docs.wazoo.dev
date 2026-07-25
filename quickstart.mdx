@@ -29,33 +29,70 @@ Hosted Wazoo separates management operations from graph data operations:
 Platform tokens use the `wzp_` prefix. World tokens use the `wzw_` prefix. Keep
 them separate.
 
+## Quick Start with cURL & API Keys
+
+If you prefer to call the Wazoo Platform API directly using HTTP/cURL or from
+your terminal scripts:
+
+### 1. Get your Platform API Token (`wzp_`)
+
+Generate your `wzp_` token from [console.wazoo.dev](https://console.wazoo.dev)
+under **Tokens**.
+
+### 2. List Your Worlds
+
+```bash
+curl -s -X GET "https://api.wazoo.dev/v1/worlds" \
+  -H "Authorization: Bearer wzp_YOUR_PLATFORM_TOKEN"
+```
+
+### 3. Create a New World
+
+```bash
+curl -s -X POST "https://api.wazoo.dev/v1/worlds" \
+  -H "Authorization: Bearer wzp_YOUR_PLATFORM_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "worldId": "my-agent-world",
+    "world": {
+      "displayName": "My Agent World",
+      "region": "auto"
+    }
+  }'
+```
+
+---
+
+## Installing Agent Skills & Tooling
+
+To give your local AI agents (such as Claude Code, Cursor, or custom agent
+runtimes) direct memory capability:
+
+1. **MemSDK / Worlds Integration**: Install `@wazootech/memsdk` or
+   `@wazootech/memsdk-worlds`.
+2. **Add Agent Rules**: Reference your Wazoo platform token `wzp_...` in your
+   local environment (`.env`).
+3. **Agent Skills**: If you are using agent skills, copy or mount the relevant
+   skill module (e.g., `wiki` or `memsdk`) into your local `.agents/skills/`
+   directory.
+
+---
+
 ## Choose your path
 
 <CardGroup cols={2}>
-  <Card title="Worlds" icon="network" href="/projects/worlds">
-    Use Worlds when your agent or application needs a persistent graph of facts,
-    search, SPARQL, and API access.
+  <Card title="Platform API" icon="waypoints" href="/platform/api">
+    Manage your Worlds, API tokens, resource usage, and billing via HTTP
+    endpoints.
   </Card>
-  <Card title="Wiki" icon="book-open" href="/projects/wiki">
-    Use Wiki when you want a Markdown knowledge base that can be checked,
-    queried, and published.
+  <Card title="TypeScript SDK" icon="code" href="/platform/typescript-sdk">
+    Use `@wazoo/client` for typed TypeScript/Node.js management.
   </Card>
-  <Card title="Linked Markdown" icon="braces" href="/projects/linked-markdown">
-    Use Linked Markdown when Markdown documents need typed frontmatter that can
-    become graph data.
+  <Card title="Worlds Data Engine" icon="network" href="/projects/worlds">
+    Interact with persistent knowledge graphs, SPARQL queries, and vector
+    search.
   </Card>
   <Card title="MemSDK" icon="database" href="/projects/memsdk">
-    Use MemSDK when your app needs portable AI memory across backends.
+    Backend-agnostic memory interface for AI agents.
   </Card>
 </CardGroup>
-
-## What to read first
-
-- [Worlds](/projects/worlds): Build with the context engine.
-- [Wiki](/projects/wiki): Validate and publish a semantic Markdown wiki.
-- [Linked Markdown](/projects/linked-markdown): Structure Markdown as graph
-  nodes.
-- [MemSDK](/projects/memsdk): Target a portable AI memory interface.
-
-Start with Worlds if you are building an agent or application and want one
-concrete entry point into the Wazoo stack.
