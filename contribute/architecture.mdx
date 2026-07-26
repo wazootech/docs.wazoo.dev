@@ -71,6 +71,56 @@ graph LR
     Sync -->|Index update| DB
 ```
 
+## SDK topology
+
+Wazoo generates clients from OpenAPI specs to ensure type safety.
+
+### Platform client
+
+```mermaid
+flowchart TD
+    APIServer[Wazoo API Server<br/>api.wazoo.dev]
+    OpenAPI[Wazoo OpenAPI Spec<br/>/openapi.json]
+    SDK[Wazoo SDK<br/>@wazoo/client]
+    Console[Wazoo Console<br/>Next.js]
+    CLI[Wazoo CLI]
+    Desktop[Wazoo Desktop]
+    Tools[Wazoo AI Tools<br/>@wazoo/tools]
+
+    APIServer -->|exposes| OpenAPI
+    OpenAPI -->|hey-api codegen| SDK
+    SDK -->|powers| Console
+    SDK -->|powers| CLI
+    SDK -->|powers| Desktop
+    SDK -->|powers| Tools
+    SDK -->|REST| APIServer
+```
+
+### Worlds client
+
+```mermaid
+flowchart TD
+    WorldsAPI[Worlds API Server<br/>worlds-api.wazoo.dev]
+    OpenAPI[Worlds OpenAPI Spec<br/>/openapi.json]
+    HTTPBackend[Generated HTTP Backend]
+    WorldsSDK[Worlds SDK<br/>@worlds/client]
+    CustomBackends[Custom Backends<br/>N3 · Sqlite · Postgres]
+    Console[Wazoo Console<br/>Next.js]
+    CLI[Wazoo CLI]
+    Desktop[Wazoo Desktop]
+    Tools[Wazoo AI Tools<br/>@wazoo/tools]
+
+    WorldsAPI -->|exposes| OpenAPI
+    OpenAPI -->|hey-api codegen| HTTPBackend
+    HTTPBackend -.->|implements| WorldsSDK
+    CustomBackends -.->|implements| WorldsSDK
+    WorldsSDK -->|powers| Console
+    WorldsSDK -->|powers| CLI
+    WorldsSDK -->|powers| Desktop
+    WorldsSDK -->|powers| Tools
+    HTTPBackend -->|REST| WorldsAPI
+```
+
 ## Platform API vs. Worlds Data API
 
 The platform splits operations into two primary layers:
