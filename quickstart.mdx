@@ -37,9 +37,11 @@ If you prefer calling the Wazoo Platform API directly using HTTP/cURL:
 
 ## Agent skills (`SKILL.md`)
 
-Agent skills allow AI coding agents (Claude Code, Cursor, OpenCode, Antigravity) to query and manage Wazoo memory directly.
+Agent skills allow AI coding agents (Claude Code, Cursor, OpenCode, Antigravity)
+to query and manage Wazoo memory directly.
 
-Wazoo hosts its main official skill statically at [`https://docs.wazoo.dev/skills/wazoo/SKILL.md`](https://docs.wazoo.dev/skills/wazoo/SKILL.md).
+Wazoo hosts its main official skill statically at
+[`https://docs.wazoo.dev/skills/wazoo/SKILL.md`](https://docs.wazoo.dev/skills/wazoo/SKILL.md).
 
 ### Installation
 
@@ -49,7 +51,8 @@ Install the main Wazoo skill directly into your local agent environment:
 npx skills add wazootech/docs.wazoo.dev@wazoo -g -y
 ```
 
-Or manually place [`SKILL.md`](https://docs.wazoo.dev/skills/wazoo/SKILL.md) inside `.agents/skills/wazoo/SKILL.md` (or `~/.gemini/config/skills/`).
+Or manually place [`SKILL.md`](https://docs.wazoo.dev/skills/wazoo/SKILL.md)
+inside `.agents/skills/wazoo/SKILL.md` (or `~/.gemini/config/skills/`).
 
 ### How AI agents access the API via `SKILL.md`
 
@@ -100,13 +103,13 @@ curl -s -X POST "https://api.wazoo.dev/v1/worlds" \
     Manage your Worlds, API tokens, resource usage, and billing via HTTP endpoints.
   </Card>
 
-  <Card title="TypeScript SDK" icon="code" href="/platform/typescript-sdk">
-    Use `@wazoo/client` for typed TypeScript/Node.js management.
-  </Card>
+<Card title="TypeScript SDK" icon="code" href="/platform/typescript-sdk">
+  Use `@wazoo/client` for typed TypeScript/Node.js management.
+</Card>
 
-  <Card title="Worlds Data Engine" icon="network" href="/projects/worlds">
-    Interact with persistent knowledge graphs, SPARQL queries, and vector search.
-  </Card>
+<Card title="Worlds Data Engine" icon="network" href="/projects/worlds">
+  Interact with persistent knowledge graphs, SPARQL queries, and vector search.
+</Card>
 
   <Card title="MemSDK" icon="database" href="/projects/memsdk">
     Backend-agnostic memory interface for AI agents.
