@@ -73,7 +73,12 @@
       },
       {
         "group": "Platform",
-        "pages": ["platform", "platform/api", "platform/typescript-sdk"]
+        "pages": [
+          "platform/private-beta",
+          "platform",
+          "platform/api",
+          "platform/typescript-sdk"
+        ]
       },
       {
         "group": "Platform API",
