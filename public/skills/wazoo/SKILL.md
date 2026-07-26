@@ -1,8 +1,14 @@
 ---
 name: wazoo
 description:
-  Manage Wazoo Worlds, provision knowledge graphs, execute SPARQL queries,
-  search structured context, manage tokens, and clean up platform resources.
+  Manage Wazoo Worlds (https://wazoo.dev), provision knowledge graphs, execute
+  SPARQL queries, search structured context, manage tokens, and clean up
+  platform resources.
+license: MIT
+compatibility: Works with any HTTP client or curl.
+metadata:
+  author: Wazoo Technologies (https://github.com/wazootech)
+  version: "1.0.0"
 ---
 
 # Wazoo Skill
