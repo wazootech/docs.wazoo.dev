@@ -76,7 +76,7 @@
         "pages": ["platform", "platform/api", "platform/typescript-sdk"]
       },
       {
-        "group": "Platform API (Control Plane)",
+        "group": "Platform API",
         "openapi": "https://api.wazoo.dev/openapi.json",
         "pages": [
           "GET /health",
@@ -96,7 +96,7 @@
         ]
       },
       {
-        "group": "Worlds Data API (Data Plane)",
+        "group": "Worlds API",
         "openapi": "https://worlds-api.wazoo.dev/openapi.json",
         "pages": [
           "GET /worlds",
