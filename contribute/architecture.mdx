@@ -33,6 +33,11 @@ engine, and isolated persistent state.
 
 ```mermaid
 graph LR
+    %% Class definitions for accessibility & brand colors
+    classDef engine fill:#161617,stroke:#FF9800,stroke-width:2px,color:#ffffff;
+    classDef persistence fill:#1f1f20,stroke:#F57C00,stroke-width:2px,color:#ffffff;
+    classDef process fill:#282829,stroke:#FFB74D,stroke-width:1.5px,color:#ffffff;
+
     subgraph Clients ["Ingestion"]
         direction TB
         Dev([Developer])
@@ -69,6 +74,10 @@ graph LR
     Engine -.->|Hydrate / Flush| DB
     Engine -->|Patches| Sync
     Sync -->|Index update| DB
+
+    class Dev,Agent process;
+    class API,ConsoleView,Auth,Engine,Sync engine;
+    class DB persistence;
 ```
 
 ## SDK topology
@@ -79,6 +88,11 @@ Wazoo generates clients from OpenAPI specs to ensure type safety.
 
 ```mermaid
 flowchart TD
+    %% Class definitions for accessibility & brand colors
+    classDef api fill:#161617,stroke:#FF9800,stroke-width:2px,color:#ffffff;
+    classDef sdk fill:#1f1f20,stroke:#F57C00,stroke-width:2px,color:#ffffff;
+    classDef apps fill:#282829,stroke:#FFB74D,stroke-width:1.5px,color:#ffffff;
+
     APIServer[Wazoo API Server<br/>api.wazoo.dev]
     OpenAPI[Wazoo OpenAPI Spec<br/>/openapi.json]
     SDK[Wazoo SDK<br/>@wazoo/client]
@@ -94,12 +108,21 @@ flowchart TD
     SDK -->|powers| Desktop
     SDK -->|powers| Tools
     SDK -->|REST| APIServer
+
+    class APIServer,OpenAPI api;
+    class SDK sdk;
+    class Console,CLI,Desktop,Tools apps;
 ```
 
 ### Worlds client
 
 ```mermaid
 flowchart TD
+    %% Class definitions for accessibility & brand colors
+    classDef api fill:#161617,stroke:#FF9800,stroke-width:2px,color:#ffffff;
+    classDef sdk fill:#1f1f20,stroke:#F57C00,stroke-width:2px,color:#ffffff;
+    classDef apps fill:#282829,stroke:#FFB74D,stroke-width:1.5px,color:#ffffff;
+
     WorldsAPI[Worlds API Server<br/>worlds-api.wazoo.dev]
     OpenAPI[Worlds OpenAPI Spec<br/>/openapi.json]
     HTTPBackend[Generated HTTP Backend]
@@ -119,6 +142,10 @@ flowchart TD
     WorldsSDK -->|powers| Desktop
     WorldsSDK -->|powers| Tools
     HTTPBackend -->|REST| WorldsAPI
+
+    class WorldsAPI,OpenAPI api;
+    class HTTPBackend,WorldsSDK,CustomBackends sdk;
+    class Console,CLI,Desktop,Tools apps;
 ```
 
 ## Platform API vs. Worlds Data API
@@ -182,9 +209,9 @@ limits.
 ```mermaid
 flowchart TD
     %% Global Styling
-    classDef engine fill:#D97706,stroke:#78350F,stroke-width:2px,color:#fff;
-    classDef persistence fill:#1a1510,stroke:#D97706,stroke-width:1px,color:#f2f2f2;
-    classDef process fill:#F59E0B,stroke:#78350F,stroke-dasharray: 5 5,color:#333;
+    classDef engine fill:#161617,stroke:#FF9800,stroke-width:2px,color:#ffffff;
+    classDef persistence fill:#1f1f20,stroke:#F57C00,stroke-width:2px,color:#ffffff;
+    classDef process fill:#282829,stroke:#FFB74D,stroke-width:1.5px,stroke-dasharray: 5 5,color:#ffffff;
 
     subgraph Sources ["Data sources & integrations"]
         RAW["Raw data<br/>Text, files, chats"]
