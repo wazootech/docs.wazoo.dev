@@ -1,34 +1,33 @@
 ---
 title: "AI SDK"
 icon: "/images/icons/vercel.svg"
-description: "Connect Worlds to Vercel AI SDK"
+description: "Connect Wazoo & Worlds knowledge graphs to Vercel AI SDK"
 ---
 
 The [Vercel AI SDK](https://sdk.vercel.ai/) is the TypeScript toolkit for
-building reliable AI applications with React, Svelte, and Vue. The Worlds
-Platform AI SDK provides tools for LLMs to interact with the
-[Worlds Platform](https://console.wazoo.dev).
+building reliable AI applications with React, Svelte, and Vue. The Wazoo AI Tools package (`@wazoo/tools`) provides tools for LLMs to interact with
+[Worlds Platform](https://console.wazoo.dev) and Wazoo knowledge graphs.
 
 ## Installation
 
-Install the Worlds AI SDK from JSR:
+Install the Wazoo AI Tools from JSR:
 
 <CodeGroup>
 
 ```bash deno
-deno add jsr:@worlds/tools
+deno add jsr:@wazoo/tools
 ```
 
 ```bash npm
-npx jsr add @worlds/tools
+npx jsr add @wazoo/tools
 ```
 
 ```bash bun
-bunx jsr add @worlds/tools
+bunx jsr add @wazoo/tools
 ```
 
 ```bash pnpm
-pnpm i jsr:@worlds/tools
+pnpm i jsr:@wazoo/tools
 ```
 
 </CodeGroup>
@@ -42,13 +41,13 @@ The tools are designed to work with the
 import { generateText } from "ai";
 import { openai } from "@ai-sdk/openai";
 import { Worlds } from "@worlds/client";
-import { createTools } from "@worlds/tools";
+import { createTools } from "@wazoo/tools";
 
 const worlds = new Worlds({
   apiKey: process.env.WORLDS_TOKEN,
 });
 
-// @worlds/tools
+// @wazoo/tools
 const tools = createTools({
   worlds,
   sources: ["my-world"],
@@ -68,8 +67,7 @@ The `createTools` function returns a full toolset for use with LLM frameworks.
 ### Individual tools
 
 If you require granular control, you can import and initialize tools
-individually. Each tool factory requires the same
-[configuration options](#usage).
+individually:
 
 ```typescript
 import { Worlds } from "@worlds/client";
@@ -77,7 +75,9 @@ import {
   createDiscoverSchemaTool,
   createExecuteSparqlTool,
   createSearchEntitiesTool,
-} from "@worlds/tools";
+  createImportRdfTool,
+  createExportRdfTool,
+} from "@wazoo/tools";
 
 const worlds = new Worlds({
   apiKey: process.env.WORLDS_TOKEN,
@@ -85,14 +85,18 @@ const worlds = new Worlds({
 
 const sources = ["my-world"];
 
-const discoverSchema = createDiscoverSchemaTool({ worlds, sources });
-const executeSparql = createExecuteSparqlTool({ worlds, sources });
-const searchEntities = createSearchEntitiesTool({ worlds, sources });
+const discoverSchema = createDiscoverSchemaTool(worlds, { sources });
+const executeSparql = createExecuteSparqlTool(worlds);
+const searchEntities = createSearchEntitiesTool(worlds);
+const importRdf = createImportRdfTool(worlds);
+const exportRdf = createExportRdfTool(worlds);
 
 const tools = {
   discoverSchema,
   executeSparql,
   searchEntities,
+  importRdf,
+  exportRdf,
 };
 ```
 
@@ -100,9 +104,9 @@ const tools = {
 
 | Tool                   | Description                                                     |
 | :--------------------- | :-------------------------------------------------------------- |
+| `executeSparql`        | Direct execution of SPARQL queries (read-only by default).      |
+| `searchEntities`       | Vector and keyword search for entities within a graph.          |
 | `discoverSchema`       | Explore the ontology and schema of a specific world.            |
-| `executeSparql`        | Direct execution of SPARQL queries against a world.             |
-| `searchEntities`       | Vector-based semantic search for entities within a world.       |
-| `generateIri`          | Utility for generating valid IRIs for new entities.             |
-| `disambiguateEntities` | Utility for mapping natural language entities to existing IRIs. |
-| `validateRdf`          | Utility for validating generated RDF against a world.           |
+| `importRdf`            | Utility for ingesting RDF triples into a world graph.           |
+| `exportRdf`            | Utility for exporting RDF triples from a world graph.           |
+
