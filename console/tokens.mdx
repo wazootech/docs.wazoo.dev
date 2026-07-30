@@ -1,0 +1,36 @@
+---
+title: "Tokens"
+description: "Manage world-scoped API tokens from the Console."
+---
+
+World tokens (prefixed with `wz_`) are API keys scoped to a single world. Use
+them to authenticate data-plane requests from applications and agents.
+
+## Create a token
+
+1. Open the [Wazoo Console](https://console.wazoo.dev).
+2. Select a world.
+3. Click **Tokens** in the sidebar.
+4. Click **Create token**.
+5. Copy the token value. You will not be able to see it again.
+
+## Revoke a token
+
+Click **Revoke** next to any token. Revoked tokens stop working immediately.
+
+## Token types
+
+| Token          | Prefix | Scope              |
+| :------------- | :----- | :----------------- |
+| World token    | `wz_`  | Single world       |
+| Platform token | `wzp_` | All worlds you own |
+
+Platform tokens are managed from the **Platform API tokens** section of the
+console.
+
+## Security
+
+- Store tokens in environment variables, not in code.
+- Use the most restrictive token type for each use case.
+- Rotate tokens regularly.
+- Revoke unused tokens.

@@ -1,0 +1,43 @@
+---
+title: "Import"
+description: "Load RDF data into your worlds using the Console."
+---
+
+The import page lets you upload RDF data files into a world.
+
+## Supported formats
+
+| Format    | Content type          |
+| :-------- | :-------------------- |
+| Turtle    | `text/turtle`         |
+| JSON-LD   | `application/ld+json` |
+| N-Triples | `text/plain`          |
+| N-Quads   | `text/n-quads`        |
+| Trig      | `application/trig`    |
+
+## Import from file
+
+1. Open the [Wazoo Console](https://console.wazoo.dev).
+2. Select a world.
+3. Click **Import** in the sidebar.
+4. Select your RDF file.
+5. Click **Import**.
+
+The console shows a preview before importing. After the import completes, the
+console reports the number of triples added.
+
+## Import from text
+
+Paste RDF data directly into the text area and click **Import**.
+
+## Merge behavior
+
+Import appends data to the existing graph. It does not replace existing triples.
+To replace data, delete the world and create a new one.
+
+## Size limits
+
+| Limit     | Value   |
+| :-------- | :------ |
+| File size | 50 MB   |
+| Triples   | 100,000 |
