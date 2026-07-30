@@ -5,7 +5,8 @@ description: "Connect Wazoo & Worlds knowledge graphs to Vercel AI SDK"
 ---
 
 The [Vercel AI SDK](https://sdk.vercel.ai/) is the TypeScript toolkit for
-building reliable AI applications with React, Svelte, and Vue. The Wazoo AI Tools package (`@wazoo/tools`) provides tools for LLMs to interact with
+building reliable AI applications with React, Svelte, and Vue. The Wazoo AI
+Tools package (`@wazoo/tools`) provides tools for LLMs to interact with
 [Worlds Platform](https://console.wazoo.dev) and Wazoo knowledge graphs.
 
 ## Installation
@@ -102,11 +103,10 @@ const tools = {
 
 ### Tool reference
 
-| Tool                   | Description                                                     |
-| :--------------------- | :-------------------------------------------------------------- |
-| `executeSparql`        | Direct execution of SPARQL queries (read-only by default).      |
-| `searchEntities`       | Vector and keyword search for entities within a graph.          |
-| `discoverSchema`       | Explore the ontology and schema of a specific world.            |
-| `importRdf`            | Utility for ingesting RDF triples into a world graph.           |
-| `exportRdf`            | Utility for exporting RDF triples from a world graph.           |
-
+| Tool             | Description                                                |
+| :--------------- | :--------------------------------------------------------- |
+| `executeSparql`  | Direct execution of SPARQL queries (read-only by default). |
+| `searchEntities` | Vector and keyword search for entities within a graph.     |
+| `discoverSchema` | Explore the ontology and schema of a specific world.       |
+| `importRdf`      | Utility for ingesting RDF triples into a world graph.      |
+| `exportRdf`      | Utility for exporting RDF triples from a world graph.      |
