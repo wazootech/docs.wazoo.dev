@@ -1,0 +1,69 @@
+---
+title: "Getting started"
+description:
+  "From invite to your first SPARQL query. Onboarding guide for the Wazoo
+  private beta."
+---
+
+This guide walks you from your invite email through signing in, creating a
+world, importing data, and running your first SPARQL query.
+
+## Before you start
+
+You need an invite to the Wazoo private beta. Sign up at
+[wazoo.dev/beta](https://wazoo.dev/beta).
+
+## 1. Sign in
+
+Visit [console.wazoo.dev](https://console.wazoo.dev). Sign in with the email
+address you used to join the beta. You will receive a one-time passcode.
+
+If your email is not on the allowlist, you will see an error. Contact the team
+if you believe you should have access.
+
+## 2. Create a world
+
+After signing in, click **Create world**. Give your world a name and an ID. The
+ID must be unique across all worlds in the platform.
+
+World IDs are public and used in API requests. Choose something descriptive like
+`my-knowledge-base` or `project-context`.
+
+## 3. Import data
+
+Click **Import** in the sidebar. Upload an RDF file or paste Turtle data
+directly. Worlds supports Turtle, JSON-LD, N-Triples, N-Quads, and Trig.
+
+If you do not have data yet, paste this:
+
+```turtle
+@prefix schema: <https://schema.org/> .
+
+<https://example.org/user/alice> a schema:Person ;
+  schema:givenName "Alice" ;
+  schema:knows <https://example.org/user/bob> .
+
+<https://example.org/user/bob> a schema:Person ;
+  schema:givenName "Bob" .
+```
+
+## 4. Run your first query
+
+Click **SPARQL** in the sidebar. Paste this query and click **Run**:
+
+```sparql
+PREFIX schema: <https://schema.org/>
+
+SELECT ?name WHERE {
+  ?person a schema:Person ;
+          schema:givenName ?name .
+}
+```
+
+You should see `Alice` and `Bob` in the results.
+
+## Next steps
+
+- [Console overview](/console/overview) — explore all console features
+- [Worlds concepts](/worlds/index) — understand worlds, items, and facts
+- [Quickstart](/quickstart) — connect via the API and SDK

@@ -1,0 +1,54 @@
+---
+title: "SPARQL editor"
+description: "Run SPARQL queries against your worlds from the Console."
+---
+
+The SPARQL editor lets you run queries and updates against any of your worlds
+directly from the browser.
+
+## Open the editor
+
+1. Open the [Wazoo Console](https://console.wazoo.dev).
+2. Select a world from the world list.
+3. Click **SPARQL** in the sidebar.
+
+## Run a query
+
+Paste a SPARQL query into the editor and click **Run**. Results appear in the
+panel below the editor.
+
+```sparql
+PREFIX schema: <https://schema.org/>
+
+SELECT ?subject ?object WHERE {
+  ?subject a schema:Person ;
+           schema:knows ?object .
+}
+```
+
+## Run an update
+
+Use `INSERT` or `DELETE` to modify graph state.
+
+```sparql
+PREFIX schema: <https://schema.org/>
+
+INSERT DATA {
+  <https://example.org/user/alice> a schema:Person ;
+    schema:givenName "Alice" .
+}
+```
+
+## Keyboard shortcuts
+
+| Shortcut       | Action       |
+| :------------- | :----------- |
+| `Ctrl+Enter`   | Run query    |
+| `Ctrl+Shift+F` | Format query |
+
+## Limitations
+
+- Queries time out after 30 seconds.
+- The editor returns the first 1000 results.
+
+See the [Worlds query docs](/worlds/query) for more on SPARQL with Worlds.

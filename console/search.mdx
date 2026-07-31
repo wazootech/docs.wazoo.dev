@@ -1,0 +1,34 @@
+---
+title: "Search"
+description: "Browse and find items in your worlds using the Console."
+---
+
+The search page lets you browse items in a world using hybrid search.
+
+## Search a world
+
+1. Open the [Wazoo Console](https://console.wazoo.dev).
+2. Select a world.
+3. Click **Search** in the sidebar.
+
+Enter a natural language query or an item IRI. The console returns matching
+items ranked by relevance.
+
+## Filter results
+
+Use the type filter to narrow results to specific RDF types:
+
+- Filter by type (e.g., `schema:Person`, `schema:Organization`)
+- Filter by item label
+- Filter by property value
+
+## View item details
+
+Click an item to expand its full set of facts. The detail panel shows:
+
+- All triples where the item is the subject
+- All triples where the item is the object
+- The item's IRI and type
+
+See the [Worlds search docs](/worlds/search) for how hybrid search works under
+the hood.

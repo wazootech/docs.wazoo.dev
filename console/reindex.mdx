@@ -1,0 +1,34 @@
+---
+title: "Reindex"
+description: "Rebuild the search index for a world from the Console."
+---
+
+Reindexing rebuilds the full-text and vector search indexes for a world. Use
+this after bulk imports or when search results seem stale.
+
+## When to reindex
+
+- After a large import
+- When search results do not reflect recent changes
+- If the search index state is unknown
+
+## Reindex a world
+
+1. Open the [Wazoo Console](https://console.wazoo.dev).
+2. Select a world.
+3. Click **Reindex** in the sidebar.
+4. Click **Reindex now**.
+
+Reindexing is asynchronous. The console shows the current status. Depending on
+world size, reindexing can take from seconds to minutes.
+
+## What happens
+
+Reindexing processes every triple in the world and:
+
+1. Updates the full-text search index.
+2. Recomputes vector embeddings for text literals.
+3. Rebuilds the graph structure index.
+
+The world remains available for queries during reindexing. SPARQL queries
+continue to work off the underlying graph store.

@@ -69,7 +69,13 @@
     "groups": [
       {
         "group": "Welcome",
-        "pages": ["introduction", "projects", "quickstart", "manifesto"]
+        "pages": [
+          "introduction",
+          "getting-started",
+          "projects",
+          "quickstart",
+          "manifesto"
+        ]
       },
       {
         "group": "Platform",
@@ -77,7 +83,8 @@
           "platform/private-beta",
           "platform",
           "platform/api",
-          "platform/typescript-sdk"
+          "platform/typescript-sdk",
+          "platform/troubleshooting"
         ]
       },
       {
@@ -115,6 +122,18 @@
           "POST /worlds/{id}/sparql",
           "GET /api-keys",
           "POST /api-keys"
+        ]
+      },
+      {
+        "group": "Console",
+        "pages": [
+          "console/overview",
+          "console/sparql",
+          "console/import",
+          "console/search",
+          "console/tokens",
+          "console/export",
+          "console/reindex"
         ]
       },
       {

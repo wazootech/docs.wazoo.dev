@@ -31,9 +31,24 @@ The Platform API is public-facing and production-oriented. Some Console flows
 are still private-beta and may not be available to every user. Usage tracking is
 in place, but private beta access does not require live payment enforcement.
 
+## Known limitations
+
+These are active limitations during the private beta:
+
+- **Data-plane API** — the Worlds Data API is stable but may see breaking
+  changes before general availability.
+- **Console flows** — some Console features are still in development and may not
+  be available to every user.
+- **No self-service signup** — access is managed through a manual allowlist.
+- **No billing enforcement** — usage is tracked but not metered. Limits may be
+  adjusted.
+- **Search index staleness** — after imports, trigger a
+  [reindex](/console/reindex) to refresh search results.
+- **Mobile responsiveness** — the console is optimized for desktop browsers.
+
 ## Next steps
 
+- [Getting started](/getting-started) — onboarding from invite to first query.
+- [Console overview](/console/overview) — explore console features.
 - [Quickstart](/quickstart) — connect to the API in 2 minutes.
-- [Platform overview](/platform) — understand the two API layers.
-- [Worlds quickstart](/projects/worlds) — create and query your first knowledge
-  graph.
+- [Troubleshooting](/platform/troubleshooting) — common errors and fixes.

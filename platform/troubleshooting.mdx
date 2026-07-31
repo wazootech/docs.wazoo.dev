@@ -1,0 +1,77 @@
+---
+title: "Troubleshooting"
+description: "Common errors and solutions for the Wazoo Platform."
+---
+
+## Allowlist errors
+
+**"You are not on the allowlist"**
+
+Your email has not been added to the private beta allowlist. This can happen if:
+
+- You signed up but have not been approved yet.
+- You signed in with a different email than the one you used to sign up.
+
+Contact the team if you believe you should have access.
+
+## Token issues
+
+**"Invalid token"**
+
+Your token is malformed or has been revoked. Generate a new token from the
+console.
+
+**"Token expired"**
+
+World tokens do not expire by default but can be revoked. Platform tokens may
+have a limited lifespan depending on how they were created.
+
+**"Unauthorized"**
+
+The token does not have access to the resource. Check that:
+
+- A world token is scoped to the correct world.
+- A platform token has the required permissions.
+
+## Connection issues
+
+**"Cannot reach the console"**
+
+Check that `console.wazoo.dev` is accessible from your network. If you are
+behind a corporate VPN, you may need to allowlist the domain.
+
+**"API returns 502 or 503"**
+
+The service is temporarily unavailable. Wait a few minutes and retry.
+
+## Import errors
+
+**"Format not supported"**
+
+The file format is not one of the supported RDF serializations. Convert your
+data to Turtle, JSON-LD, N-Triples, N-Quads, or Trig.
+
+**"File too large"**
+
+Imports are limited to 50 MB per file. Split large imports into multiple files.
+
+## Search issues
+
+**"Search returns no results"**
+
+The search index may need to be rebuilt. Go to the **Reindex** page for your
+world and trigger a reindex.
+
+**"Search results are stale"**
+
+The index is rebuilt asynchronously. If you recently imported data and search
+results do not reflect it, trigger a [reindex](/console/reindex).
+
+## Verify a world is working
+
+1. Open the world in the console.
+2. Run `SELECT * WHERE { ?s ?p ?o } LIMIT 10` in the SPARQL editor.
+3. If results appear, the world is online and queryable.
+
+If the query returns results but search does not, trigger a
+[reindex](/console/reindex).
