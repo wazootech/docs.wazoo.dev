@@ -5,13 +5,14 @@ description: "Verifiable context engine for AI."
 
 Wazoo is an open-source verifiable context engine for edge knowledge graphs.
 
-It gives agents a deterministic context graph with source provenance,
-explainability, and traceable reasoning—without vector-only opacity.
+It gives agents a deterministic context graph with source provenance and
+explainability. Reasoning is traceable, with none of the opacity of vector-only
+memory.
 
 ## Core surfaces
 
 <CardGroup cols={2}>
-  <Card title="Getting started" icon="bolt" href="/getting-started">
+  <Card title="Getting started" icon="rocket" href="/getting-started">
     Onboarding from invite to first query.
   </Card>
   <Card title="Quickstart" icon="bolt" href="/quickstart">
@@ -20,7 +21,11 @@ explainability, and traceable reasoning—without vector-only opacity.
   <Card title="Platform API" icon="waypoints" href="/platform/api">
     Manage Worlds, tokens, usage, and billing.
   </Card>
-  <Card title="TypeScript SDK" icon="code" href="/platform/typescript-sdk">
+  <Card
+    title="TypeScript SDK"
+    icon="/images/icons/typescript.svg"
+    href="/platform/typescript-sdk"
+  >
     Use `@wazoo/client` for platform management.
   </Card>
   <Card
@@ -35,16 +40,20 @@ explainability, and traceable reasoning—without vector-only opacity.
 ## Core capabilities
 
 <CardGroup cols={2}>
-  <Card title="Verifiable provenance" icon="shield-check">
+  <Card
+    title="Verifiable provenance"
+    icon="shield-check"
+    href="/projects/worlds"
+  >
     Deterministic graph logic and decision traces.
   </Card>
-  <Card title="Hybrid search" icon="search">
+  <Card title="Hybrid search" icon="search" href="/worlds/search">
     Vectors fused with full-text and RDF traversal.
   </Card>
-  <Card title="Provider agnostic" icon="brain">
+  <Card title="Provider agnostic" icon="plug" href="/integrations/ai-sdk">
     Connect your own LLMs and embeddings.
   </Card>
-  <Card title="Edge native" icon="cloud">
+  <Card title="Edge native" icon="cpu" href="/contribute/self-host">
     Low-latency graph architecture for edge runtimes.
   </Card>
 </CardGroup>
