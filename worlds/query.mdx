@@ -17,22 +17,13 @@ results without probabilistic guessing.
 Given triples such as `user:person wazoo:uses wazoo:worlds`, query for the
 resource:
 
-```typescript TypeScript
-import { Worlds } from "@worlds/client";
-
-const worlds = new Worlds({
-  apiKey: process.env.WORLDS_TOKEN,
-});
-
-// Execute a SPARQL query to retrieve facts
-const response = await worlds.sparql(
-  "my-world-id",
-  `PREFIX wazoo: <https://wazoo.dev/#>
-
-  SELECT ?resource WHERE {
-    <https://etok.me/#person> wazoo:uses ?resource .
-  }`,
-);
+```bash
+curl -s -X POST "https://worlds-api.wazoo.dev/worlds/my-world-id/sparql" \
+  -H "Authorization: Bearer $WORLDS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "PREFIX wazoo: <https://wazoo.dev/#> SELECT ?resource WHERE { <https://etok.me/#person> wazoo:uses ?resource . }"
+  }'
 ```
 
 ### Neuro-symbolic reasoning
@@ -140,8 +131,8 @@ retrieves the current state.
 
 ### Grounding agents in ontologies
 
-By using `discover-schema`, agents retrieve the world's ontology before
-attempting to query it.
+By using the `discoverSchema` tool from `@wazoo/tools`, agents retrieve the
+world's ontology before attempting to query it.
 
 1.  Discovery: Agent retrieves the world's ontology.
 2.  Mapping: Agent maps intent to specific RDF classes and predicates.
