@@ -141,7 +141,6 @@
         "pages": [
           "projects/worlds",
           "projects/wiki",
-          "projects/wiki/templates/index",
           "projects/linked-markdown",
           "projects/memsdk"
         ]
@@ -150,7 +149,6 @@
         "group": "Worlds",
         "pages": [
           "worlds/index",
-          "worlds/memory-appraisal",
           "worlds/search",
           "worlds/query",
           "worlds/update"
@@ -282,6 +280,14 @@
     {
       "source": "/what-were-building",
       "destination": "/projects"
+    },
+    {
+      "source": "/worlds/memory-appraisal",
+      "destination": "/projects/worlds"
+    },
+    {
+      "source": "/projects/wiki/templates",
+      "destination": "/projects/wiki"
     }
   ],
   "icons": {
