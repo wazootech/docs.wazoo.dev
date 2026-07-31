@@ -7,7 +7,7 @@ MemSDK extracts Supermemory's public API surface into a backend-agnostic
 TypeScript contract. Application code can target one memory interface, then swap
 adapters without rewriting its memory layer.
 
-> "Oh wow that is awesome" —
+> "Oh wow that is awesome."
 > [Dhravya Shah](https://x.com/DhravyaShah/status/2074650939072618968), founder
 > of Supermemory
 
@@ -113,9 +113,13 @@ Use the core contract to write backend-agnostic app code:
 import type { SupermemoryInterface } from "memsdk";
 
 function buildApp(client: SupermemoryInterface) {
-  return client.search.documents({ q: "project notes" });
+  return client.search({ q: "project notes" });
 }
 ```
+
+`search` is a callable top-level method on the contract. The legacy
+`search.documents`, `search.execute`, and `search.memories` variants are
+deprecated; use `client.search()` for v4 memory search.
 
 Then wire in a backend adapter. For Letta:
 
@@ -132,10 +136,12 @@ await client.add({
   containerTag: "user_123",
 });
 
-const results = await client.search.documents({
+const results = await client.search({
   q: "ML",
   containerTag: "user_123",
 });
+console.log(results.results);
+// [{ id: "mem_123", similarity: 0.93, memory: "Dhravya prefers ML over traditional programming.", ... }]
 ```
 
 ## Status
