@@ -6,8 +6,8 @@ description: "Connect Wazoo & Worlds knowledge graphs to Vercel AI SDK"
 
 The [Vercel AI SDK](https://sdk.vercel.ai/) is the TypeScript toolkit for
 building reliable AI applications with React, Svelte, and Vue. The Wazoo AI
-Tools package (`@wazoo/tools`) provides tools for LLMs to interact with
-[Worlds Platform](https://console.wazoo.dev) and Wazoo knowledge graphs.
+tools package (`@wazoo/tools`) exposes tools that let LLMs search and query
+`@worlds/client` knowledge graphs.
 
 ## Installation
 
@@ -41,16 +41,25 @@ The tools are designed to work with the
 ```typescript
 import { generateText } from "ai";
 import { openai } from "@ai-sdk/openai";
-import { Worlds } from "@worlds/client";
+import { Client } from "@worlds/client";
+import { ComunicaSparqlEngine } from "@worlds/client/comunica";
+import { RdfjsQuadStore, RdfjsSearchIndex } from "@worlds/client/rdfjs";
+import { QueryEngine } from "@comunica/query-sparql-rdfjs-lite";
+import { Store } from "n3";
 import { createTools } from "@wazoo/tools";
 
-const worlds = new Worlds({
-  apiKey: process.env.WORLDS_TOKEN,
+const store = new Store();
+const client = new Client({
+  quadStore: new RdfjsQuadStore(store),
+  searchIndex: new RdfjsSearchIndex(store),
+  sparqlEngine: new ComunicaSparqlEngine({
+    queryEngine: new QueryEngine(),
+    store,
+  }),
 });
 
-// @wazoo/tools
 const tools = createTools({
-  worlds,
+  client,
   sources: ["my-world"],
 });
 
@@ -71,7 +80,6 @@ If you require granular control, you can import and initialize tools
 individually:
 
 ```typescript
-import { Worlds } from "@worlds/client";
 import {
   createDiscoverSchemaTool,
   createExecuteSparqlTool,
@@ -80,17 +88,14 @@ import {
   createExportRdfTool,
 } from "@wazoo/tools";
 
-const worlds = new Worlds({
-  apiKey: process.env.WORLDS_TOKEN,
+// client is the @worlds/client instance from the usage example above.
+const discoverSchema = createDiscoverSchemaTool(client, {
+  sources: ["my-world"],
 });
-
-const sources = ["my-world"];
-
-const discoverSchema = createDiscoverSchemaTool(worlds, { sources });
-const executeSparql = createExecuteSparqlTool(worlds);
-const searchEntities = createSearchEntitiesTool(worlds);
-const importRdf = createImportRdfTool(worlds);
-const exportRdf = createExportRdfTool(worlds);
+const executeSparql = createExecuteSparqlTool(client);
+const searchEntities = createSearchEntitiesTool(client);
+const importRdf = createImportRdfTool(client);
+const exportRdf = createExportRdfTool(client);
 
 const tools = {
   discoverSchema,

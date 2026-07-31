@@ -228,6 +228,10 @@
         "header": "Company",
         "items": [
           {
+            "label": "Private Beta",
+            "href": "https://wazoo.dev/beta"
+          },
+          {
             "label": "Brand",
             "href": "https://wazoo.dev/brand"
           }
