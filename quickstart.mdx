@@ -9,7 +9,8 @@ If you prefer calling the Wazoo Platform API directly using HTTP/cURL:
 
 <Steps>
   <Step title="Get your platform token">
-    Generate your `wzp_` token from [console.wazoo.dev](https://console.wazoo.dev) under **Tokens**.
+    Generate your `wzp_` token from the
+    [Console tokens page](/console/tokens).
   </Step>
   <Step title="List your worlds">
     ```bash
@@ -33,89 +34,50 @@ If you prefer calling the Wazoo Platform API directly using HTTP/cURL:
   </Step>
 </Steps>
 
----
-
 ## Agent skills (`SKILL.md`)
 
 Agent skills allow AI coding agents (Claude Code, Cursor, OpenCode, Antigravity)
 to query and manage Wazoo memory directly.
 
-Wazoo hosts its main official skill statically at
-[`https://docs.wazoo.dev/skills/wazoo/SKILL.md`](https://docs.wazoo.dev/skills/wazoo/SKILL.md).
-
-### Installation
-
-Install the main Wazoo skill directly into your local agent environment:
+Wazoo publishes a `wazoo` skill through Agent Skills Discovery at
+[docs.wazoo.dev](https://docs.wazoo.dev). Install it into your local agent
+environment:
 
 ```bash
-npx skills add wazootech/docs.wazoo.dev@wazoo -g -y
+npx skills add https://docs.wazoo.dev -g -y
 ```
 
-Or manually place [`SKILL.md`](https://docs.wazoo.dev/skills/wazoo/SKILL.md)
-inside `.agents/skills/wazoo/SKILL.md` (or `~/.gemini/config/skills/`).
+For the full agent-operational skill (world and token lifecycle across the
+control and data planes), manually place
+[`SKILL.md`](https://docs.wazoo.dev/skills/wazoo/SKILL.md) inside
+`.agents/skills/wazoo/SKILL.md` (or `~/.gemini/config/skills/`).
 
-### How AI agents access the API via `SKILL.md`
-
-````markdown
----
-name: wazoo
-description:
-  Manage Wazoo Worlds, provision knowledge graphs, manage tokens, and save
-  persistent agent context.
----
-
-# Wazoo Skill
-
-Use this skill when interacting with the Wazoo platform, managing worlds, or
-saving durable context, user preferences, and project decisions.
-
-## Environment setup
-
-Ensure `WAZOO_PLATFORM_TOKEN` (starts with `wzp_`) is exported in your
-environment.
-
-## 1. List active worlds
-
-```bash
-curl -s -X GET "https://api.wazoo.dev/v1/worlds" \
-  -H "Authorization: Bearer $WAZOO_PLATFORM_TOKEN"
-```
-
-## 2. Store context in a world
-
-```bash
-curl -s -X POST "https://api.wazoo.dev/v1/worlds" \
-  -H "Authorization: Bearer $WAZOO_PLATFORM_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "worldId": "project-context",
-    "world": { "displayName": "Project Context Graph" }
-  }'
-```
-````
-
----
+The manual skill reads `WAZOO_PLATFORM_TOKEN` (`wzp_`) and `WORLDS_TOKEN`
+(`wzw_`) from your environment. It covers the full lifecycle for worlds and
+tokens: list, create, read, update, delete, undelete, search, import, and
+export.
 
 New to Wazoo? Start with the [getting started guide](/getting-started) for an
 end-to-end walkthrough from invite to your first query.
-
----
 
 ## Choose your path
 
 <CardGroup cols={2}>
   <Card title="Platform API" icon="waypoints" href="/platform/api">
-    Manage your Worlds, API tokens, resource usage, and billing via HTTP endpoints.
+    Manage your Worlds, API tokens, resource usage, and billing via HTTP
+    endpoints.
   </Card>
-
-<Card title="TypeScript SDK" icon="code" href="/platform/typescript-sdk">
-  Use `@wazoo/client` for typed TypeScript/Node.js management.
-</Card>
-
-<Card title="Worlds Data Engine" icon="network" href="/projects/worlds">
-  Interact with persistent knowledge graphs, SPARQL queries, and vector search.
-</Card>
-
+  <Card
+    title="TypeScript SDK"
+    icon="/images/icons/typescript.svg"
+    href="/platform/typescript-sdk"
+  >
+    Use `@wazoo/client` for typed TypeScript/Node.js management.
+  </Card>
+  <Card title="Worlds Data Engine" icon="network" href="/projects/worlds">
+    Interact with persistent knowledge graphs, SPARQL queries, and vector
+    search.
+  </Card>
   <Card title="MemSDK" icon="database" href="/projects/memsdk">
     Backend-agnostic memory interface for AI agents.
   </Card>

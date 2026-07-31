@@ -13,22 +13,24 @@ A world mutates its state using RDF patches, which are granular additions and
 deletions of facts. Because Worlds functions as a chronological, append-only
 ledger, these patches permanently preserve historical truth.
 
-### SPARQL updates
+### Import quads
 
-The most common way to mutate state is executing SPARQL updates. When an agent
-runs an `INSERT` or `DELETE` command, Worlds translates it into a deterministic
-patch.
+The mutation path on the hosted API is the import endpoint. SPARQL on the data
+plane is read-only; to change state, send quads to import:
 
-```sparql SPARQL
-PREFIX wazoo: <https://wazoo.dev/#>
-PREFIX schema: <https://schema.org/>
-
-INSERT DATA {
-  wazoo:worlds a schema:SoftwareApplication .
-}
+```bash
+curl -s -X POST "https://worlds-api.wazoo.dev/worlds/my-world-id/import" \
+  -H "Authorization: Bearer $WORLDS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "contentType": "application/json",
+    "data": "[{\"subject\":\"urn:wazoo:worlds\",\"predicate\":\"http://www.w3.org/1999/02/22-rdf-syntax-ns#type\",\"object\":\"https://schema.org/SoftwareApplication\"}]"
+  }'
 ```
 
-Changes in Worlds are orchestrated through the API or direct SPARQL updates.
+The import above asserts that `wazoo:worlds` is a `schema:SoftwareApplication`.
+Set `contentType` to `text/plain` to ingest unstructured text chunks instead.
+
 Unlike traditional databases that overwrite records, Worlds utilizes RDF patches
 to maintain a chronological system of record.
 
@@ -53,11 +55,11 @@ This process is atomic and verifiable.
 Worlds supports multiple methods for mutating state, depending on the required
 precision and automation level.
 
-| Method        | Precision | Use case                                         |
-| :------------ | :-------- | :----------------------------------------------- |
-| SPARQL Update | Highest   | Complex, conditional logic and batch deletes     |
-| API assert    | High      | Programmatic ingestion of verified facts         |
-| RDF Patches   | High      | Delta-based synchronization from external stores |
+| Method       | Use case                                         |
+| :----------- | :----------------------------------------------- |
+| Import quads | Assert structured facts as RDF quads             |
+| Import text  | Ingest unstructured text as searchable chunks    |
+| RDF patches  | Delta-based synchronization from external stores |
 
 ## Feedback ingestion
 
@@ -70,27 +72,14 @@ When a user or supervisor provides feedback (e.g., a thumbs up or a specific
 correction), the API records this as a preference item connected to the original
 fact.
 
-```typescript TypeScript
-import { Worlds } from "@worlds/client";
-
-const worlds = new Worlds({
-  apiKey: process.env.WORLDS_TOKEN,
-});
-
-// Execute a SPARQL update to assert a preference (reward)
-await worlds.sparql(
-  "my-world-id",
-  `PREFIX worlds: <https://schema.wazoo.dev#>
-  PREFIX user: <https://etok.me/#>
-
-  INSERT DATA {
-    <fact:123> worlds:hasPreference [
-      a worlds:Preference ;
-      worlds:hasReward 1.0 ;
-      worlds:verifiedBy user:person
-    ] .
-  }`,
-);
+```bash
+curl -s -X POST "https://worlds-api.wazoo.dev/worlds/my-world-id/import" \
+  -H "Authorization: Bearer $WORLDS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "contentType": "application/json",
+    "data": "[{\"subject\":\"urn:fact:123\",\"predicate\":\"http://www.w3.org/1999/02/22-rdf-syntax-ns#type\",\"object\":\"https://schema.wazoo.dev#Preference\"},{\"subject\":\"urn:fact:123\",\"predicate\":\"https://schema.wazoo.dev#hasReward\",\"object\":\"1.0\"}]"
+  }'
 ```
 
 ## Recursive learning

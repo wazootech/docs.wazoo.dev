@@ -141,7 +141,6 @@
         "pages": [
           "projects/worlds",
           "projects/wiki",
-          "projects/wiki/templates/index",
           "projects/linked-markdown",
           "projects/memsdk"
         ]
@@ -150,7 +149,6 @@
         "group": "Worlds",
         "pages": [
           "worlds/index",
-          "worlds/memory-appraisal",
           "worlds/search",
           "worlds/query",
           "worlds/update"
@@ -230,6 +228,10 @@
         "header": "Company",
         "items": [
           {
+            "label": "Private Beta",
+            "href": "https://wazoo.dev/beta"
+          },
+          {
             "label": "Brand",
             "href": "https://wazoo.dev/brand"
           }
@@ -282,6 +284,14 @@
     {
       "source": "/what-were-building",
       "destination": "/projects"
+    },
+    {
+      "source": "/worlds/memory-appraisal",
+      "destination": "/projects/worlds"
+    },
+    {
+      "source": "/projects/wiki/templates",
+      "destination": "/projects/wiki"
     }
   ],
   "icons": {

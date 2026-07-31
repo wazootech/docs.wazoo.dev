@@ -16,8 +16,9 @@ The connection model uses composable components to scale system complexity:
   like Claude, Gemini, or a custom script to connect to the Worlds API.
 - Memory: A World is an isolated sandbox for agent memories. You must target a
   specific World using a world token and the World ID for every request.
-- Platform management: Use the [Platform API](/platform/api) or `@wazoo/api` to
-  manage world metadata, platform tokens, world auth tokens, and usage records.
+- Platform management: Use the [Platform API](/platform/api) or `@wazoo/client`
+  to manage world metadata, platform tokens, world auth tokens, and usage
+  records.
 - Billing and limits: Usage and limits use transparent resource accounting.
   Stripe is the source of truth for billing and subscription state.
 
@@ -331,7 +332,7 @@ between platform management packages and Worlds data-plane packages.
 ```mermaid
 graph TD
     PLATFORM_SERVER["wazoo-api<br/>Platform API server"]
-    PLATFORM_SDK["@wazoo/api<br/>Platform SDK"]
+    PLATFORM_SDK["@wazoo/client<br/>Platform SDK"]
     WORLDS_CLIENT["@worlds/client<br/>Worlds data client"]
     WORLDS_TOOLS["@wazoo/tools<br/>Agent tools"]
     WORLDS_ADAPTERS["Worlds storage adapters"]

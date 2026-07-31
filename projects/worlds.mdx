@@ -9,9 +9,8 @@ exposes search and SPARQL query paths, and provides APIs that let agents
 retrieve and update verifiable context. Worlds lets models use tool calls to
 retrieve facts from a graph rather than infer them from model weights.
 
-Worlds is designed for curated memory, not transcript accumulation. Use
-[Memory appraisal](/worlds/memory-appraisal) to decide what belongs in a world,
-what belongs in another source system, and what should be discarded.
+Worlds is designed for curated memory, not transcript accumulation. Store
+durable facts in a world and discard the rest.
 
 ## What Worlds provides
 
@@ -25,31 +24,96 @@ what belongs in another source system, and what should be discarded.
 
 ## Repositories
 
-| Repository                                                              | Purpose                                  |
-| ----------------------------------------------------------------------- | ---------------------------------------- |
-| [worlds-client-ts](https://github.com/wazootech/worlds-client-ts)       | Core client facade and in-memory backend |
-| [worlds-libsql](https://github.com/wazootech/worlds-libsql)             | LibSQL/Turso adapter                     |
-| [worlds-denokv](https://github.com/wazootech/worlds-denokv)             | Deno KV adapter                          |
-| [worlds-client-evals](https://github.com/wazootech/worlds-client-evals) | Agent evaluation harness                 |
+| Repository                                                              | Purpose                           |
+| ----------------------------------------------------------------------- | --------------------------------- |
+| [worlds-client-ts](https://github.com/wazootech/worlds-client-ts)       | Core client and in-memory backend |
+| [worlds-libsql](https://github.com/wazootech/worlds-libsql)             | LibSQL/Turso adapter              |
+| [worlds-api](https://github.com/wazootech/worlds-api)                   | Hosted Worlds Data API            |
+| [worlds-client-evals](https://github.com/wazootech/worlds-client-evals) | Agent evaluation harness          |
 
 ## Quickstart
 
-Start with the hosted API when you want managed storage, or use `LocalWorlds`
-from the TypeScript SDK when you want embedded memory during development.
+Start with the hosted API when you want managed storage, or use the embedded
+`@worlds/client` when you want in-memory graph memory during development.
 
 Hosted Worlds has two surfaces:
 
-- `@wazoo/api` manages platform resources such as user-owned Worlds and tokens.
-- `@worlds/client` works with graph data through create, import, export, search,
-  and SPARQL operations.
+- The Wazoo Platform API (`@wazoo/client`) manages platform resources such as
+  user-owned Worlds and tokens.
+- The Worlds Data API, hosted at `worlds-api.wazoo.dev`, handles graph data
+  through import, export, search, and SPARQL operations.
 
 ### Prerequisites
 
 1. [Get access to the hosted Wazoo private beta](/platform/private-beta).
-2. Obtain a world token for the world you want to query.
-3. Save it as `WORLDS_TOKEN`.
+2. Generate a platform token (`wzp_`) from the
+   [Console tokens page](/console/tokens).
+3. Save it as `WAZOO_PLATFORM_TOKEN`.
 
-### Install
+### Create a world
+
+```bash
+curl -s -X POST "https://api.wazoo.dev/v1/worlds" \
+  -H "Authorization: Bearer $WAZOO_PLATFORM_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "worldId": "quickstart-cloud",
+    "world": { "displayName": "My First World", "region": "auto" }
+  }'
+```
+
+### Mint a world token
+
+Data-plane requests use a `wzw_` token scoped to a single world. Save the
+returned secret immediately; it is shown only once:
+
+```bash
+curl -s -X POST "https://api.wazoo.dev/v1/worlds/quickstart-cloud/auth/tokens" \
+  -H "Authorization: Bearer $WAZOO_PLATFORM_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{ "name": "quickstart" }'
+```
+
+Save it as `WORLDS_TOKEN`.
+
+### Import, search, and query
+
+```bash
+curl -s -X POST "https://worlds-api.wazoo.dev/worlds/quickstart-cloud/import" \
+  -H "Authorization: Bearer $WORLDS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "contentType": "application/json",
+    "data": "[{\"subject\":\"urn:user:person\",\"predicate\":\"https://wazoo.dev/#uses\",\"object\":\"urn:wazoo:worlds\"}]"
+  }'
+```
+
+```bash
+curl -s -X POST "https://worlds-api.wazoo.dev/worlds/quickstart-cloud/search" \
+  -H "Authorization: Bearer $WORLDS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "worlds",
+    "limit": 5
+  }'
+```
+
+```bash
+curl -s -X POST "https://worlds-api.wazoo.dev/worlds/quickstart-cloud/sparql" \
+  -H "Authorization: Bearer $WORLDS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "PREFIX wazoo: <https://wazoo.dev/#> SELECT ?resource WHERE { <urn:user:person> wazoo:uses ?resource }"
+  }'
+```
+
+To provision hosted resources programmatically, use the
+[Platform TypeScript SDK](/platform/typescript-sdk).
+
+### Embedded client
+
+For in-memory graph memory during development, wire the core adapters into a
+`Client` from `@worlds/client`:
 
 <CodeGroup>
 ```bash Deno
@@ -66,51 +130,44 @@ bunx jsr add @worlds/client
 
 </CodeGroup>
 
-### Run a graph loop
-
 ```typescript index.ts
-import { Worlds } from "@worlds/client";
+import { Client } from "@worlds/client";
+import { ComunicaSparqlEngine } from "@worlds/client/comunica";
+import { RdfjsQuadStore, RdfjsSearchIndex } from "@worlds/client/rdfjs";
+import { QueryEngine } from "@comunica/query-sparql-rdfjs-lite";
+import { Store } from "n3";
 
-const worlds = new Worlds({
-  apiKey: process.env.WORLDS_TOKEN!,
-  baseUrl: "https://api.wazoo.dev",
+const store = new Store();
+const client = new Client({
+  quadStore: new RdfjsQuadStore({ store }),
+  searchIndex: new RdfjsSearchIndex(store),
+  sparqlEngine: new ComunicaSparqlEngine({
+    queryEngine: new QueryEngine(),
+    store,
+  }),
 });
 
-await worlds.create({
-  worldId: "quickstart-cloud",
-  displayName: "My First World",
+await client.import({
+  source: {
+    kind: "serialized",
+    data: "<urn:user:person> <https://wazoo.dev/#uses> <urn:wazoo:worlds> .",
+    contentType: "text/turtle",
+  },
 });
 
-await worlds.import(
-  "quickstart-cloud",
-  `@prefix user: <https://example.org/user/> .
-   @prefix wazoo: <https://wazoo.dev/#> .
-
-   user:person wazoo:uses wazoo:worlds .`,
-  { contentType: "text/turtle" },
-);
-
-const result = await worlds.sparql(
-  "quickstart-cloud",
-  `PREFIX wazoo: <https://wazoo.dev/#>
-   SELECT ?resource WHERE {
-     <https://example.org/user/person> wazoo:uses ?resource
-   }`,
-);
-
-console.log(JSON.stringify(result, null, 2));
+const results = await client.search({ query: "worlds" });
+const response = await client.sparql({
+  query:
+    "SELECT ?resource WHERE { <urn:user:person> <https://wazoo.dev/#uses> ?resource }",
+});
 ```
 
-For local or test workflows, use `LocalWorlds` from the same SDK. Switch to the
-hosted `Worlds` client when you need managed persistence.
-
-To provision hosted resources programmatically, use the
-[Platform TypeScript SDK](/platform/typescript-sdk).
+Durable embedded backends are published as separate packages, including
+`@worlds/libsql` (LibSQL/Turso) and `@worlds/postgres`.
 
 ### Next steps
 
 - [Search](/worlds/search)
 - [Query](/worlds/query)
 - [Update](/worlds/update)
-- [Memory appraisal](/worlds/memory-appraisal)
 - [Worlds API](/reference)

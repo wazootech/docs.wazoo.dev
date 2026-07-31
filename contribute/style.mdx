@@ -133,12 +133,12 @@ flavor (such as the memory metaphor) is essential for intuition.
     ```typescript
     import type { Tool } from "ai";
     import { tool } from "ai";
-    import type { World } from "@worlds/client";
-    import { LocalWorlds } from "@worlds/client";
+    import type { ClientInterface } from "@worlds/client";
+    import { Client } from "@worlds/client";
     ```
   - _Bad:_
     ```typescript
-    import { type World, LocalWorlds } from "@worlds/client";
+    import { type ClientInterface, Client } from "@worlds/client";
     ```
 - **Tree-shaking optimization**: Use the most specific module entry points
   (e.g., `import { ulid } from "@std/ulid/ulid"`).

@@ -15,9 +15,6 @@ Use the Platform API when you are provisioning or managing resources. Use the
 Worlds Data API when an application or agent needs to query or update graph
 state.
 
-The Platform API is public-facing. It is the production management surface Wazoo
-is building around, even while some implementation details continue to harden.
-
 Usage and limits use transparent resource accounting: Wazoo records the
 underlying resources consumed by Worlds operations, such as database operations,
 import bytes, query duration, and storage bytes. Stripe is the billing source of
@@ -32,8 +29,12 @@ user.
     Manage Worlds, tokens, usage, limits, and billing state.
   </Card>
 
-<Card title="TypeScript SDK" icon="braces" href="/platform/typescript-sdk">
-  Use `@wazoo/api` for platform management from JavaScript or TypeScript.
+<Card
+  title="TypeScript SDK"
+  icon="/images/icons/typescript.svg"
+  href="/platform/typescript-sdk"
+>
+  Use `@wazoo/client` for platform management from JavaScript or TypeScript.
 </Card>
 
   <Card title="Open Console" icon="app-window" href="https://console.wazoo.dev">

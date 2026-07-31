@@ -6,49 +6,58 @@ description: "Connect Worlds to Mastra"
 
 [Mastra](https://mastra.ai/) is an un-opinionated AI engine designed to run
 programmatic intelligence natively alongside your core application code. Since
-Mastra is built on Vercel AI SDK standards, Worlds tools work out of the box
-with Mastra agents.
+Mastra is built on Vercel AI SDK standards, `@wazoo/tools` tools work out of the
+box with Mastra agents.
 
 ## Installation
 
-Install both the Mastra core and Worlds AI SDK:
+Install Mastra core and the Wazoo AI tools:
 
 <CodeGroup>
   ```bash deno
-  deno add jsr:@mastra/core jsr:@worlds/tools
+  deno add jsr:@mastra/core jsr:@wazoo/tools
   ```
 
 ```bash npm
-npx jsr add @mastra/core @worlds/tools
+npx jsr add @mastra/core @wazoo/tools
 ```
 
 ```bash bun
-bunx jsr add @mastra/core @worlds/tools
+bunx jsr add @mastra/core @wazoo/tools
 ```
 
 ```bash pnpm
-pnpm i jsr:@mastra/core jsr:@worlds/tools
+pnpm i jsr:@mastra/core jsr:@wazoo/tools
 ```
 
 </CodeGroup>
 
 ## Usage
 
-You can pass Worlds tools directly to a Mastra `Agent`.
+You can pass `@wazoo/tools` directly to a Mastra `Agent`.
 
 ```typescript
 import { Agent } from "@mastra/core/agent";
 import { openai } from "@ai-sdk/openai";
-import { Worlds } from "@worlds/client";
-import { createTools } from "@worlds/tools";
+import { Client } from "@worlds/client";
+import { ComunicaSparqlEngine } from "@worlds/client/comunica";
+import { RdfjsQuadStore, RdfjsSearchIndex } from "@worlds/client/rdfjs";
+import { QueryEngine } from "@comunica/query-sparql-rdfjs-lite";
+import { Store } from "n3";
+import { createTools } from "@wazoo/tools";
 
-const worlds = new Worlds({
-  apiKey: process.env.WORLDS_TOKEN,
+const store = new Store();
+const client = new Client({
+  quadStore: new RdfjsQuadStore(store),
+  searchIndex: new RdfjsSearchIndex(store),
+  sparqlEngine: new ComunicaSparqlEngine({
+    queryEngine: new QueryEngine(),
+    store,
+  }),
 });
 
-// Initialize the Worlds toolset
 const { executeSparql, searchEntities } = createTools({
-  worlds,
+  client,
   sources: ["my-world"],
 });
 
@@ -75,20 +84,14 @@ individually:
 ```typescript
 import { Agent } from "@mastra/core/agent";
 import { openai } from "@ai-sdk/openai";
-import { Worlds } from "@worlds/client";
-import { createSearchEntitiesTool } from "@worlds/tools";
+import { createSearchEntitiesTool } from "@wazoo/tools";
 
-const worlds = new Worlds({
-  apiKey: process.env.WORLDS_TOKEN,
-});
-
-const sources = ["my-world"];
-
+// client is the @worlds/client instance from the usage example above.
 const agent = new Agent({
   name: "SearchAgent",
   model: openai("gpt-4o"),
   tools: {
-    search: createSearchEntitiesTool({ worlds, sources }),
+    search: createSearchEntitiesTool(client),
   },
 });
 ```

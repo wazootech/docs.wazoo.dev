@@ -38,20 +38,18 @@ top, while noise from any single signal is suppressed.
 
 ## Execute a search
 
-Use the `worlds.search` method to perform a hybrid retrieval across your world.
+Use the data-plane search endpoint to perform hybrid retrieval across a world.
+Data-plane requests authenticate with a `wzw_` world token:
 
-```typescript TypeScript
-import { Worlds } from "@worlds/client";
-
-const worlds = new Worlds({
-  apiKey: process.env.WORLDS_TOKEN,
-});
-
-// Search for an item using natural language
-const results = await worlds.search("my-world-id", "Ethan's manager", {
-  limit: 5,
-  types: ["schema:Person"],
-});
-
-console.log("Search results:", results);
+```bash
+curl -s -X POST "https://worlds-api.wazoo.dev/worlds/my-world-id/search" \
+  -H "Authorization: Bearer $WORLDS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "Ethan's manager",
+    "limit": 5
+  }'
 ```
+
+Results return the matching subject and predicate IRIs plus the literal
+`content`, so an agent can bind the exact entity before running SPARQL.
