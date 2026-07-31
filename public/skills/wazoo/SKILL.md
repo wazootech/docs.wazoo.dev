@@ -52,16 +52,88 @@ curl -s -X GET "https://api.wazoo.dev/v1/worlds/project-context" \
   -H "Authorization: Bearer $WAZOO_PLATFORM_TOKEN"
 ```
 
-### Delete / Clean up a world
+### Update a world
+
+```bash
+curl -s -X PATCH "https://api.wazoo.dev/v1/worlds/project-context" \
+  -H "Authorization: Bearer $WAZOO_PLATFORM_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "updateMask": "displayName",
+    "world": { "displayName": "Project Context Graph v2" }
+  }'
+```
+
+### Delete a world
 
 ```bash
 curl -s -X DELETE "https://api.wazoo.dev/v1/worlds/project-context" \
   -H "Authorization: Bearer $WAZOO_PLATFORM_TOKEN"
 ```
 
----
+### Undelete a world
 
-## 2. Data plane operations
+Deletes are soft and recoverable. Restore a deleted world with undelete:
+
+```bash
+curl -s -X POST "https://api.wazoo.dev/v1/worlds/project-context/undelete" \
+  -H "Authorization: Bearer $WAZOO_PLATFORM_TOKEN"
+```
+
+## 2. Token management
+
+### List platform tokens
+
+```bash
+curl -s -X GET "https://api.wazoo.dev/v1/auth/api-tokens" \
+  -H "Authorization: Bearer $WAZOO_PLATFORM_TOKEN"
+```
+
+### Create a platform token
+
+```bash
+curl -s -X POST "https://api.wazoo.dev/v1/auth/api-tokens" \
+  -H "Authorization: Bearer $WAZOO_PLATFORM_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "my-agent-token",
+    "scope": "users.read worlds.read usage.read"
+  }'
+```
+
+### Revoke a platform token
+
+```bash
+curl -s -X DELETE "https://api.wazoo.dev/v1/auth/api-tokens/my-agent-token" \
+  -H "Authorization: Bearer $WAZOO_PLATFORM_TOKEN"
+```
+
+### List world tokens
+
+```bash
+curl -s -X GET "https://api.wazoo.dev/v1/worlds/project-context/auth/tokens" \
+  -H "Authorization: Bearer $WAZOO_PLATFORM_TOKEN"
+```
+
+### Create a world token
+
+World tokens are scoped to a single world for data-plane access:
+
+```bash
+curl -s -X POST "https://api.wazoo.dev/v1/worlds/project-context/auth/tokens" \
+  -H "Authorization: Bearer $WAZOO_PLATFORM_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{ "name": "ci-data-access" }'
+```
+
+### Revoke a world token
+
+```bash
+curl -s -X DELETE "https://api.wazoo.dev/v1/worlds/project-context/auth/tokens/{tokenUid}" \
+  -H "Authorization: Bearer $WAZOO_PLATFORM_TOKEN"
+```
+
+## 3. Data plane operations
 
 ### Import graph data
 
