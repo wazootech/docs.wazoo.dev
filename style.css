@@ -1,10 +1,11 @@
-/* Force all custom SVG logos to strip native brand colors and match Mintlify's native monochrome UI */
+/* Force all custom SVG logos to strip native brand colors and render in the theme accent color:
+   light mode maps to rgb(var(--primary)) (#FF9800), dark mode to rgb(var(--primary-light)) (#FFB74D) */
 img[src*="/images/icons/"][src$=".svg"] {
-  filter: brightness(0) opacity(0.7);
+  filter: brightness(0) invert(60%) sepia(1) saturate(20) hue-rotate(0deg) brightness(0.925) contrast(2.9);
 }
 
 .dark img[src*="/images/icons/"][src$=".svg"] {
-  filter: brightness(0) invert(1) opacity(0.85);
+  filter: brightness(0) invert(70%) sepia(1) saturate(5) hue-rotate(322deg) brightness(1.09) contrast(1.1);
 }
 
 /* Hide product dropdown buttons since global navigation anchors and links are used instead */
