@@ -8,21 +8,21 @@ hidden: true
 
 ## At a glance
 
-|                 | Worlds                  | MemMachine                              |
-| :-------------- | :---------------------- | :-------------------------------------- |
-| Data model      | RDF triples in a ledger | Graph for episodes, SQL for profiles    |
-| How facts enter | Curated import          | Logged conversations and profile writes |
-| Retrieval       | Hybrid search + SPARQL  | Graph traversal + vectors               |
-| Provenance      | Fact-level ledger       | Graph-derived                           |
-| Deployment      | Hosted beta or embedded | AWS-native, self-hosted                 |
+|                 | Worlds                        | MemMachine                              |
+| :-------------- | :---------------------------- | :-------------------------------------- |
+| Data model      | RDF triples in a ledger       | Graph for episodes, SQL for profiles    |
+| How facts enter | Import, patches, agent writes | Logged conversations and profile writes |
+| Retrieval       | Hybrid search + SPARQL        | Graph traversal + vectors               |
+| Provenance      | Fact-level ledger             | Graph-derived                           |
+| Deployment      | Hosted beta or embedded       | Self-hosted or cloud                    |
 
 ## The philosophical difference
 
-MemMachine is an open-source, AWS-native memory service that splits its model in
-two. Episodic memory, the relational context of conversations, lives in a Neo4j
+MemMachine is an open-source memory service that splits its model in two.
+Episodic memory, the relational context of conversations, lives in a Neo4j
 graph, while profile data lives in SQL. Retrieval walks the graph to reconstruct
-who said what to whom. It emphasizes token efficiency and integrates with AWS
-Bedrock.
+who said what to whom. It emphasizes token efficiency and works across LLM
+providers, including AWS Bedrock.
 
 Worlds stores relational structure too, but as RDF triples in an append-only
 ledger. The difference is where structure comes from. MemMachine derives context
@@ -42,14 +42,16 @@ rather than a retrieved context window.
 - You want to query relationships deterministically instead of walking a
   reconstructed graph.
 - You need to know when a fact changed and who asserted it.
-- Your stack is not AWS-bound and you want provider-agnostic LLM and embedding
-  choices.
+- You want provider-agnostic LLM and embedding choices, including AWS Bedrock
+  ([provider-agnostic](/comparisons/index)).
 
 ## When Worlds does not fit
 
-- You want episodic memory captured from conversations with no curation budget.
-- You are building on AWS Bedrock and want a memory service native to that
-  platform.
+- You want episodic memory reconstructed from conversation logs, with no fact
+  curation. Worlds ingests unstructured text but does not extract graph facts
+  automatically ([update](/worlds/update)).
+- You want a memory service native to AWS operations, such as IAM-based access
+  and Bedrock-managed storage.
 - Context-window token cost is the binding constraint and you want the memory
   layer to minimize it.
 

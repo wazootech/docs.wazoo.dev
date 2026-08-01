@@ -27,8 +27,8 @@ Worlds is deliberately narrow. It does not:
 - **Host an embedding service.** Embeddings come from the embedding provider you
   configure.
 - **Extract memory automatically.** Memory in Worlds is curated. Facts enter a
-  world deliberately, through import, rather than being inferred from
-  transcripts.
+  world deliberately, through import and patches, rather than being inferred
+  from transcripts.
 - **Run agents.** Worlds is not an agent runtime. It is a context source that
   agents query through tool calls.
 - **Replace your primary database.** Worlds is a context engine, not a general
@@ -50,7 +50,7 @@ Worlds is deliberately narrow. It does not:
 | [DIY memory infra](/comparisons/vs-diy-memory-infra)       | Custom stack                  | Custom                     | Your job           | You run it            |
 | [LangMem](/comparisons/vs-langmem)                         | LangGraph vector memory       | Similarity search          | None               | SDK, self-managed     |
 | [MemSearch](/comparisons/vs-memsearch)                     | Standalone memory library     | Similarity search          | None               | Library, self-managed |
-| [MemMachine](/comparisons/vs-memmachine)                   | Graph + SQL hybrid            | Graph traversal + vectors  | Graph-derived      | AWS-native, self-host |
+| [MemMachine](/comparisons/vs-memmachine)                   | Graph + SQL hybrid            | Graph traversal + vectors  | Graph-derived      | Self-host or cloud    |
 | [MemClaw](/comparisons/vs-memclaw)                         | Shared fleet partition        | Partition-aware retrieval  | Governed access    | Managed               |
 | [Maindex](/comparisons/vs-maindex)                         | Typed memory layer            | MCP-based retrieval        | Provenance-typed   | Managed               |
 | [MemSpan](/comparisons/vs-memspan)                         | Portable files                | Dynamic file loading       | None               | Local files           |
@@ -61,11 +61,12 @@ Polygres adds graph-style retrieval over Postgres records rather than RDF
 triples. Turso is the substrate underneath Worlds' `worlds-libsql` adapter
 rather than a direct alternative.
 
-The remaining alternatives cluster by model. Embedding libraries such as LangMem
-and MemSearch recall by similarity. Governed services such as Twilio Memory
-Store, MemClaw, and Maindex organize structure and access. MemSpan trades
-structure for portability. None of them provides a verifiable, queryable fact
-ledger.
+The remaining alternatives cluster by model. Similarity layers such as LangMem,
+MemSearch, and MemSync recall by embedding. Graph-shaped stores such as
+MemMachine combine a knowledge graph with SQL. Governed services such as Twilio
+Memory Store, MemClaw, and Maindex organize structure and access. MemSpan trades
+structure for portability. None of them exposes a queryable, append-only fact
+ledger with deterministic SPARQL verification.
 
 ## When to choose Worlds
 

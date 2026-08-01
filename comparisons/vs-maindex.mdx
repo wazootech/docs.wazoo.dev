@@ -7,13 +7,13 @@ hidden: true
 
 ## At a glance
 
-|                 | Worlds                  | Maindex                 |
-| :-------------- | :---------------------- | :---------------------- |
-| Data model      | RDF triples in a ledger | Typed memory structures |
-| How facts enter | Curated import          | API writes              |
-| Retrieval       | Hybrid search + SPARQL  | MCP-based retrieval     |
-| Provenance      | Fact-level ledger       | Provenance-attributed   |
-| Deployment      | Hosted beta or embedded | Managed layer           |
+|                 | Worlds                        | Maindex                 |
+| :-------------- | :---------------------------- | :---------------------- |
+| Data model      | RDF triples in a ledger       | Typed memory structures |
+| How facts enter | Import, patches, agent writes | API writes              |
+| Retrieval       | Hybrid search + SPARQL        | MCP-based retrieval     |
+| Provenance      | Fact-level ledger             | Provenance-attributed   |
+| Deployment      | Hosted beta or embedded       | Managed layer           |
 
 ## The philosophical difference
 
@@ -36,7 +36,8 @@ it. Scope control limits who reads; the ledger records what changed and when.
 
 ## When Worlds does not fit
 
-- Your tooling is built around MCP and you want a drop-in memory server.
+- Your tooling is built around MCP and you want typed memory records attached to
+  the tools themselves.
 - Typed records with provenance fields satisfy your requirements.
 - You have no relationships worth traversing.
 

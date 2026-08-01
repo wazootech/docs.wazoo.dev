@@ -8,13 +8,13 @@ hidden: true
 
 ## At a glance
 
-|                 | Worlds                  | MemSearch             |
-| :-------------- | :---------------------- | :-------------------- |
-| Data model      | RDF triples in a ledger | Vector memory store   |
-| How facts enter | Curated import          | Session capture       |
-| Retrieval       | Hybrid search + SPARQL  | Similarity search     |
-| Provenance      | Fact-level ledger       | None                  |
-| Deployment      | Hosted beta or embedded | Library, self-managed |
+|                 | Worlds                        | MemSearch             |
+| :-------------- | :---------------------------- | :-------------------- |
+| Data model      | RDF triples in a ledger       | Vector memory store   |
+| How facts enter | Import, patches, agent writes | Session capture       |
+| Retrieval       | Hybrid search + SPARQL        | Similarity search     |
+| Provenance      | Fact-level ledger             | None                  |
+| Deployment      | Hosted beta or embedded       | Library, self-managed |
 
 ## The philosophical difference
 
@@ -36,9 +36,12 @@ owns a pipeline or the person on call. Recall is similarity; assertion is state.
 
 ## When Worlds does not fit
 
-- You want a zero-dependency, drop-in library for a coding assistant today.
+- You want memory today with a single library and no backend, tokens, or graph
+  vocabulary to set up.
 - Recalling past work by similarity is the whole job.
-- You do not want to design a graph vocabulary.
+- You do not want to choose any vocabulary. Worlds reuses standard RDF and
+  schema.org vocabularies ([items](/worlds/index)), but you still pick the
+  domain predicates.
 
 ## Coexistence
 

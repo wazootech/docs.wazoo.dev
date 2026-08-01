@@ -8,13 +8,13 @@ hidden: true
 
 ## At a glance
 
-|                 | Worlds                  | MemSync                      |
-| :-------------- | :---------------------- | :--------------------------- |
-| Data model      | RDF triples in a ledger | Embeddings plus a memory API |
-| How facts enter | Curated import          | REST writes                  |
-| Retrieval       | Hybrid search + SPARQL  | Similarity over embeddings   |
-| Provenance      | Fact-level ledger       | Inference-verifiable         |
-| Deployment      | Hosted beta or embedded | Managed REST API             |
+|                 | Worlds                        | MemSync                      |
+| :-------------- | :---------------------------- | :--------------------------- |
+| Data model      | RDF triples in a ledger       | Embeddings plus a memory API |
+| How facts enter | Import, patches, agent writes | REST writes                  |
+| Retrieval       | Hybrid search + SPARQL        | Similarity over embeddings   |
+| Provenance      | Fact-level ledger             | Inference-verifiable         |
+| Deployment      | Hosted beta or embedded       | Managed REST API             |
 
 ## The philosophical difference
 
@@ -41,7 +41,9 @@ graph.
   vocabulary.
 - Attested inference over verified infrastructure is a hard requirement of your
   stack.
-- You want the memory provider to manage embeddings end to end.
+- You want the memory provider to manage embeddings end to end; Worlds uses the
+  embedding provider you configure
+  ([what Worlds does not do](/comparisons/index)).
 
 ## Coexistence
 

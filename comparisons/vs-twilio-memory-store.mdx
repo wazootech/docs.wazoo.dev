@@ -8,13 +8,13 @@ hidden: true
 
 ## At a glance
 
-|                 | Worlds                  | Twilio Memory Store                |
-| :-------------- | :---------------------- | :--------------------------------- |
-| Data model      | RDF triples in a ledger | Conversational and factual buckets |
-| How facts enter | Curated import          | Bucket writes                      |
-| Retrieval       | Hybrid search + SPARQL  | Bucket lookup + vectors            |
-| Provenance      | Fact-level ledger       | Bucket-level                       |
-| Isolation       | Per-world               | Strict per-tenant                  |
+|                 | Worlds                        | Twilio Memory Store                |
+| :-------------- | :---------------------------- | :--------------------------------- |
+| Data model      | RDF triples in a ledger       | Conversational and factual buckets |
+| How facts enter | Import, patches, agent writes | Bucket writes                      |
+| Retrieval       | Hybrid search + SPARQL        | Bucket lookup + vectors            |
+| Provenance      | Fact-level ledger             | Bucket-level                       |
+| Isolation       | Per-world                     | Strict per-tenant                  |
 
 ## The philosophical difference
 
@@ -41,8 +41,9 @@ recording every fact against a timeline, so you can see when state changed.
 
 ## When Worlds does not fit
 
-- Hard per-tenant isolation is the primary requirement and you have no need to
-  reason across worlds.
+- You need strict per-tenant isolation enforced at the platform level for
+  regulated workloads, rather than per-world isolation with world-scoped tokens
+  ([tokens](/projects/worlds)).
 - You are building inside the Twilio ecosystem and want memory native to that
   platform.
 - Your memory is mostly conversational transcripts where summaries suffice.
