@@ -1,0 +1,68 @@
+---
+title: "Hermes Agent Memory"
+description:
+  "Worlds vs Hermes Agent Memory by Nous Research: multi-tiered LLM memory vs
+  developer-native RDF graph context."
+hidden: true
+---
+
+## At a glance
+
+|              | Worlds                                           | Hermes Agent Memory (Nous Research)                                                      |
+| :----------- | :----------------------------------------------- | :--------------------------------------------------------------------------------------- |
+| Data model   | RDF triples in an append-only fact ledger        | Four-tier memory (Markdown files, SQLite FTS5, Procedural Skills)                        |
+| Memory tiers | Curated RDF knowledge graph                      | Prompt memory (`MEMORY.md`), Session archive (`state.db`), Procedural skills (`skills/`) |
+| Retrieval    | Hybrid: vector, full-text, RDF filters           | FTS5 full-text search (`session_search`) & system prompt injection                       |
+| Provenance   | Fact-level, chronological, verifiable via SPARQL | Session/file-level tracking                                                              |
+| Deployment   | Edge-ready adapters (LibSQL, Postgres) or Cloud  | Local CLI framework / agent runtime                                                      |
+
+## The philosophical difference
+
+The **Hermes Agent** architecture (developed by **Nous Research**) organizes
+agent memory into a pragmatic four-layer stack:
+
+1. **Prompt Memory**: Static snapshot of `MEMORY.md` and `USER.md` injected into
+   system prompts.
+2. **Session Archive**: Historical interaction logs indexed via SQLite FTS5
+   (`state.db`) for episodic keyword recall.
+3. **Procedural Memory**: Extracted task procedures saved as executable markdown
+   skills.
+4. **Pluggable Memory Providers**: Hooks to external memory stores (e.g. Mem0,
+   Supermemory).
+
+Hermes optimizes for **agent self-curation and episodic session history** within
+a local agent CLI runtime.
+
+**Worlds** approaches context from an **open-standard, graph-first stance**.
+Rather than relying on flat markdown files or SQLite FTS search alone, Worlds
+enforces RDF triples where every fact has explicit relationships, temporal
+validity, and deterministic SPARQL queryability.
+
+Where Hermes is an agent runtime managing its own prompt files and SQLite
+session database, Worlds is a dedicated context engine that Hermes agents (or
+any other agent runtime) can query as a verifiable memory provider.
+
+## When Worlds fits
+
+- You need deterministic graph querying (SPARQL) to traverse relationships
+  across complex domain facts.
+- You require fact-level chronological provenance and auditability across all
+  asserted data.
+- You want an open, standards-based RDF memory layer shared across multiple
+  agent runtimes (Claude Code, Letta, Hermes).
+- Your application demands strict compliance, safety, and deterministic
+  filtering where keyword or similarity search alone is insufficient.
+
+## When Worlds does not fit
+
+- You want an all-in-one local agent CLI framework that manages prompt context
+  files (`MEMORY.md`) and session history out of the box.
+- You prefer simple FTS5 text search over episodic agent conversations without
+  establishing a formal knowledge graph vocabulary.
+
+## Coexistence
+
+Hermes agents support pluggable memory provider plugins. Hermes can use its
+internal `MEMORY.md` for local prompt conventions while connecting Worlds as an
+external memory provider tool to query authoritative RDF facts via SPARQL during
+complex multi-step reasoning.
