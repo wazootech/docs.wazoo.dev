@@ -1,10 +1,13 @@
 ---
 title: "Wazoo CLI Reference"
 icon: "terminal"
-description: "Wazoo Platform CLI installation, global flags, and command reference"
+description:
+  "Wazoo Platform CLI installation, global flags, and command reference"
 ---
 
-The Wazoo CLI (`@wazoo/cli`) allows you to manage Wazoo Platform resources, query memory worlds, manage API tokens, and perform graph data operations directly from your terminal.
+The Wazoo CLI (`@wazoo/cli`) allows you to manage Wazoo Platform resources,
+query memory worlds, manage API tokens, and perform graph data operations
+directly from your terminal.
 
 ## Installation
 
@@ -38,11 +41,11 @@ bunx jsr add --global @wazoo/cli
 
 All `wazoo` commands accept the following global flags:
 
-| Flag | Description |
-| :--- | :--- |
-| `--api-url <url>` | Wazoo API base URL (overrides `WAZOO_API_URL` environment variable) |
+| Flag              | Description                                                                   |
+| :---------------- | :---------------------------------------------------------------------------- |
+| `--api-url <url>` | Wazoo API base URL (overrides `WAZOO_API_URL` environment variable)           |
 | `--token <token>` | Wazoo API authentication token (overrides `WAZOO_API_TOKEN` / `WORLDS_TOKEN`) |
-| `--json` | Output response data in structured JSON format |
+| `--json`          | Output response data in structured JSON format                                |
 
 ## Platform Commands
 
@@ -58,7 +61,10 @@ All `wazoo` commands accept the following global flags:
 
 ## World Data Operations
 
-- [wazoo worlds import](./import.mdx): Import text, files, or RDF knowledge into a world
+- [wazoo worlds import](./import.mdx): Import text, files, or RDF knowledge into
+  a world
 - [wazoo worlds export](./export.mdx): Export world graph quads/triples
-- [wazoo worlds search](./search.mdx): Perform hybrid vector + SPARQL graph search across world memory
-- [wazoo worlds sparql](./sparql.mdx): Execute raw SPARQL queries against a world graph
+- [wazoo worlds search](./search.mdx): Perform hybrid vector + SPARQL graph
+  search across world memory
+- [wazoo worlds sparql](./sparql.mdx): Execute raw SPARQL queries against a
+  world graph
