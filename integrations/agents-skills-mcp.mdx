@@ -1,0 +1,61 @@
+---
+title: "Agents, skills, and MCP"
+description:
+  "Give AI coding agents access to Wazoo memory with the wazoo skill."
+---
+
+## Two ways agents reach Wazoo
+
+Agents connect to Wazoo through two REST surfaces (see
+[architecture](/contribute/architecture)):
+
+- **Platform API** (`api.wazoo.dev`) — the control plane. Manage worlds and API
+  tokens with a `wzp_` token.
+- **Worlds API** (`worlds-api.wazoo.dev`) — the data plane. Import, search, run
+  SPARQL, and export against a world with a `wzw_` token.
+
+The MCP protocol is part of the agent-native surface in the architecture. The
+REST endpoints above are the stable path to it today.
+
+## Install the `wazoo` skill
+
+The [wazoo-skills](https://github.com/wazootech/wazoo-skills) repository
+publishes the `wazoo` skill, which packages the full agent-operational surface
+in one place:
+
+```bash
+npx skills add wazootech/wazoo-skills --skill=wazoo
+```
+
+Update the skill when a new version is published:
+
+```bash
+npx skills update wazoo
+```
+
+### Manual placement
+
+For agents that do not use the skills CLI, place the `SKILL.md` directly:
+
+```bash
+mkdir -p .agents/skills/wazoo
+curl -o .agents/skills/wazoo/SKILL.md \
+  https://raw.githubusercontent.com/wazootech/wazoo-skills/main/skills/engineering/wazoo/SKILL.md
+```
+
+Gemini agents read skills from `~/.gemini/config/skills/` instead.
+
+## Environment
+
+The skill reads two environment variables:
+
+| Variable               | Prefix | Plane                                       |
+| :--------------------- | :----- | :------------------------------------------ |
+| `WAZOO_PLATFORM_TOKEN` | `wzp_` | Control plane (worlds, tokens, usage)       |
+| `WORLDS_TOKEN`         | `wzw_` | Data plane (import, search, SPARQL, export) |
+
+## What the skill covers
+
+- Control plane: list, create, read, update, delete, and undelete worlds;
+  create, list, and revoke platform and world tokens.
+- Data plane: import graph data, hybrid search, SPARQL queries, and export.

@@ -34,28 +34,12 @@ If you prefer calling the Wazoo Platform API directly using HTTP/cURL:
   </Step>
 </Steps>
 
-## Agent skills (`SKILL.md`)
+## Agent skills
 
-Agent skills allow AI coding agents (Claude Code, Cursor, OpenCode, Antigravity)
-to query and manage Wazoo memory directly.
-
-Wazoo publishes a `wazoo` skill through Agent Skills Discovery at
-[docs.wazoo.dev](https://docs.wazoo.dev). Install it into your local agent
-environment:
-
-```bash
-npx skills add https://docs.wazoo.dev -g -y
-```
-
-For the full agent-operational skill (world and token lifecycle across the
-control and data planes), manually place
-[`SKILL.md`](https://docs.wazoo.dev/skills/wazoo/SKILL.md) inside
-`.agents/skills/wazoo/SKILL.md` (or `~/.gemini/config/skills/`).
-
-The manual skill reads `WAZOO_PLATFORM_TOKEN` (`wzp_`) and `WORLDS_TOKEN`
-(`wzw_`) from your environment. It covers the full lifecycle for worlds and
-tokens: list, create, read, update, delete, undelete, search, import, and
-export.
+The `wazoo` skill gives AI coding agents (Claude Code, Cursor, OpenCode, Gemini)
+direct access to Wazoo memory. See
+[Agents, skills, and MCP](/integrations/agents-skills-mcp) to install and use
+it.
 
 New to Wazoo? Start with the [getting started guide](/getting-started) for an
 end-to-end walkthrough from invite to your first query.

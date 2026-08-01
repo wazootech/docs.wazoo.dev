@@ -157,6 +157,7 @@
       {
         "group": "Integrations",
         "pages": [
+          "integrations/agents-skills-mcp",
           "integrations/ai-sdk",
           "integrations/claude-code",
           "integrations/gemini-api",
