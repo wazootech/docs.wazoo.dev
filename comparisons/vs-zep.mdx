@@ -1,0 +1,49 @@
+---
+title: "Worlds vs Zep"
+description:
+  "Worlds vs Zep: verifiable graph facts against temporal agent memory."
+hidden: true
+---
+
+## At a glance
+
+|                 | Worlds                 | Zep                                     |
+| :-------------- | :--------------------- | :-------------------------------------- |
+| Data model      | RDF triples            | Session memory and extracted entities   |
+| How facts enter | Curated import         | Automatic extraction from conversations |
+| Retrieval       | Hybrid search + SPARQL | Similarity search                       |
+| Provenance      | Fact-level ledger      | Session-level                           |
+| Query language  | SPARQL                 | SDK retrieval                           |
+
+## The philosophical difference
+
+Zep keeps long-term memory for agents by capturing conversation history and
+extracting entities and facts over time. Retrieval returns what is similar to
+the current context, with temporal awareness baked into the memory model.
+
+Worlds stores facts you assert as RDF triples in an append-only ledger. The
+engine does not watch conversations and extract from them. You curate, the graph
+holds, and SPARQL verifies.
+
+Temporal memory is valuable for chat continuity: the agent remembers what
+happened earlier in the session. It is a weaker foundation for acting on facts,
+because the recalled item is a derived memory, not a fact with a verifiable
+source.
+
+## When Worlds fits
+
+- The agent's actions depend on facts that must be exact and checkable.
+- You want one source of truth shared across sessions, agents, and models.
+- Contradicting facts need resolution at the data layer, not by the model.
+
+## When Worlds does not fit
+
+- You need rich conversation recall with minimal setup.
+- Factual exactness is less important than remembering context.
+- You have no curation budget for maintaining a graph vocabulary.
+
+## Coexistence
+
+Run Zep for conversation memory and Worlds for the facts the agent is allowed to
+act on. The two answer different questions: "what happened" stays in Zep, "what
+is true" comes from Worlds.

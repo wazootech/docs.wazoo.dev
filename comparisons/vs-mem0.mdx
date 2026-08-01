@@ -1,0 +1,48 @@
+---
+title: "Worlds vs Mem0"
+description:
+  "Worlds vs Mem0: curated graph facts against extracted agent memories."
+hidden: true
+---
+
+## At a glance
+
+|                 | Worlds                 | Mem0                                    |
+| :-------------- | :--------------------- | :-------------------------------------- |
+| Data model      | RDF triples            | Extracted memory items                  |
+| How facts enter | Curated import         | Automatic extraction from conversations |
+| Retrieval       | Hybrid search + SPARQL | Similarity search                       |
+| Provenance      | Fact-level ledger      | Item-level                              |
+| Query language  | SPARQL                 | SDK retrieval                           |
+
+## The philosophical difference
+
+Mem0 captures memories from conversations and stores them as extracted items you
+retrieve by similarity. The memory layer decides what matters and returns the
+most similar entries when asked.
+
+Worlds inverts that. You decide which facts matter, assert them as RDF triples,
+and the engine keeps them in a chronological ledger. Retrieval is deterministic:
+the graph either contains the fact or it does not, and SPARQL can prove which.
+
+Extracted memories are convenient for chat applications. They are weak when the
+agent's answer must be defensible, because the stored item is a model-generated
+summary rather than a fact tied to a source.
+
+## When Worlds fits
+
+- Agents act on facts that can be checked against a source of record.
+- You need to resolve contradictions instead of returning conflicting memories.
+- You want a queryable knowledge structure, not a bag of extracted items.
+
+## When Worlds does not fit
+
+- You want automatic memory from user conversations with zero curation.
+- Recall quality matters more than factual exactness.
+- Your team does not want to design a graph vocabulary.
+
+## Coexistence
+
+Use Mem0 for conversational context and Worlds for the durable facts the agent
+is allowed to act on. Keep the two separate: the extracted summary stays on the
+chat side while the authoritative fact comes from the graph.

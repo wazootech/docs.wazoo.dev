@@ -1,0 +1,46 @@
+---
+title: "DIY memory infra"
+description:
+  "Worlds vs assembling your own memory stack: Postgres plus the rest."
+---
+
+## At a glance
+
+|                   | Worlds                 | DIY memory stack                                          |
+| :---------------- | :--------------------- | :-------------------------------------------------------- |
+| Graph model       | RDF triples            | Your schema                                               |
+| Retrieval         | Hybrid search + SPARQL | Your indexes                                              |
+| Provenance        | Fact-level ledger      | Your versioning                                           |
+| Ingestion         | Import API             | Your pipeline                                             |
+| Pieces to operate | One engine             | Postgres, pgvector, a queue, a pipeline, and an audit log |
+
+## The philosophical difference
+
+A do-it-yourself memory stack means assembling Postgres, pgvector, an ingestion
+pipeline, a job queue, and a versioning or audit scheme, then wiring them into a
+coherent API. Each piece is a known quantity. The integration is where the cost
+lives: schema design, retrieval fusion, provenance, and keeping it all
+consistent under concurrent writes.
+
+Worlds packages those decisions. Facts are RDF triples in an append-only ledger,
+retrieval fuses vector, full-text, and graph signals, and the API exposes
+import, search, and SPARQL. You bring the storage substrate through adapters
+such as LibSQL/Turso and Postgres.
+
+## When Worlds fits
+
+- Facts, relationships, and provenance are core requirements, not afterthoughts.
+- You want retrieval and query semantics solved before you have a team for them.
+- You need a smaller operational surface than a five-service stack.
+
+## When Worlds does not fit
+
+- You have an existing Postgres estate and a strong schema already.
+- You need bespoke retrieval logic that a general engine cannot express.
+- You prefer owning every layer and have the operational budget for it.
+
+## Coexistence
+
+The `@worlds/postgres` and `worlds-libsql` adapters let a world live inside the
+database you already run. You keep your existing data where it belongs and use
+Worlds as the context engine that makes it queryable by agents.

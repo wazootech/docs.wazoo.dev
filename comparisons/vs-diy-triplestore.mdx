@@ -1,0 +1,45 @@
+---
+title: "DIY triplestore"
+description: "Worlds vs running your own RDF store: the cost of operations."
+---
+
+## At a glance
+
+|            | Worlds             | DIY triplestore          |
+| :--------- | :----------------- | :----------------------- |
+| Data model | RDF triples        | RDF triples              |
+| Query      | SPARQL             | SPARQL                   |
+| Ingestion  | Import API         | Your pipeline            |
+| Hosting    | Managed data plane | You operate it           |
+| Security   | Scoped tokens      | Your IAM                 |
+| Search     | Hybrid built in    | Vector index is your job |
+
+## The philosophical difference
+
+A triplestore such as Jena Fuseki, GraphDB, or Blazegraph gives you RDF and
+SPARQL, the same standards Worlds builds on. If you run one yourself, you get
+the graph and every operational problem that comes with it: provisioning,
+backups, security, scaling, rate limits, and observability.
+
+Worlds is a managed context engine. The data plane serves import, export, hybrid
+search, and SPARQL behind scoped tokens, and embedded adapters give you the same
+graph locally for development and edge deployment.
+
+## When Worlds fits
+
+- You want the RDF model without running graph infrastructure.
+- Agents need hybrid search, not just SPARQL, out of the box.
+- You want a hosted multi-tenant data plane with token scoping.
+
+## When Worlds does not fit
+
+- You need deep control over a specific triplestore's internals or extensions.
+- You are already running graph infrastructure with mature backup and security
+  practices.
+- Your graph is large enough that a dedicated cluster is justified.
+
+## Coexistence
+
+Worlds uses standard RDF serialization. You can export a world to N-Triples and
+load it into your own triplestore, and you can import data out of an existing
+store into a world. The formats interoperate even when the hosting does not.

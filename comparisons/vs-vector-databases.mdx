@@ -1,0 +1,48 @@
+---
+title: "Vector databases"
+description:
+  "Worlds vs vector databases: similarity search against verifiable context."
+---
+
+## At a glance
+
+|                | Worlds                           | Vector databases     |
+| :------------- | :------------------------------- | :------------------- |
+| Data model     | RDF triples                      | Embedding vectors    |
+| Retrieval      | Vector + full-text + RDF filters | Nearest neighbors    |
+| Relationships  | First-class graph structure      | None                 |
+| Provenance     | Fact-level ledger                | None                 |
+| Query language | SPARQL                           | SDK similarity calls |
+
+## The philosophical difference
+
+Vector databases answer "what is semantically similar?" They index embeddings
+and return the nearest neighbors. That is a useful primitive, and it is one
+signal among three in Worlds' hybrid search.
+
+Worlds stores facts as RDF triples with typed relationships. Retrieval can walk
+the graph, filter by relationship, and fuse results with vector and full-text
+signals. When an agent asks "Ethan's manager", a vector store returns the most
+similar text, which can be another person's manager. Worlds resolves the exact
+entity, then lets SPARQL traverse the actual relationship.
+
+## When Worlds fits
+
+- Answers depend on relationships, not just similarity: ownership, reporting
+  lines, dependencies, provenance.
+- You need exact answers you can verify with a deterministic query.
+- Facts change and stale chunks must not contradict current state.
+
+## When Worlds does not fit
+
+- Your workload is pure similarity: deduplication, recommendations, anomaly
+  detection over dense data.
+- You have no relational structure to model.
+- You are already on a vector store and similarity-only recall is sufficient.
+
+## Coexistence
+
+You can keep a vector index for fuzzy recall and add Worlds for the facts that
+must be exact. Hybrid search inside Worlds already uses vector similarity as one
+signal, so moving from a vector-only store to Worlds keeps the semantic layer
+while adding graph precision.

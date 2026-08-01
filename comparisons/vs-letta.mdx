@@ -1,0 +1,49 @@
+---
+title: "Letta"
+description:
+  "Worlds vs Letta: a context engine against a stateful agent runtime."
+hidden: true
+---
+
+## At a glance
+
+|            | Worlds                  | Letta                          |
+| :--------- | :---------------------- | :----------------------------- |
+| Category   | Context engine          | Agent runtime                  |
+| Data model | RDF graph               | Agent memory files and state   |
+| Retrieval  | Hybrid search + SPARQL  | Vector index over memory files |
+| Provenance | Fact-level ledger       | File-level versioning          |
+| Deployment | Hosted beta or embedded | Self-hosted server             |
+
+## The philosophical difference
+
+Letta is a framework for building stateful agents. Agents persist memory across
+conversations, and memory is versioned like a filesystem. It answers the
+question "how do agents keep state?"
+
+Worlds answers a different question: "how do agents know what is true?" It is a
+context engine that stores and retrieves verified facts. It does not run agents,
+manage tools, or schedule work.
+
+The two are complementary rather than competing. An agent built with Letta can
+call Worlds when it needs a fact it can trust.
+
+## When Worlds fits
+
+- You need a source of truth that any agent can query, regardless of the
+  framework that runs it.
+- Facts must survive across agent restarts, model swaps, and application
+  rewrites.
+- You want SPARQL-verifiable answers, not retrieved text.
+
+## When Worlds does not fit
+
+- You want a complete agent stack in one system: memory, tool execution, and
+  conversation state.
+- You need long-running agent workflows with built-in persistence.
+
+## Coexistence
+
+Use both. Letta manages agent state and conversation memory; Worlds provides the
+verifiable knowledge layer. The [MemSDK](/projects/memsdk) includes a Letta
+adapter, so the same client interface can talk to either backend.
