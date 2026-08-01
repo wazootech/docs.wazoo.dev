@@ -1,20 +1,26 @@
 ---
-title: "list"
-description: "List persistent worlds"
+title: "wazoo worlds list"
+description: "List all worlds owned by your account"
 ---
 
-Retrieves an array of all World items available to your token.
+The `wazoo worlds list` command retrieves all World instances owned by your authenticated account.
 
-<ParamField path="--page" type="number">
-  The pagination cursor for traversing large lists. *Alias:* `-p`
-</ParamField>
-
-<ParamField path="--page-size" type="number">
-  The maximum number of worlds to return per page. *Alias:* `-s`
-</ParamField>
-
-### Usage
+## Usage
 
 ```bash
-worlds list --page 1 --page-size 50
+wazoo worlds list [options]
+```
+
+## Examples
+
+### List all worlds
+
+```bash
+wazoo worlds list
+```
+
+### List worlds as JSON
+
+```bash
+wazoo worlds list --json
 ```

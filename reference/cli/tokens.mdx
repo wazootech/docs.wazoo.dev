@@ -1,0 +1,42 @@
+---
+title: "wazoo tokens"
+description: "Manage platform authentication tokens"
+---
+
+The `wazoo tokens` command group allows you to list and create API authentication tokens for accessing the Wazoo Platform.
+
+## Commands
+
+### `wazoo tokens list`
+
+List all platform API authentication tokens associated with your account.
+
+```bash
+wazoo tokens list [options]
+```
+
+### `wazoo tokens create`
+
+Create a new API token with a descriptive label.
+
+```bash
+wazoo tokens create -n <name> [options]
+```
+
+| Flag | Description |
+| :--- | :--- |
+| `-n, --name <name>` | **Required.** Descriptive label for the token |
+
+## Examples
+
+### List active tokens
+
+```bash
+wazoo tokens list
+```
+
+### Create a new token for CI/CD
+
+```bash
+wazoo tokens create --name "GitHub Actions CI"
+```

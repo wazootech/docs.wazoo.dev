@@ -1,34 +1,28 @@
 ---
-title: "search"
-description: "Search items using hybrid similarity"
+title: "wazoo worlds search"
+description: "Hybrid vector and graph search across world memory"
 ---
 
-Executes a semantic hybrid search against the world's underlying vector index.
+The `wazoo worlds search` command performs semantic hybrid search across vector embeddings and knowledge graph triples stored within a world.
 
-<ParamField path="--world" type="string" required>
-  The unique system identifier of the target world. *Alias:* `-w`
-</ParamField>
-
-<ParamField path="--query" type="string" required>
-  The free-text search string. *Alias:* `-q`
-</ParamField>
-
-<ParamField path="--limit" type="number">
-  The maximum number of entities to return. Default is 10. *Alias:* `-l`
-</ParamField>
-
-<ParamField path="--subjects" type="string">
-  Specifies IRIs to restrict the search context. Can be provided multiple times.
-  *Alias:* `-s`
-</ParamField>
-
-<ParamField path="--predicates" type="string">
-  Specifies IRIs of properties to restrict the search context. Can be provided
-  multiple times. *Alias:* `-p`
-</ParamField>
-
-### Usage
+## Usage
 
 ```bash
-worlds search --world my-world --query "Acme Corp operations" --limit 5
+wazoo worlds search <worldId> -q <query> [options]
+```
+
+## Parameters & Options
+
+| Argument / Option | Description |
+| :--- | :--- |
+| `<worldId>` | **Required.** Target world ID |
+| `-q, --query <text>` | **Required.** Natural language or vector search query |
+| `-l, --limit <number>` | Maximum number of results to return (default: `5`) |
+
+## Examples
+
+### Search for relevant memory context
+
+```bash
+wazoo worlds search my-world -q "Acme Corp operations" --limit 10
 ```

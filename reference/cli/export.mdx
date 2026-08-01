@@ -1,23 +1,28 @@
 ---
-title: "export"
-description: "Export a graph to a local file"
+title: "wazoo worlds export"
+description: "Export world graph quads/triples"
 ---
 
-Exports the entirety of a World's knowledge graph into a standard RDF
-serialization stream, emitted directly to standard out.
+The `wazoo worlds export` command exports statements and quads from a target world graph.
 
-<ParamField path="--world" type="string" required>
-  The unique system identifier of the target world. *Alias:* `-w`
-</ParamField>
-
-<ParamField path="--content-type" type="string">
-  The desired RDF serialization content type. *Options:* `text/turtle`,
-  `application/n-quads`, `application/n-triples`, `text/n3`, `application/trig`.
-  *Alias:* `-c`
-</ParamField>
-
-### Usage
+## Usage
 
 ```bash
-worlds export --world my-world --content-type text/turtle > backup.ttl
+wazoo worlds export <worldId> [options]
+```
+
+## Parameters & Options
+
+| Argument / Option | Description |
+| :--- | :--- |
+| `<worldId>` | **Required.** Target world ID |
+| `--format <fmt>` | Export format (default: `application/json`) |
+| `-l, --limit <number>` | Maximum quads to export (default: `100`) |
+
+## Examples
+
+### Export graph data as JSON
+
+```bash
+wazoo worlds export my-world --limit 50
 ```
