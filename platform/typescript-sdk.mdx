@@ -34,20 +34,17 @@ bunx jsr add @wazoo/client
 
 </CodeGroup>
 
-## Create a client
+## Quickstart
 
 ```typescript
-import { createClient } from "@wazoo/client";
+import { listWorlds } from "@wazoo/client";
 
-const client = createClient({
-  baseUrl: "https://api.wazoo.dev",
-  auth: process.env.WAZOO_PLATFORM_TOKEN,
-});
+// Connects to https://api.wazoo.dev and reads process.env.WAZOO_PLATFORM_TOKEN out of the box
+const { data, error } = await listWorlds();
+console.log(data?.worlds);
 ```
 
-The token must be a platform token with the `wzp_` prefix. The client is a
-`@hey-api/client-fetch` instance. Set `throwOnError: true` if you prefer
-exceptions over discriminated unions.
+Platform tokens require the `wzp_` prefix.
 
 ## Worlds
 
@@ -61,12 +58,11 @@ import {
 } from "@wazoo/client";
 
 // List active worlds
-const { data } = await listWorlds({ client });
+const { data } = await listWorlds();
 console.log(data?.worlds);
 
 // Create a world
 const created = await createWorld({
-  client,
   body: {
     worldId: "support-knowledge",
     world: { displayName: "Support Knowledge", region: "auto" },
@@ -75,13 +71,11 @@ const created = await createWorld({
 
 // Get a world by ID
 const world = await getWorld({
-  client,
   path: { worldId: "support-knowledge" },
 });
 
 // Update display name
 await updateWorld({
-  client,
   path: { worldId: "support-knowledge" },
   body: {
     updateMask: "displayName",
@@ -90,7 +84,7 @@ await updateWorld({
 });
 
 // Soft-delete (recoverable for 30 days)
-await deleteWorld({ client, path: { worldId: "support-knowledge" } });
+await deleteWorld({ path: { worldId: "support-knowledge" } });
 ```
 
 Creating a platform world provisions a per-World Turso database. Use
@@ -107,11 +101,10 @@ import {
 } from "@wazoo/client";
 
 // List tokens
-const { data } = await listPlatformTokens({ client });
+const { data } = await listPlatformTokens();
 
 // Create a token (secret shown once)
 const created = await createPlatformToken({
-  client,
   body: {
     name: "my-read-token",
     scope: "users.read worlds.read usage.read",
@@ -120,7 +113,7 @@ const created = await createPlatformToken({
 console.log(created.data?.token); // wzp_...
 
 // Revoke a token by name
-await deletePlatformToken({ client, path: { tokenName: "my-read-token" } });
+await deletePlatformToken({ path: { tokenName: "my-read-token" } });
 ```
 
 ## World auth tokens
@@ -136,18 +129,15 @@ import {
 } from "@wazoo/client";
 
 const { data } = await listWorldTokens({
-  client,
   path: { worldId: "support-knowledge" },
 });
 
 const created = await createWorldToken({
-  client,
   path: { worldId: "support-knowledge" },
 });
 console.log(created.data?.token); // one-time secret
 
 await deleteWorldToken({
-  client,
   path: { worldId: "support-knowledge", tokenUid: created.data!.token.uid },
 });
 ```
@@ -158,13 +148,11 @@ await deleteWorldToken({
 import { getWorldUsage, getWorldLimits } from "@wazoo/client";
 
 const usage = await getWorldUsage({
-  client,
   path: { worldId: "support-knowledge" },
 });
 console.log(usage.data?.usage.total);
 
 const limits = await getWorldLimits({
-  client,
   path: { worldId: "support-knowledge" },
 });
 ```
@@ -175,10 +163,30 @@ const limits = await getWorldLimits({
 import { getWorldBilling } from "@wazoo/client";
 
 const billing = await getWorldBilling({
-  client,
   path: { worldId: "support-knowledge" },
 });
 console.log(billing.data?.billing.state);
+```
+
+## Custom client configuration
+
+By default, SDK functions automatically use the built-in client. You can configure global defaults or create isolated custom client instances:
+
+```typescript
+import { client, createClient, listWorlds } from "@wazoo/client";
+
+// Configure default client globally (e.g. set global headers or custom token)
+client.setConfig({
+  auth: process.env.CUSTOM_PLATFORM_TOKEN,
+});
+
+// Or create an isolated client instance for multi-tenant setups
+const customClient = createClient({
+  baseUrl: "https://api.wazoo.dev",
+  auth: "wzp_custom_token",
+});
+
+const { data } = await listWorlds({ client: customClient });
 ```
 
 ## Error handling
@@ -186,7 +194,7 @@ console.log(billing.data?.billing.state);
 The SDK returns a discriminated union by default:
 
 ```typescript
-const r = await listWorlds({ client });
+const r = await listWorlds();
 if (r.error) {
   console.error(r.error.error.code, r.error.error.message);
 } else {
