@@ -1,0 +1,53 @@
+---
+title: "Supermemory"
+description: "Worlds vs Supermemory: extracted memory against curated graphs."
+---
+
+## At a glance
+
+|                 | Worlds                                           | Supermemory                       |
+| :-------------- | :----------------------------------------------- | :-------------------------------- |
+| Data model      | RDF triples in an append-only ledger             | Extracted entities and documents  |
+| How facts enter | Curated import (quads or text)                   | Automatic extraction from sources |
+| Retrieval       | Hybrid: vector, full-text, RDF filters           | Search, memory graph, profiles    |
+| Provenance      | Fact-level, chronological, verifiable via SPARQL | Partial, derived from sources     |
+| Deployment      | Hosted beta or embedded adapters                 | Hosted or self-hosted             |
+
+## The philosophical difference
+
+Supermemory builds memory by extracting and structuring information from your
+connected sources, then serving it back through search, a knowledge graph, and
+entity profiles. Extraction does the work: you connect a source and the memory
+layer derives the structure.
+
+Worlds takes the opposite stance. Memory is curated, not accumulated. You decide
+which facts matter, assert them as RDF triples, and the engine keeps them in an
+append-only ledger. Nothing is inferred; everything is stated.
+
+The tradeoff is effort against control. Extraction-based memory is cheap to
+start and useful for loosely-structured recall. Curated graphs cost more to
+maintain and return exactly what you stored, with a path back to every source.
+
+## When Worlds fits
+
+- The fact must be true, not merely similar: compliance, safety, operations.
+- You need to resolve contradictions at the data layer instead of leaving the
+  model to guess between conflicting chunks.
+- You want a deterministic query language (SPARQL) over your knowledge, not just
+  retrieval.
+- You need a chronological record of when facts changed and who asserted them.
+
+## When Worlds does not fit
+
+- You want zero-effort memory from messy, unstructured sources with no curation
+  budget.
+- Your use case is loose recall ("what did we talk about last week") where an
+  extracted summary is enough.
+- You are prototyping and have no graph vocabulary in mind yet.
+
+## Coexistence
+
+The [MemSDK](/projects/memsdk) defines a common memory interface. You can switch
+which backend serves a client without changing the calling code, which lets you
+prototype against an extraction-based store and move to Worlds when the facts
+need to be authoritative.

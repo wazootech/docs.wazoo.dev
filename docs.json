@@ -78,6 +78,19 @@
         ]
       },
       {
+        "group": "Comparisons",
+        "pages": [
+          "comparisons/index",
+          "comparisons/vs-supermemory",
+          "comparisons/vs-letta",
+          "comparisons/vs-vector-databases",
+          "comparisons/vs-mem0",
+          "comparisons/vs-zep",
+          "comparisons/vs-diy-triplestore",
+          "comparisons/vs-diy-memory-infra"
+        ]
+      },
+      {
         "group": "Platform",
         "pages": [
           "platform/private-beta",
