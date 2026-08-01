@@ -1,0 +1,39 @@
+---
+title: "Memblock"
+description: "Worlds vs Memblock: deterministic RDF graph context vs block-based agent memory."
+hidden: true
+---
+
+## At a glance
+
+|                 | Worlds                                           | Memblock                          |
+| :-------------- | :----------------------------------------------- | :-------------------------------- |
+| Data model      | RDF triples in an append-only ledger             | Block-based memory structures & key-value records |
+| Memory model    | Curated graph facts with explicit relations      | Managed memory blocks for LLM agent state |
+| Retrieval       | Hybrid: vector, full-text, RDF filters           | Block lookup & similarity search  |
+| Provenance      | Fact-level, chronological, verifiable via SPARQL | Session/block-level tracking      |
+| Deployment      | Edge-ready adapters or hosted cloud              | Managed API / SDK                 |
+
+## The philosophical difference
+
+[Memblock](https://www.memblock.xyz/) provides block-structured memory management for LLM applications and agents, focusing on organizing short-term and long-term agent state into accessible, modular memory blocks. It helps agents retain conversation context and structured user variables across sessions.
+
+Worlds treats agent memory as a **curated, verifiable knowledge graph**. Rather than storing memory as semi-structured blocks or key-value snippets, Worlds enforces RDF triples where every fact has explicit subjects, predicates, objects, and provenance.
+
+Where Memblock optimizes for flexible agent scratchpads and block-level memory state, Worlds optimizes for strict fact precision, deterministic graph querying (SPARQL), and auditability.
+
+## When Worlds fits
+
+- You need to query relationships between facts using declarative graph queries (SPARQL).
+- Your memory demands strict fact verification and conflict resolution at the data layer.
+- You need chronological tracking and full provenance back to source assertions.
+- You are building edge-native or self-hosted applications that require zero cloud API dependencies.
+
+## When Worlds does not fit
+
+- You want simple key-value or block-based state storage for agent conversations without defining graph schemas or RDF relationships.
+- You are looking for a quick managed memory API for agent session state without requiring graph filters or multi-hop relationship traversal.
+
+## Coexistence
+
+Agents can use Memblock for dynamic session scratchpads and ephemeral user preferences, while querying Worlds as the authoritative, long-term semantic knowledge graph for verified facts and domain logic.

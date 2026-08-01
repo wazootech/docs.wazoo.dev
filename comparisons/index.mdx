@@ -33,29 +33,34 @@ Worlds is deliberately narrow. It does not:
   agents query through tool calls.
 - **Replace your primary database.** Worlds is a context engine, not a general
   operational store. Adapters persist to your existing substrate.
-- **Do vector search alone.** Vectors are one of three retrieval signals. The
-  graph and its filters are the point.
+- **Equate vector similarity with relevance.** Similarity != relevance. Vectors
+  are only one retrieval signal in Worlds. The graph structure and SPARQL
+  filters ensure agents retrieve exact, verifiable facts rather than loose
+  semantic guesses.
 
 ## How the alternatives line up
 
+<!-- Alternatives table must be maintained in lexicographical (alphabetical) order by display name -->
 | Alternative                                                | Core model                    | Retrieval                  | Provenance         | Managed?              |
 | :--------------------------------------------------------- | :---------------------------- | :------------------------- | :----------------- | :-------------------- |
-| [Supermemory](/comparisons/vs-supermemory)                 | Extracted memories            | Search, memory graph       | Partial            | Hosted or self-host   |
-| [Letta](/comparisons/vs-letta)                             | Stateful agent runtime        | Files and vector index     | File-level         | Self-host             |
-| [Vector databases](/comparisons/vs-vector-databases)       | Embedding index               | Nearest neighbors          | None               | Usually hosted        |
-| [Mem0](/comparisons/vs-mem0)                               | Extracted agent memories      | Similarity search          | Item-level         | Hosted or self-host   |
-| [Zep](/comparisons/vs-zep)                                 | Extracted agent memories      | Similarity search          | Session-level      | Hosted or self-host   |
-| [TrustGraph](/comparisons/vs-trustgraph)                   | RDF graph (auto-extracted)    | GraphRAG + SPARQL          | Extraction traces  | Self-host             |
-| [DIY triplestore](/comparisons/vs-diy-triplestore)         | RDF graph                     | SPARQL                     | Your job           | You run it            |
 | [DIY memory infra](/comparisons/vs-diy-memory-infra)       | Custom stack                  | Custom                     | Your job           | You run it            |
+| [DIY triplestore](/comparisons/vs-diy-triplestore)         | RDF graph                     | SPARQL                     | Your job           | You run it            |
 | [LangMem](/comparisons/vs-langmem)                         | LangGraph vector memory       | Similarity search          | None               | SDK, self-managed     |
-| [MemSearch](/comparisons/vs-memsearch)                     | Standalone memory library     | Similarity search          | None               | Library, self-managed |
-| [MemMachine](/comparisons/vs-memmachine)                   | Graph + SQL hybrid            | Graph traversal + vectors  | Graph-derived      | Self-host or cloud    |
-| [MemClaw](/comparisons/vs-memclaw)                         | Shared fleet partition        | Partition-aware retrieval  | Governed access    | Managed               |
+| [Letta](/comparisons/vs-letta)                             | Stateful agent runtime        | Files and vector index     | File-level         | Self-host             |
 | [Maindex](/comparisons/vs-maindex)                         | Typed memory layer            | MCP-based retrieval        | Provenance-typed   | Managed               |
+| [Mem0](/comparisons/vs-mem0)                               | Extracted agent memories      | Similarity search          | Item-level         | Hosted or self-host   |
+| [Memblock](/comparisons/vs-memblock)                       | Block-based memory structures | Block lookup + vectors     | Session-level      | Managed               |
+| [MemClaw](/comparisons/vs-memclaw)                         | Shared fleet partition        | Partition-aware retrieval  | Governed access    | Managed               |
+| [MemMachine](/comparisons/vs-memmachine)                   | Graph + SQL hybrid            | Graph traversal + vectors  | Graph-derived      | Self-host or cloud    |
+| [MemSearch](/comparisons/vs-memsearch)                     | Standalone memory library     | Similarity search          | None               | Library, self-managed |
 | [MemSpan](/comparisons/vs-memspan)                         | Portable files                | Dynamic file loading       | None               | Local files           |
 | [MemSync](/comparisons/vs-memsync)                         | Verified-embedding memory API | Similarity over embeddings | Inference-verified | Managed               |
+| [Palantir Foundry](/comparisons/vs-palantir)               | Enterprise Object Ontology    | Proprietary Ontology APIs  | Pipeline / Lineage | Enterprise SaaS       |
+| [Supermemory](/comparisons/vs-supermemory)                 | Extracted memories            | Search, memory graph       | Partial            | Hosted or self-host   |
+| [TrustGraph](/comparisons/vs-trustgraph)                   | RDF graph (auto-extracted)    | GraphRAG + SPARQL          | Extraction traces  | Self-host             |
 | [Twilio Memory Store](/comparisons/vs-twilio-memory-store) | Structured memory buckets     | Bucket lookup + vectors    | Bucket-level       | Managed               |
+| [Vector databases](/comparisons/vs-vector-databases)       | Embedding index               | Nearest neighbors          | None               | Usually hosted        |
+| [Zep](/comparisons/vs-zep)                                 | Extracted agent memories      | Similarity search          | Session-level      | Hosted or self-host   |
 
 Polygres adds graph-style retrieval over Postgres records rather than RDF
 triples. Turso is the substrate underneath Worlds' `worlds-libsql` adapter
@@ -70,10 +75,7 @@ ledger with deterministic SPARQL verification.
 
 ## When to choose Worlds
 
-Choose Worlds when the facts matter: agents that operate on company knowledge,
-regulated data, or any domain where a plausible-sounding wrong answer is worse
-than no answer. The ledger, the graph filters, and the SPARQL verification path
-exist to make reasoning inspectable.
+Choose Worlds when conformance and interoperability are non-negotiable: agents that rely on W3C open standards (RDF, SPARQL), portable memory layers, and deterministic graph verification across any database or model provider. The append-only ledger and SPARQL query engine ensure your agent context is fully interoperable, vendor-agnostic, and inspectable.
 
 ## Next steps
 

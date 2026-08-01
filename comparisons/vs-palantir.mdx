@@ -1,0 +1,40 @@
+---
+title: "Palantir Foundry"
+description: "Worlds vs Palantir: developer-native RDF agent context vs enterprise ontology platform."
+hidden: true
+---
+
+## At a glance
+
+|                 | Worlds                                           | Palantir Foundry / Ontology       |
+| :-------------- | :----------------------------------------------- | :-------------------------------- |
+| Data model      | RDF triples in an append-only fact ledger        | Enterprise Object Ontology & tabular data pipelines |
+| Primary surface | Developer-native API & agent tool calls          | Enterprise operational suits & analyst dashboards  |
+| Query language  | Standard SPARQL + Hybrid (Vector, Full-Text, RDF)| Proprietary Ontology APIs & Phonograph/Workshop   |
+| Target audience | AI agents and developers building agentic workflows | Large enterprise operations and data integration teams |
+| Deployment      | Edge-ready adapters (LibSQL, Postgres) or Cloud  | Heavy enterprise SaaS / dedicated multi-cloud tenant |
+
+## The philosophical difference
+
+Palantir Foundry centers around an enterprise **Object Ontology**—a top-down operational digital twin that binds massive enterprise data sources, transactional pipelines, and user actions into business objects (e.g., *Aircraft*, *Supplier*, *Work Order*). It is designed to empower human analysts, executives, and enterprise workflows with heavy governance and integration capabilities (as highlighted by tools like [Semantica](https://github.com/semantica-agi/semantica)).
+
+Worlds approaches knowledge from a **developer-native, agent-first stance**. Instead of acting as an all-encompassing enterprise operational platform, Worlds is a lightweight context engine. Facts are asserted as RDF triples into an append-only ledger and exposed directly to AI agents through hybrid search and SPARQL graph queries.
+
+Where Palantir provides a heavy end-to-end enterprise platform with UI applications, Worlds provides open, verifiable, edge-ready context infrastructure that agents can query deterministically.
+
+## When Worlds fits
+
+- You are building AI agents that need deterministic, verifiable graph context via standard SPARQL and hybrid search.
+- You want open-standard RDF triplestore mechanics without vendor lock-in to an enterprise operational suite.
+- You need lightweight, edge-deployable memory adapters (e.g., SQLite/LibSQL, Postgres) that fit directly inside your existing application architecture.
+- You want developer-first SDKs (`memsdk`) rather than enterprise analyst UIs and complex data pipeline orchestrations.
+
+## When Worlds does not fit
+
+- You need a full-scale enterprise data integration platform with drag-and-drop data pipeline builders, enterprise access governance suites, and executive dashboards.
+- Your primary users are non-technical business analysts rather than software engineers building autonomous AI agents.
+- You require deep, out-of-the-box integration with legacy enterprise ERPs, defense systems, and legacy corporate databases.
+
+## Coexistence
+
+Worlds and Palantir target different tiers of the software stack. Enterprise teams running Palantir can use Foundry as their macro data lake and operational ontology, while deploying Worlds as the fast, lightweight, SPARQL-driven agent context layer where autonomous micro-agents perform real-time retrieval and fact verification.
