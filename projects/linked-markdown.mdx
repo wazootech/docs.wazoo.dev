@@ -76,7 +76,9 @@ pip install linked-markdown
 
 Use `extract` to read semantic attributes from a Markdown document:
 
-```typescript
+<CodeGroup>
+
+```typescript TypeScript
 import { extract } from "@wazoo/linked-markdown";
 
 const result = extract(`---
@@ -92,3 +94,48 @@ const result = extract(`---
 console.log(result.attrs);
 // { "@id": "https://example.org/docs/alice", "@type": "schema:Person" }
 ```
+
+```python Python
+from linked_markdown import extract
+
+result = extract("""---
+{
+  "@id": "https://example.org/docs/alice",
+  "@type": "schema:Person"
+}
+---
+
+# Alice
+""")
+
+print(result.attrs)
+# {'@id': 'https://example.org/docs/alice', '@type': 'schema:Person'}
+```
+
+</CodeGroup>
+
+## RDF Compatibility
+
+The `attrs` data returned by `extract()` is valid JSON-LD, ready for loading
+into RDF graph stores:
+
+<CodeGroup>
+
+```python Python (RDFLib)
+import json
+import rdflib
+from linked_markdown import extract
+
+result = extract(markdown)
+graph = rdflib.Graph()
+graph.parse(data=json.dumps(result.attrs), format="json-ld")
+```
+
+```typescript TypeScript (JSON-LD)
+import { extract } from "@wazoo/linked-markdown";
+
+const result = extract(markdown);
+// result.attrs is valid JSON-LD, directly loadable into RDF quad stores
+```
+
+</CodeGroup>
