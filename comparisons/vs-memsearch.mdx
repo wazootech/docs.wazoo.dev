@@ -1,0 +1,49 @@
+---
+title: "MemSearch"
+description:
+  "Worlds vs MemSearch: a standalone memory library for coding assistants
+  against a shared fact graph."
+hidden: true
+---
+
+## At a glance
+
+|                 | Worlds                  | MemSearch             |
+| :-------------- | :---------------------- | :-------------------- |
+| Data model      | RDF triples in a ledger | Vector memory store   |
+| How facts enter | Curated import          | Session capture       |
+| Retrieval       | Hybrid search + SPARQL  | Similarity search     |
+| Provenance      | Fact-level ledger       | None                  |
+| Deployment      | Hosted beta or embedded | Library, self-managed |
+
+## The philosophical difference
+
+MemSearch is a standalone, MIT-licensed memory library extracted from the
+OpenClaw autonomous agent. You drop it into a project and recall past sessions
+by similarity. Its plugin for Claude Code gives the coding assistant persistent,
+human-readable memory across development sessions.
+
+Worlds is a graph of curated facts. For coding assistants the difference is what
+counts as memory. MemSearch recalls what you did before; Worlds asserts facts
+about the codebase and organization that must be true, such as the service that
+owns a pipeline or the person on call. Recall is similarity; assertion is state.
+
+## When Worlds fits
+
+- The fact must be checkable: which team owns this service must resolve exactly.
+- You want relationships between facts, not just session history.
+- State changes over time and you need to see the timeline.
+
+## When Worlds does not fit
+
+- You want a zero-dependency, drop-in library for a coding assistant today.
+- Recalling past work by similarity is the whole job.
+- You do not want to design a graph vocabulary.
+
+## Coexistence
+
+Keep MemSearch inside the coding assistant for session recall, and point the
+assistant at Worlds for authoritative project facts. The
+[OpenClaw integration](/integrations/openclaw) and
+[Claude Code integration](/integrations/claude-code) both describe how an
+assistant reaches Worlds for verified context.

@@ -1,0 +1,47 @@
+---
+title: "Maindex"
+description:
+  "Worlds vs Maindex: an MCP memory layer against a verifiable fact graph."
+hidden: true
+---
+
+## At a glance
+
+|                 | Worlds                  | Maindex                 |
+| :-------------- | :---------------------- | :---------------------- |
+| Data model      | RDF triples in a ledger | Typed memory structures |
+| How facts enter | Curated import          | API writes              |
+| Retrieval       | Hybrid search + SPARQL  | MCP-based retrieval     |
+| Provenance      | Fact-level ledger       | Provenance-attributed   |
+| Deployment      | Hosted beta or embedded | Managed layer           |
+
+## The philosophical difference
+
+Maindex is a cross-platform memory layer exposed as an MCP server. It acts as a
+source of truth across applications and agents, with typed structures,
+provenance attributes, and scoped user-controlled access. Memory travels with
+the tools that use it.
+
+Worlds shares the source-of-truth ambition, but the structures are graphs rather
+than typed records. A fact in Worlds is a triple: two items connected by a
+property, stored against a timeline. Provenance in Maindex is an attribute on a
+record; in Worlds it is the path from a fact back to the source that asserted
+it. Scope control limits who reads; the ledger records what changed and when.
+
+## When Worlds fits
+
+- Facts have relationships you need to traverse, not attributes to read.
+- You want deterministic SPARQL answers over your knowledge.
+- You need to reconstruct history: when a fact changed and from what source.
+
+## When Worlds does not fit
+
+- Your tooling is built around MCP and you want a drop-in memory server.
+- Typed records with provenance fields satisfy your requirements.
+- You have no relationships worth traversing.
+
+## Coexistence
+
+Route memory between tools through Maindex's MCP layer while Worlds holds the
+authoritative graph. The [MCP integration](/integrations/agents-skills-mcp)
+shows how Worlds itself can be reached through MCP tools.

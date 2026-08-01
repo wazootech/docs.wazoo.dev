@@ -38,20 +38,34 @@ Worlds is deliberately narrow. It does not:
 
 ## How the alternatives line up
 
-| Alternative                                          | Core model                 | Retrieval              | Provenance        | Managed?            |
-| :--------------------------------------------------- | :------------------------- | :--------------------- | :---------------- | :------------------ |
-| [Supermemory](/comparisons/vs-supermemory)           | Extracted memories         | Search, memory graph   | Partial           | Hosted or self-host |
-| [Letta](/comparisons/vs-letta)                       | Stateful agent runtime     | Files and vector index | File-level        | Self-host           |
-| [Vector databases](/comparisons/vs-vector-databases) | Embedding index            | Nearest neighbors      | None              | Usually hosted      |
-| [Mem0](/comparisons/vs-mem0)                         | Extracted agent memories   | Similarity search      | Item-level        | Hosted or self-host |
-| [Zep](/comparisons/vs-zep)                           | Extracted agent memories   | Similarity search      | Session-level     | Hosted or self-host |
-| [TrustGraph](/comparisons/vs-trustgraph)             | RDF graph (auto-extracted) | GraphRAG + SPARQL      | Extraction traces | Self-host           |
-| [DIY triplestore](/comparisons/vs-diy-triplestore)   | RDF graph                  | SPARQL                 | Your job          | You run it          |
-| [DIY memory infra](/comparisons/vs-diy-memory-infra) | Custom stack               | Custom                 | Your job          | You run it          |
+| Alternative                                                | Core model                    | Retrieval                  | Provenance         | Managed?              |
+| :--------------------------------------------------------- | :---------------------------- | :------------------------- | :----------------- | :-------------------- |
+| [Supermemory](/comparisons/vs-supermemory)                 | Extracted memories            | Search, memory graph       | Partial            | Hosted or self-host   |
+| [Letta](/comparisons/vs-letta)                             | Stateful agent runtime        | Files and vector index     | File-level         | Self-host             |
+| [Vector databases](/comparisons/vs-vector-databases)       | Embedding index               | Nearest neighbors          | None               | Usually hosted        |
+| [Mem0](/comparisons/vs-mem0)                               | Extracted agent memories      | Similarity search          | Item-level         | Hosted or self-host   |
+| [Zep](/comparisons/vs-zep)                                 | Extracted agent memories      | Similarity search          | Session-level      | Hosted or self-host   |
+| [TrustGraph](/comparisons/vs-trustgraph)                   | RDF graph (auto-extracted)    | GraphRAG + SPARQL          | Extraction traces  | Self-host             |
+| [DIY triplestore](/comparisons/vs-diy-triplestore)         | RDF graph                     | SPARQL                     | Your job           | You run it            |
+| [DIY memory infra](/comparisons/vs-diy-memory-infra)       | Custom stack                  | Custom                     | Your job           | You run it            |
+| [LangMem](/comparisons/vs-langmem)                         | LangGraph vector memory       | Similarity search          | None               | SDK, self-managed     |
+| [MemSearch](/comparisons/vs-memsearch)                     | Standalone memory library     | Similarity search          | None               | Library, self-managed |
+| [MemMachine](/comparisons/vs-memmachine)                   | Graph + SQL hybrid            | Graph traversal + vectors  | Graph-derived      | AWS-native, self-host |
+| [MemClaw](/comparisons/vs-memclaw)                         | Shared fleet partition        | Partition-aware retrieval  | Governed access    | Managed               |
+| [Maindex](/comparisons/vs-maindex)                         | Typed memory layer            | MCP-based retrieval        | Provenance-typed   | Managed               |
+| [MemSpan](/comparisons/vs-memspan)                         | Portable files                | Dynamic file loading       | None               | Local files           |
+| [MemSync](/comparisons/vs-memsync)                         | Verified-embedding memory API | Similarity over embeddings | Inference-verified | Managed               |
+| [Twilio Memory Store](/comparisons/vs-twilio-memory-store) | Structured memory buckets     | Bucket lookup + vectors    | Bucket-level       | Managed               |
 
 Polygres adds graph-style retrieval over Postgres records rather than RDF
 triples. Turso is the substrate underneath Worlds' `worlds-libsql` adapter
 rather than a direct alternative.
+
+The remaining alternatives cluster by model. Embedding libraries such as LangMem
+and MemSearch recall by similarity. Governed services such as Twilio Memory
+Store, MemClaw, and Maindex organize structure and access. MemSpan trades
+structure for portability. None of them provides a verifiable, queryable fact
+ledger.
 
 ## When to choose Worlds
 

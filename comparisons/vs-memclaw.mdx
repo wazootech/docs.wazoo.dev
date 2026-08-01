@@ -1,0 +1,49 @@
+---
+title: "MemClaw"
+description:
+  "Worlds vs MemClaw: governed fleet memory against a shared verifiable fact
+  graph."
+hidden: true
+---
+
+## At a glance
+
+|                 | Worlds                  | MemClaw                     |
+| :-------------- | :---------------------- | :-------------------------- |
+| Data model      | RDF triples in a ledger | Shared memory partitions    |
+| How facts enter | Curated import          | Agent writes to a partition |
+| Retrieval       | Hybrid search + SPARQL  | Partition-aware retrieval   |
+| Provenance      | Fact-level ledger       | Governed access             |
+| Deployment      | Hosted beta or embedded | Cloud-managed               |
+
+## The philosophical difference
+
+MemClaw targets fleets. A cloud-managed partition lets many agents write to and
+read from the same memory, with governance controlling who gets access. The
+design question is coordination: how a group of agents working together shares
+one memory safely.
+
+Worlds is also shared: many agents query the same world. Coordination happens at
+the data layer rather than the access layer. Facts are asserted deliberately and
+stored in a ledger, so two agents acting on the same world agree on the same
+state. MemClaw governs who may touch memory; Worlds governs what is true within
+it.
+
+## When Worlds fits
+
+- Agents in a fleet must agree on facts, not just share notes.
+- Conflicting writes need resolution at the data layer, not in the prompt.
+- You want to query relationships across everything the fleet knows.
+
+## When Worlds does not fit
+
+- Your primary problem is access control and partitioning for many independent
+  agents.
+- You want a managed memory service and do not want to run infrastructure.
+- Shared memory without graph structure is enough.
+
+## Coexistence
+
+Use MemClaw to govern which agents may access which memory partitions, and
+Worlds as the authoritative knowledge base those agents act on. Access control
+and factual authority address different failure modes.
