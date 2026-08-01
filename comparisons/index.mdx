@@ -38,15 +38,16 @@ Worlds is deliberately narrow. It does not:
 
 ## How the alternatives line up
 
-| Alternative                                          | Core model               | Retrieval              | Provenance    | Managed?            |
-| :--------------------------------------------------- | :----------------------- | :--------------------- | :------------ | :------------------ |
-| [Supermemory](/comparisons/vs-supermemory)           | Extracted memories       | Search, memory graph   | Partial       | Hosted or self-host |
-| [Letta](/comparisons/vs-letta)                       | Stateful agent runtime   | Files and vector index | File-level    | Self-host           |
-| [Vector databases](/comparisons/vs-vector-databases) | Embedding index          | Nearest neighbors      | None          | Usually hosted      |
-| [Mem0](/comparisons/vs-mem0)                         | Extracted agent memories | Similarity search      | Item-level    | Hosted or self-host |
-| [Zep](/comparisons/vs-zep)                           | Extracted agent memories | Similarity search      | Session-level | Hosted or self-host |
-| [DIY triplestore](/comparisons/vs-diy-triplestore)   | RDF graph                | SPARQL                 | Your job      | You run it          |
-| [DIY memory infra](/comparisons/vs-diy-memory-infra) | Custom stack             | Custom                 | Your job      | You run it          |
+| Alternative                                          | Core model                 | Retrieval              | Provenance        | Managed?            |
+| :--------------------------------------------------- | :------------------------- | :--------------------- | :---------------- | :------------------ |
+| [Supermemory](/comparisons/vs-supermemory)           | Extracted memories         | Search, memory graph   | Partial           | Hosted or self-host |
+| [Letta](/comparisons/vs-letta)                       | Stateful agent runtime     | Files and vector index | File-level        | Self-host           |
+| [Vector databases](/comparisons/vs-vector-databases) | Embedding index            | Nearest neighbors      | None              | Usually hosted      |
+| [Mem0](/comparisons/vs-mem0)                         | Extracted agent memories   | Similarity search      | Item-level        | Hosted or self-host |
+| [Zep](/comparisons/vs-zep)                           | Extracted agent memories   | Similarity search      | Session-level     | Hosted or self-host |
+| [TrustGraph](/comparisons/vs-trustgraph)             | RDF graph (auto-extracted) | GraphRAG + SPARQL      | Extraction traces | Self-host           |
+| [DIY triplestore](/comparisons/vs-diy-triplestore)   | RDF graph                  | SPARQL                 | Your job          | You run it          |
+| [DIY memory infra](/comparisons/vs-diy-memory-infra) | Custom stack               | Custom                 | Your job          | You run it          |
 
 Polygres adds graph-style retrieval over Postgres records rather than RDF
 triples. Turso is the substrate underneath Worlds' `worlds-libsql` adapter

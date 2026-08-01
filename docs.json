@@ -86,6 +86,7 @@
           "comparisons/vs-vector-databases",
           "comparisons/vs-mem0",
           "comparisons/vs-zep",
+          "comparisons/vs-trustgraph",
           "comparisons/vs-diy-triplestore",
           "comparisons/vs-diy-memory-infra"
         ]
