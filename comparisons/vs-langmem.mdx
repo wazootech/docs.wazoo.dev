@@ -1,0 +1,52 @@
+---
+title: "LangMem"
+description:
+  "Worlds vs LangMem: framework-native memory for LangGraph agents against a
+  shared fact graph."
+hidden: true
+---
+
+## At a glance
+
+|                 | Worlds                        | LangMem                  |
+| :-------------- | :---------------------------- | :----------------------- |
+| Data model      | RDF triples in a ledger       | Vector embeddings        |
+| How facts enter | Import, patches, agent writes | Agent tools write memory |
+| Retrieval       | Hybrid search + SPARQL        | Similarity search        |
+| Provenance      | Fact-level ledger             | None                     |
+| Deployment      | Hosted beta or embedded       | SDK inside LangGraph     |
+
+## The philosophical difference
+
+LangMem is the memory SDK for the LangGraph ecosystem. It stores embeddings in a
+vector index and hands the agent tools to write, search, and update its own
+memory at runtime. Memory is self-managed: the model decides what is worth
+keeping.
+
+Worlds is storage-side. Facts enter through import and patches, relationships
+are explicit, and the ledger preserves the history of every change. Agents can
+write new facts through the update API, and each write lands in the append-only
+ledger as a verifiable patch ([update](/worlds/update)). The difference is
+custody. LangMem trusts the model to curate its memory; Worlds curates at the
+data layer.
+
+## When Worlds fits
+
+- Facts must survive outside a single framework or agent lifetime.
+- Answers need to be verifiable rather than similar.
+- You want the same knowledge queryable from more than one framework.
+
+## When Worlds does not fit
+
+- You want memory that lives inside your LangGraph application with no separate
+  graph backend to configure.
+- You want the model to decide what memory is worth keeping, with no ledger and
+  no data-layer custody.
+- Embeddings-only recall meets your requirements.
+
+## Coexistence
+
+Use LangMem for the agent's working memory inside a LangGraph application, and
+Worlds for the durable facts the agent is allowed to act on. The
+[LangGraph integration](/integrations/langgraph) shows how a LangGraph agent
+calls Worlds for verified context.

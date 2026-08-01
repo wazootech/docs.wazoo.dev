@@ -1,0 +1,53 @@
+---
+title: "MemSync"
+description:
+  "Worlds vs MemSync: an embedding-backed memory API against a verifiable fact
+  graph."
+hidden: true
+---
+
+## At a glance
+
+|                 | Worlds                        | MemSync                      |
+| :-------------- | :---------------------------- | :--------------------------- |
+| Data model      | RDF triples in a ledger       | Embeddings plus a memory API |
+| How facts enter | Import, patches, agent writes | REST writes                  |
+| Retrieval       | Hybrid search + SPARQL        | Similarity over embeddings   |
+| Provenance      | Fact-level ledger             | Inference-verifiable         |
+| Deployment      | Hosted beta or embedded       | Managed REST API             |
+
+## The philosophical difference
+
+MemSync is a managed REST API that adds a long-term memory layer on top of
+OpenGradient's verifiable inference and embeddings infrastructure. Verification
+happens at the computation layer: the memory service can attest that the
+inference producing an embedding ran on verified infrastructure.
+
+Worlds verifies at the fact layer. A SPARQL ASK query returns a deterministic
+boolean for a specific assertion, and the ledger records when the fact entered
+and from where. The two kinds of verification answer different questions.
+MemSync proves the computation ran as claimed; Worlds proves the fact is in the
+graph.
+
+## When Worlds fits
+
+- You need fact-level verification: which source asserted this fact, and when.
+- Answers depend on relationships you want to traverse with SPARQL.
+- You prefer to bring your own LLM and embedding providers.
+
+## When Worlds does not fit
+
+- You want one REST call to persist and retrieve long-term memory with no graph
+  vocabulary.
+- Attested inference over verified infrastructure is a hard requirement of your
+  stack.
+- You want the memory provider to manage embeddings end to end; Worlds uses the
+  embedding provider you configure
+  ([what Worlds does not do](/comparisons/index)).
+
+## Coexistence
+
+Use MemSync as the embedding and retrieval layer for your agents' long-term
+memory, and Worlds for the authoritative facts those agents act on. Query both
+through the [MemSDK](/projects/memsdk) interface so swapping backends does not
+change your calling code.

@@ -1,0 +1,56 @@
+---
+title: "Twilio Memory Store"
+description:
+  "Worlds vs Twilio Memory Store: structured buckets against a queryable fact
+  graph."
+hidden: true
+---
+
+## At a glance
+
+|                 | Worlds                        | Twilio Memory Store                |
+| :-------------- | :---------------------------- | :--------------------------------- |
+| Data model      | RDF triples in a ledger       | Conversational and factual buckets |
+| How facts enter | Import, patches, agent writes | Bucket writes                      |
+| Retrieval       | Hybrid search + SPARQL        | Bucket lookup + vectors            |
+| Provenance      | Fact-level ledger             | Bucket-level                       |
+| Isolation       | Per-world                     | Strict per-tenant                  |
+
+## The philosophical difference
+
+Twilio Memory Store organizes memory for customer-facing agents. It separates
+conversational memory, observations and summaries, from factual memory, traits
+and profiles, and isolates each tenant's data strictly. That isolation makes it
+a fit for regulated industries such as healthcare and finance. Memory is a
+structured record you write into the right bucket.
+
+Worlds organizes memory as a graph. Tenants map to worlds, and inside a world
+relationships are first-class: `user:person` connects to `wazoo:organization`
+through an explicit property. Retrieval is a query, so SPARQL can resolve who
+owns an account exactly, rather than a read of a predetermined bucket.
+
+Both systems keep facts separate from conversation. Worlds goes further by
+recording every fact against a timeline, so you can see when state changed.
+
+## When Worlds fits
+
+- Memory needs relationships, not just categories: ownership, reporting lines,
+  dependencies.
+- You want to query facts across worlds rather than read fixed buckets.
+- You need a chronological ledger of fact changes.
+
+## When Worlds does not fit
+
+- You need strict per-tenant isolation enforced at the platform level for
+  regulated workloads, rather than per-world isolation with world-scoped tokens
+  ([tokens](/projects/worlds)).
+- You are building inside the Twilio ecosystem and want memory native to that
+  platform.
+- Your memory is mostly conversational transcripts where summaries suffice.
+
+## Coexistence
+
+Keep conversational history in Twilio Memory Store, the observations and
+summaries customer agents produce, and store the profile facts agents act on in
+Worlds. The chat memory stays in the CX platform; the durable facts live in the
+graph where they can be verified and queried.

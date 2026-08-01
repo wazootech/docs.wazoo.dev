@@ -1,0 +1,47 @@
+---
+title: "MemSpan"
+description:
+  "Worlds vs MemSpan: portable memory files against a verifiable fact graph."
+hidden: true
+---
+
+## At a glance
+
+|                 | Worlds                        | MemSpan                          |
+| :-------------- | :---------------------------- | :------------------------------- |
+| Data model      | RDF triples in a ledger       | Portable files                   |
+| How facts enter | Import, patches, agent writes | Export from platforms            |
+| Retrieval       | Hybrid search + SPARQL        | Dynamic file loading             |
+| Provenance      | Fact-level ledger             | File-level                       |
+| Deployment      | Hosted beta or embedded       | Local files, zero infrastructure |
+
+## The philosophical difference
+
+MemSpan treats memory as documents you own. It extracts identity and history
+from locked-in platforms such as ChatGPT, stores them as portable files, and
+loads them into local LLM interfaces like Claude Code. No database, no server,
+no vendor lock-in.
+
+Worlds treats memory as facts in a graph. A file is readable, but it does not
+assert relationships or track when a fact changed. MemSpan optimizes for
+ownership and portability; Worlds optimizes for verifiability and structure.
+Loading a transcript into a model gives it context. Querying a world gives it
+facts it can defend.
+
+## When Worlds fits
+
+- Facts must be checked against a source and queried deterministically.
+- Multiple agents or people need structured access to the same knowledge.
+- A fact connects to other facts and you want to traverse those links.
+
+## When Worlds does not fit
+
+- You want memory you can open in a text editor with zero dependencies.
+- Your memory is personal history better served as documents.
+- You have no relationships to traverse and no need for a queryable timeline.
+
+## Coexistence
+
+Use MemSpan to archive raw history from locked-in platforms, then assert the
+durable facts into a world. The archive keeps the source material; the world
+keeps the distilled, verifiable state.
