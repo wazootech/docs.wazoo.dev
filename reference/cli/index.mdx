@@ -1,55 +1,70 @@
 ---
-title: "CLI Reference"
+title: "Wazoo CLI Reference"
 icon: "terminal"
-description: "CLI commands, flags, and arguments"
+description:
+  "Wazoo Platform CLI installation, global flags, and command reference"
 ---
 
-The Worlds CLI (Command Line Interface) allows you to interact with the Worlds
-engine securely from your terminal.
+The Wazoo CLI (`@wazoo/cli`) allows you to manage Wazoo Platform resources,
+query memory worlds, manage API tokens, and perform graph data operations
+directly from your terminal.
 
 ## Installation
 
-Install the canonical CLI globally via JSR.
+Install the canonical Wazoo CLI globally via JSR.
 
 <CodeGroup>
 
 ```bash npm
-npx jsr add --global @wazoo/worlds-cli
+npx jsr add --global @wazoo/cli
 ```
 
 ```bash deno
-deno install -Ar --name worlds jsr:@wazoo/worlds-cli
+deno install -Ar --name wazoo jsr:@wazoo/cli
 ```
 
 ```bash pnpm
-pnpm dlx jsr add --global @wazoo/worlds-cli
+pnpm dlx jsr add --global @wazoo/cli
 ```
 
 ```bash yarn
-yarn dlx jsr add --global @wazoo/worlds-cli
+yarn dlx jsr add --global @wazoo/cli
 ```
 
 ```bash bun
-bunx jsr add --global @wazoo/worlds-cli
+bunx jsr add --global @wazoo/cli
 ```
 
 </CodeGroup>
 
-## Core management
+## Global Options
 
-- [worlds create](./create.mdx): create a new isolated world
-- [worlds get](./get.mdx): retrieve specific world details
-- [worlds list](./list.mdx): list all available worlds
-- [worlds update](./update.mdx): modify world configuration
-- [worlds delete](./delete.mdx): soft-delete a world
+All `wazoo` commands accept the following global flags:
 
-## Data operations
+| Flag              | Description                                                                   |
+| :---------------- | :---------------------------------------------------------------------------- |
+| `--api-url <url>` | Wazoo API base URL (overrides `WAZOO_API_URL` environment variable)           |
+| `--token <token>` | Wazoo API authentication token (overrides `WAZOO_API_TOKEN` / `WORLDS_TOKEN`) |
+| `--json`          | Output response data in structured JSON format                                |
 
-- [worlds import](./import.mdx): inject RDF knowledge into a world
-- [worlds export](./export.mdx): export a world's graph to disk
+## Platform Commands
 
-## Query & interaction
+- [wazoo health](./health.mdx): Check status and health of the Wazoo API service
+- [wazoo tokens](./tokens.mdx): List and create platform authentication tokens
+- [wazoo usage](./usage.mdx): View world and account usage metrics
 
-- [worlds search](./search.mdx): perform semantic and keyword searches
-- [worlds sparql](./sparql.mdx): execute raw SPARQL queries against the graph
-- [worlds chat](./chat.mdx): interact conversationally with a world
+## World Management
+
+- [wazoo worlds create](./create.mdx): Create a new isolated memory world
+- [wazoo worlds get](./get.mdx): Retrieve specific world details by ID
+- [wazoo worlds list](./list.mdx): List all worlds owned by your account
+
+## World Data Operations
+
+- [wazoo worlds import](./import.mdx): Import text, files, or RDF knowledge into
+  a world
+- [wazoo worlds export](./export.mdx): Export world graph quads/triples
+- [wazoo worlds search](./search.mdx): Perform hybrid vector + SPARQL graph
+  search across world memory
+- [wazoo worlds sparql](./sparql.mdx): Execute raw SPARQL queries against a
+  world graph

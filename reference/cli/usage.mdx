@@ -1,0 +1,33 @@
+---
+title: "wazoo usage"
+description: "View account and world usage metrics"
+---
+
+The `wazoo usage` command retrieves consumption and quota usage metrics for a
+specific world or account.
+
+## Usage
+
+```bash
+wazoo usage <worldId> [options]
+```
+
+## Parameters
+
+| Parameter   | Description                                             |
+| :---------- | :------------------------------------------------------ |
+| `<worldId>` | **Required.** The unique identifier of the target world |
+
+## Examples
+
+### Check usage for a world
+
+```bash
+wazoo usage dev-world-01
+```
+
+### View usage metrics as JSON
+
+```bash
+wazoo usage dev-world-01 --json
+```

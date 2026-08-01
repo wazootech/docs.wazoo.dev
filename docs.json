@@ -110,6 +110,22 @@
         ]
       },
       {
+        "group": "Wazoo CLI",
+        "pages": [
+          "reference/cli/index",
+          "reference/cli/health",
+          "reference/cli/tokens",
+          "reference/cli/usage",
+          "reference/cli/create",
+          "reference/cli/get",
+          "reference/cli/list",
+          "reference/cli/import",
+          "reference/cli/export",
+          "reference/cli/search",
+          "reference/cli/sparql"
+        ]
+      },
+      {
         "group": "Platform API",
         "openapi": "https://api.wazoo.dev/openapi.json",
         "pages": [

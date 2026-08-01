@@ -1,27 +1,35 @@
 ---
-title: "sparql"
-description: "Execute raw SPARQL queries"
+title: "wazoo worlds sparql"
+description: "Execute raw SPARQL queries against a world graph"
 ---
 
-Issues a SPARQL 1.1 query or update against your target world. The CLI
-intelligently determines if the input is a raw query string or a local filepath
-to a `.rq` file.
+The `wazoo worlds sparql` command executes SPARQL 1.1 graph queries directly
+against a world's knowledge graph endpoint.
 
-<ParamField path="--world" type="string" required>
-  The unique system identifier of the target world. *Alias:* `-w`
-</ParamField>
-
-<ParamField path="--query" type="string" required>
-  The raw SPARQL string, or a relative/absolute path to a file containing a
-  SPARQL query. *Alias:* `-q`
-</ParamField>
-
-### Usage
+## Usage
 
 ```bash
-# Executing an inline string
-worlds sparql --world my-world --query "SELECT * WHERE { ?s ?p ?o } LIMIT 10"
+wazoo worlds sparql <worldId> [options]
+```
 
-# Executing from a file
-worlds sparql --world my-world --query ./queries/get_users.rq
+## Parameters & Options
+
+| Argument / Option           | Description                                |
+| :-------------------------- | :----------------------------------------- |
+| `<worldId>`                 | **Required.** Target world ID              |
+| `-q, --query <sparqlQuery>` | Inline SPARQL query string                 |
+| `-f, --file <filePath>`     | Path to `.rq` file containing SPARQL query |
+
+## Examples
+
+### Inline SPARQL query
+
+```bash
+wazoo worlds sparql my-world -q "SELECT * WHERE { ?s ?p ?o } LIMIT 10"
+```
+
+### SPARQL query from file
+
+```bash
+wazoo worlds sparql my-world -f ./queries/get_users.rq
 ```

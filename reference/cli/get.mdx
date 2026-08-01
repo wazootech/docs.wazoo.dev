@@ -1,16 +1,25 @@
 ---
-title: "get"
-description: "Retrieve a world by ID"
+title: "wazoo worlds get"
+description: "Retrieve a specific world by ID"
 ---
 
-Retrieves the structural definitions and metadata of a single World instance.
+The `wazoo worlds get` command retrieves structural details, metadata, and
+creation timestamps for a single target world instance.
 
-<ParamField path="--world" type="string" required>
-  The unique system identifier of the target world. *Alias:* `-w`
-</ParamField>
-
-### Usage
+## Usage
 
 ```bash
-worlds get --world my-world
+wazoo worlds get <worldId>
+```
+
+## Parameters
+
+| Parameter   | Description                                             |
+| :---------- | :------------------------------------------------------ |
+| `<worldId>` | **Required.** The unique identifier of the target world |
+
+## Examples
+
+```bash
+wazoo worlds get my-world
 ```
