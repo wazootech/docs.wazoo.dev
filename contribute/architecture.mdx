@@ -172,12 +172,10 @@ information lives.
   </div>
 </Columns>
 
-## Provisioning status
+## Provisioning model
 
-The platform management layer is implemented as a Cloudflare Workers API using
-Hono and Turso/libSQL for metadata. It currently records users, Worlds, tokens,
-usage, and limits. The full production provisioning flow between platform
-metadata and data-plane services is still evolving.
+The platform management layer runs as a Cloudflare Workers API on Hono with
+Turso/libSQL for metadata. It records users, Worlds, tokens, usage, and limits.
 
 The control database keeps public World IDs separate from internal support
 identities. Public resource names are computed from public IDs and never from
@@ -198,8 +196,8 @@ state; Wazoo should mirror only the entitlement state required to enforce
 limits.
 
 <Note>
-  Treat this page as the current architectural shape, not a guarantee that every
-  deployment mode is publicly available today.
+  Some deployment modes are in active development and not publicly available
+  yet.
 </Note>
 
 ## Worlds API deep dive
@@ -317,16 +315,16 @@ Each World is a specific context or knowledge graph managed by the server.
 - Isolation: Access Worlds by public World ID or canonical resource name to
   ensure zero cross-contamination between contexts.
 
-## Runtime status
+## Runtime
 
-Wazoo uses TypeScript across the current public clients and platform management
-surface. The current Platform API server runs on Cloudflare Workers with Hono
-and Turso/libSQL metadata. Worlds data-plane packages are published separately
-and may target different JavaScript runtimes depending on the adapter.
+Wazoo uses TypeScript across the public clients and platform management surface.
+The Platform API server runs on Cloudflare Workers with Hono and Turso/libSQL
+metadata. Worlds data-plane packages are published separately and may target
+different JavaScript runtimes depending on the adapter.
 
-## Repository topology
+## Package topology
 
-The ecosystem is split across focused repositories. The important boundary is
+The public surface is split across focused packages. The important boundary is
 between platform management packages and Worlds data-plane packages.
 
 ```mermaid
@@ -343,7 +341,7 @@ graph TD
     PLATFORM_SERVER -.-> WORLDS_CLIENT
 ```
 
-The current Platform API server is organized by management resource:
+The Platform API is organized by management resource:
 
 - Worlds metadata.
 - Platform tokens.
@@ -487,16 +485,16 @@ This recursive approach to alignment is supported by major AI research:
 ### Polymorphic resource managers
 
 A design goal is to keep storage and deployment choices swappable without
-changing the public API shape. The exact production matrix is still evolving.
+changing the public API shape.
 
-| Resource             | Current direction                                                 |
+| Resource             | Direction                                                         |
 | :------------------- | :---------------------------------------------------------------- |
 | Platform API compute | Cloudflare Workers                                                |
 | Platform metadata    | Turso/libSQL                                                      |
 | Worlds data storage  | Adapter-specific SQLite-compatible storage                        |
 | Private deployment   | Docker Compose, private networking, and tunnels where appropriate |
 
-Do not assume every deployment mode is public or fully documented yet.
+Deployment modes may not be publicly available yet.
 
 The Worlds API integrates symbolic precision with the statistical power of large
 language models. By reifying facts and aligning state through human feedback,
