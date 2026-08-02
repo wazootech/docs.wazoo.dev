@@ -1,0 +1,66 @@
+---
+title: "wazoo worlds"
+description: "Manage memory worlds, import data, search, and run SPARQL queries"
+---
+
+The `wazoo worlds` subcommand suite allows you to manage isolated memory worlds and interact with their data plane from the command line.
+
+## World Management Commands
+
+### `wazoo worlds create`
+
+Create a new isolated memory world.
+
+```bash
+wazoo worlds create <world-id> --name "My Knowledge Base"
+```
+
+### `wazoo worlds get`
+
+Retrieve specific world details by ID.
+
+```bash
+wazoo worlds get <world-id>
+```
+
+### `wazoo worlds list`
+
+List all worlds owned by your account.
+
+```bash
+wazoo worlds list
+```
+
+## World Data Operations
+
+### `wazoo worlds import`
+
+Import text, files, or RDF knowledge graph data into a world. Supports Turtle, JSON-LD, N-Triples, N-Quads, and Trig.
+
+```bash
+wazoo worlds import <world-id> --file ./data.ttl
+```
+
+### `wazoo worlds export`
+
+Export world graph quads/triples.
+
+```bash
+wazoo worlds export <world-id> --format turtle
+```
+
+### `wazoo worlds search`
+
+Perform hybrid vector + graph pattern search across world memory.
+
+```bash
+wazoo worlds search <world-id> --query "agent architecture"
+```
+
+### `wazoo worlds sparql`
+
+Execute raw graph queries and pattern matching (SPARQL) against a world graph.
+
+```bash
+wazoo worlds sparql <world-id> --query "SELECT * WHERE { ?s ?p ?o } LIMIT 10"
+```
