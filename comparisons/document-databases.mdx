@@ -1,0 +1,48 @@
+---
+title: "Document databases"
+description:
+  "Worlds vs document databases: flexible records against verifiable agent
+  context."
+---
+
+## At a glance
+
+|               | Worlds             | Document databases    |
+| :------------ | :----------------- | :-------------------- |
+| Data model    | RDF triples        | JSON-shaped documents |
+| Schema        | Curated vocabulary | Flexible              |
+| Retrieval     | Hybrid + SPARQL    | Index lookups         |
+| Relationships | First-class        | Denormalized or joins |
+| Provenance    | Fact-level ledger  | None                  |
+
+## The philosophical difference
+
+Document stores keep JSON-shaped records with flexible schemas and horizontal
+scale. They fit records that change shape: profiles, events, and application
+state, plus operational read/write patterns.
+
+Worlds stores curated RDF facts in an append-only ledger. Retrieval is hybrid
+(vector + full-text + RDF filters) plus SPARQL, and relationships between facts
+are first-class. A document answers "what is stored"; a world answers "what is
+true, and how do we know".
+
+## When Worlds fits
+
+- Facts must stay true and traceable, not just queryable.
+- Agents need relationships between facts, not just flat records.
+- You want verifiable answers through [SPARQL](/worlds/query), not index lookups
+  alone.
+
+## When Worlds does not fit
+
+- Your records change shape constantly and a strict vocabulary is overhead.
+- You need horizontal-scale document read/write as the primary interface.
+- The document store is already the source of record and there is no
+  agent-context layer.
+
+## Coexistence
+
+The honest split: document stores hold the source of record; Worlds holds the
+distilled facts agents are allowed to act on. Keep source documents in your
+document store and import distilled facts into a world through the
+[import path](/worlds/update) when agents need to reason over them.
