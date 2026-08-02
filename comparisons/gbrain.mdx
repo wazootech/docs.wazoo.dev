@@ -1,0 +1,57 @@
+---
+title: "GBrain"
+description:
+  "Worlds vs GBrain: a persistent agent brain against an authoritative fact
+  ledger."
+---
+
+## At a glance
+
+|                 | Worlds                        | GBrain                            |
+| :-------------- | :---------------------------- | :-------------------------------- |
+| Data model      | RDF triples in a ledger       | Markdown pages + typed edges      |
+| How facts enter | Import, patches, agent writes | `gbrain capture` / agent writes   |
+| Retrieval       | Hybrid + SPARQL               | Hybrid + `gbrain think` synthesis |
+| Provenance      | Fact-level ledger             | Page-level citations              |
+| Verification    | SHACL shapes + SPARQL filters | Source-tier boost + gap analysis  |
+| Deployment      | Hosted beta or embedded       | PGLite local or Postgres          |
+
+## The philosophical difference
+
+GBrain is a persistent agent brain built by Garry Tan. It stores pages as
+markdown, indexes them with hybrid search (vector, BM25, graph edges), and
+synthesizes answers with citations and an explicit note on what the brain does
+not know. It is a runtime for agent memory: capture, enrich, and recall over
+time.
+
+Worlds is an authoritative fact ledger. Facts enter deliberately through import
+and patches, live in an append-only ledger with provenance, and are validated by
+SHACL shapes. Retrieval is deterministic: a [SPARQL query](/worlds/query) either
+finds a fact or it does not. Worlds does not synthesize or infer; everything is
+asserted.
+
+The difference is verification. GBrain tells you what it knows and flags what it
+does not. Worlds proves what is true against the ledger.
+
+## When Worlds fits
+
+- Facts must be checkable against a source, not just retrievable.
+- Agents need deterministic [graph queries](/worlds/query) over relationships.
+- You want SHACL validation and provenance as first-class guarantees.
+
+## When Worlds does not fit
+
+- You want a synthesis layer that writes the answer for you, with gap analysis.
+- Your memory is a personal or team vault of notes, meetings, and ideas rather
+  than a curated fact graph.
+- You want autonomous enrichment (the dream cycle) rather than deliberate
+  assertions.
+
+## Coexistence
+
+The Wazoo ecosystem pairs with GBrain as a two-stage pipeline.
+[Wiki CLI](/projects/wiki) acts as the compile-time quality gate: it lints
+frontmatter, validates SHACL shapes, and enforces link hygiene. GBrain imports
+the validated markdown and serves as the persistent retrieval and synthesis
+runtime. Starter templates for this pattern live in the
+[wiki-templates repo](https://github.com/wazootech/wiki-templates).
