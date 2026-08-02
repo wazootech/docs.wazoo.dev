@@ -1,0 +1,47 @@
+---
+title: "Key-value stores"
+description:
+  "Worlds vs key-value stores: hot state against verifiable agent context."
+---
+
+## At a glance
+
+|               | Worlds                  | Key-value stores      |
+| :------------ | :---------------------- | :-------------------- |
+| Data model    | RDF triples             | Key-value pairs       |
+| Access        | SPARQL + hybrid search  | Key lookup            |
+| State         | Ledger'd facts          | Ephemeral hot state   |
+| Relationships | First-class             | None                  |
+| Deployment    | Hosted beta or embedded | You run it or managed |
+
+## The philosophical difference
+
+Key-value stores are for hot state: cache, sessions, rate limits, and
+leaderboards, where microsecond reads of a single key matter. They trade
+structure for speed.
+
+Worlds trades speed for structure and verifiability. Facts are stored as RDF
+triples in an append-only [ledger](/worlds/index), and retrieval is hybrid:
+vector, full-text, and graph filters in one call. Worlds is not a cache and does
+not compete in hot-state workloads.
+
+## When Worlds fits
+
+- Facts have relationships that need deterministic
+  [graph queries](/worlds/query).
+- Answers must be verifiable, not just fast.
+- You need durable, queryable agent context with provenance.
+
+## When Worlds does not fit
+
+- You need single-key reads at cache latency.
+- Your workload is ephemeral state that does not outlive a session.
+- Structure and provenance are overhead you do not need.
+
+## Coexistence
+
+Redis commonly sits in front of any backend as a cache layer, and that works
+here too: keep hot state in Redis and let Worlds hold the durable facts agents
+act on. Deno KV is one of Worlds' edge-ready adapter substrates, so a world can
+persist to the same key-value store at the edge. The
+[self-host adapters](/contribute/self-host) document the storage options.

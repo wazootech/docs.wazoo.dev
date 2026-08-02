@@ -86,6 +86,7 @@
           "comparisons/diy-triplestore",
           "comparisons/google-search",
           "comparisons/hermes",
+          "comparisons/key-value-stores",
           "comparisons/langmem",
           "comparisons/letta",
           "comparisons/llm-wiki",
