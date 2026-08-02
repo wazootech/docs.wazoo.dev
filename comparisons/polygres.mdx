@@ -8,7 +8,7 @@ hidden: true
 
 ## At a glance
 
-|              | Worlds                                                | Polygres (Evokoa)                                           |
+|              | Worlds                                                | [Polygres](https://github.com/evokoa/polygres) (Evokoa)     |
 | :----------- | :---------------------------------------------------- | :---------------------------------------------------------- |
 | Data model   | RDF triples in an append-only fact ledger             | Relational Postgres tables + `pgGraph` index                |
 | Schema model | Opinionated W3C graph standards (RDF/SHACL)           | Your own custom relational database schema                  |
@@ -18,7 +18,7 @@ hidden: true
 
 ## The philosophical difference
 
-Polygres (with its underlying open-source extensions `pgGraph` and `pgContext`
+[Polygres](https://github.com/evokoa/polygres) (with its underlying open-source extensions `pgGraph` and `pgContext`
 by Evokoa) makes standard PostgreSQL "AI-native." It treats your existing
 relational database tables as the source of truth, building an in-memory graph
 index over your custom SQL schemas so you can execute multi-hop graph traversals

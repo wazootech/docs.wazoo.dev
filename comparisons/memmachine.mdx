@@ -8,7 +8,7 @@ hidden: true
 
 ## At a glance
 
-|                 | Worlds                        | MemMachine                              |
+|                 | Worlds                        | [MemMachine](https://github.com/memmachine) |
 | :-------------- | :---------------------------- | :-------------------------------------- |
 | Data model      | RDF triples in a ledger       | Graph for episodes, SQL for profiles    |
 | How facts enter | Import, patches, agent writes | Logged conversations and profile writes |
@@ -18,7 +18,7 @@ hidden: true
 
 ## The philosophical difference
 
-MemMachine is an open-source memory service that splits its model in two.
+[MemMachine](https://github.com/memmachine) is an open-source memory service that splits its model in two.
 Episodic memory, the relational context of conversations, lives in a Neo4j
 graph, while profile data lives in SQL. Retrieval walks the graph to reconstruct
 who said what to whom. It emphasizes token efficiency and works across LLM
