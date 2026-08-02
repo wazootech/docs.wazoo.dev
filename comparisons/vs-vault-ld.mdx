@@ -47,39 +47,39 @@ the documents are virtually identical:
 ```markdown
 ---
 {
-  "@id": "https://wazoo.dev/team/alice",
+  "@id": "https://wazoo.dev/team/gregory-davidson",
   "@type": "schema:Person",
   "@context":
-    { "schema": "https://schema.org/", "wazoo": "https://wazoo.dev/ontology/" },
-  "schema:givenName": "Alice",
-  "schema:familyName": "Smith",
+    { "schema": "https://schema.org/", "wazoo": "https://schema.wazoo.dev/" },
+  "schema:givenName": "Gregory",
+  "schema:familyName": "Davidson",
   "wazoo:role": "Context Architect",
 }
 ---
 
-# Alice Smith
+# Gregory Davidson
 
-Alice leads context engineering on Worlds.
+Gregory leads context engineering on Worlds.
 ```
 
 ### Vault-LD
 
 ```markdown
 ---
-"@id": "https://wazoo.dev/team/alice"
+"@id": "https://wazoo.dev/team/gregory-davidson"
 "@type": "Person"
 "@context":
   "@vocab": "http://schema.org/"
-  "wazoo": "https://wazoo.dev/ontology/"
+  "wazoo": "https://schema.wazoo.dev/"
   "role":
     "@type": "@id"
-name: "Alice Smith"
+name: "Gregory Davidson"
 wazoo:role: "Context Architect"
 ---
 
-# Alice Smith
+# Gregory Davidson
 
-Alice leads context engineering on Worlds.
+Gregory leads context engineering on Worlds.
 ```
 
 ## Why choose Linked Markdown
