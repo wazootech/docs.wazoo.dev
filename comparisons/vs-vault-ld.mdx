@@ -7,42 +7,42 @@ hidden: true
 
 ## At a glance
 
-|              | Linked Markdown (Wazoo)                               | Vault-LD (The-Knowledge-Graph-Guys)                      |
-| :----------- | :---------------------------------------------------- | :------------------------------------------------------- |
-| Core focus   | Pragmatic Markdown-to-RDF spec & multi-lang SDKs      | Lossless round-trip specification (Markdown to/from RDF) |
-| Frontmatter  | Standard JSON-LD frontmatter (or YAML equivalent)     | YAML-LD (JSON-LD serialized as YAML) with `@context`     |
-| Syntax rules | Zero custom syntax; CommonMark + JSON-LD              | YAML-LD frontmatter & controlled vocabulary specs        |
-| Ecosystem    | Integrated with `linked-markdown`, Wiki CLI, & Worlds | Standalone specification & reference parser              |
-| Primary use  | Agent context, memory ledgers, and graph nodes        | Bi-directional RDF graph conversion for PKM notes        |
+|                | Linked Markdown (Wazoo)                                       | Vault-LD (The-Knowledge-Graph-Guys)                  |
+| :------------- | :------------------------------------------------------------ | :--------------------------------------------------- |
+| Core focus     | Formal W3C specification, multi-lang Extract API, & toolchain | Open specification & round-trip parser concept       |
+| Frontmatter    | Standard JSON-LD / YAML-LD frontmatter                        | YAML-LD (JSON-LD serialized as YAML) with `@context` |
+| Reference SDKs | PyPI (`linked-markdown`) & JSR (`@wazoo/linked-markdown`)     | Reference specification repo                         |
+| Ecosystem      | Integrated with `wiki` CLI, Wazoo Worlds, and `memsdk`        | Standalone note vault specification                  |
+| Publications   | Published W3C CG Editor's Draft & Zenodo DOI paper            | Open specification (`SPEC.md`)                       |
 
 ## The philosophical difference
 
-Both **Linked Markdown (LMD)** (by Wazoo) and
+**Linked Markdown (LMD)** (by Wazoo) and
 **[Vault-LD](https://github.com/The-Knowledge-Graph-Guys/vault-ld)** (by The
-Knowledge Graph Guys) address the exact same challenge: embedding
-machine-readable W3C Linked Data (RDF) inside human-readable Markdown files
-without introducing custom nonstandard markdown syntax.
+Knowledge Graph Guys) are **virtually identical in data model and syntax**: both
+embed machine-readable W3C Linked Data (RDF) inside human-readable Markdown
+files via standard JSON-LD / YAML-LD frontmatter without introducing nonstandard
+custom syntax.
 
-In practice, **Linked Markdown and Vault-LD are almost identical in approach**:
-both use JSON-LD / YAML-LD frontmatter blocks at the top of standard CommonMark
-files so that a single `.md` document acts simultaneously as renderable prose
-and a valid RDF graph node.
+The key difference is **toolchain maturity and real-world deployment**:
 
-The subtle distinction lies in ecosystem goals:
-
-- **Vault-LD** focuses heavily on **lossless bi-directional round-tripping**
-  between Markdown files and RDF triplestores, maintaining strict YAML-LD
-  frontmatter with explicit `@context` declarations.
-- **Linked Markdown (LMD)** serves as the **foundational protocol for AI agent
-  memory and context engines** (powering `linked-markdown-py`,
-  `linked-markdown-ts`, Wiki CLI, and Wazoo Worlds).
+- **Linked Markdown (LMD)** is a complete, production-ready semantic
+  infrastructure specification. It features an official W3C Community Group
+  Editor's Draft, a published research paper (Zenodo DOI:
+  `10.5281/zenodo.21216085`), high-performance multi-language Extract APIs
+  (`linked-markdown-py` on PyPI, `@wazoo/linked-markdown` on JSR), and native
+  integration across the Wazoo toolchain (`wiki` CLI, Wazoopedia, Worlds context
+  engine, and `memsdk`).
+- **Vault-LD** is primarily a conceptual specification (`SPEC.md`) focusing on
+  lossless 1:1 round-tripping between Obsidian/desktop note vaults and RDF
+  triplestores.
 
 ## Code comparison
 
-### Linked Markdown (LMD)
+Because both protocols standardize on JSON-LD frontmatter over CommonMark files,
+the documents are virtually identical:
 
-Linked Markdown defines JSON-LD frontmatter directly within standard `---`
-delimiters:
+### Linked Markdown (LMD)
 
 ```markdown
 ---
@@ -62,10 +62,7 @@ delimiters:
 Alice leads context engineering on Worlds.
 ```
 
-### Vault-LD (The Knowledge Graph Guys)
-
-Vault-LD uses YAML-LD (JSON-LD serialized as YAML) frontmatter with a shared
-`@context`:
+### Vault-LD
 
 ```markdown
 ---
@@ -85,23 +82,22 @@ wazoo:role: "Context Architect"
 Alice leads context engineering on Worlds.
 ```
 
-## When Linked Markdown fits
+## Why choose Linked Markdown
 
-- You are building AI agent workflows, memory ledgers, or context engines.
-- You want official Python (`linked-markdown`) and TypeScript
-  (`@wazoo/linked-markdown`) packages for extracting quads and JSON-LD.
-- You operate within the Wazoo ecosystem (`wiki` CLI, Worlds context engine).
-
-## When Vault-LD fits
-
-- You require formal, lossless bi-directional conversion where RDF graph updates
-  write back into Markdown files without formatting loss.
-- You are developing desktop note-taking extensions (Obsidian/Logseq) designed
-  around formal Vault-LD spec compliance.
+- **Production-Ready SDKs**: Ready-to-install packages for Python
+  (`pip install linked-markdown`) and TypeScript (`jsr:@wazoo/linked-markdown`)
+  with deterministic `extract()` APIs that convert markdown directly to RDF
+  quads and JSON-LD nodes.
+- **W3C Community Draft & Academic Paper**: Backed by a formal W3C JSON-LD
+  Community Group specification and a published DOI paper on semantic Markdown
+  infrastructure.
+- **End-to-End Toolchain**: Native integration with `wiki` CLI (linting, SHACL
+  shape validation, SPARQL querying, and static site rendering) and Wazoo Worlds
+  context engines.
 
 ## Interoperability
 
-Because both Linked Markdown and Vault-LD standardize on W3C JSON-LD frontmatter
-and RDF 1.1 quads, they are **fully interoperable**. Any Vault-LD document is a
-valid Linked Markdown document, and both can be parsed into RDF triplestores or
-queried via SPARQL in Wazoo Worlds.
+Because Linked Markdown and Vault-LD share the exact same underlying RDF 1.1
+data model and JSON-LD semantics, they are **100% interoperable**. Any Vault-LD
+document can be extracted, validated, and queried using `linked-markdown` SDKs
+or the `wiki` CLI toolchain out of the box.
