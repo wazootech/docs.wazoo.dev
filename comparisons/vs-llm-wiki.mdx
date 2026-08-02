@@ -8,7 +8,7 @@ hidden: true
 
 ## At a glance
 
-|                 | Worlds                                            | LLM Wiki (Farzapedia)                                      |
+|                 | Worlds                                            | LLM Wiki                                                   |
 | :-------------- | :------------------------------------------------ | :--------------------------------------------------------- |
 | Data model      | RDF triples in an append-only ledger              | Interlinked Markdown articles (`[[wikilinks]]`)            |
 | Gardening model | Schema-checked assertions & SHACL validation      | Continuous agent summarizing, linking, & synthesis         |
@@ -52,9 +52,16 @@ SPARQL.
 - You are starting with raw transcripts and want agents to summarize and
   interlink information organically.
 
-## Coexistence
+## Coexistence & Integration
 
-The `llm-wiki` template in `wiki-templates` demonstrates how the two patterns
-unite: agents maintain and garden Markdown wiki articles, while Wiki CLI and
-Worlds index the underlying Linked Markdown frontmatter into an RDF graph for
-SPARQL verification.
+The LLM Wiki pattern is fully complementary to Wazoo context infrastructure. You
+can run an LLM Wiki directly using the [Wiki toolchain](/projects/wiki), as
+demonstrated in the official
+[`llm-wiki` starter template](https://github.com/wazootech/wiki-templates/tree/main/llm-wiki),
+where agents continuously garden Markdown articles while Wiki CLI validates RDF
+shapes.
+
+To scale agent knowledge across multi-agent fleets and production environments,
+we recommend pairing your LLM Wiki with **[Wazoo Worlds](/projects/worlds)** as
+the underlying context engine—allowing agents to maintain human-readable
+Markdown while querying Worlds via SPARQL for deterministic fact verification.

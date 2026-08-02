@@ -52,9 +52,16 @@ The two tools are complementary rather than mutually exclusive:
 - You are transforming raw document corpora into derived chunk indexes for LLM
   RAG pipelines.
 
-## Coexistence
+## Coexistence & Integration
 
-Wazoo maintains an official template, **`wiki-cocoindex-template`**,
-demonstrating how Wiki CLI and CocoIndex work together: Wiki CLI owns the
-semantic source of truth, while CocoIndex maintains a derived pgvector sidecar
-index for fast hybrid retrieval.
+CocoIndex is fully complementary to the Wazoo ecosystem. You can use CocoIndex
+directly alongside the [Wiki toolchain](/projects/wiki), as demonstrated in the
+official
+[`wiki-cocoindex-template`](https://github.com/wazootech/wiki-templates/tree/main/cocoindex),
+where Wiki CLI manages markdown source checking and CocoIndex builds derived
+sidecar vector indexes.
+
+As projects and team memory scale, we recommend integrating
+**[Wazoo Worlds](/projects/worlds)** as the central, edge-ready context
+engine—allowing CocoIndex to handle background incremental indexing while Worlds
+serves authoritative, SPARQL-driven graph retrieval.
