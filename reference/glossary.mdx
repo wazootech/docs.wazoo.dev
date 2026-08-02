@@ -1,0 +1,72 @@
+---
+title: "Glossary"
+description:
+  "Key terms for neuro-symbolic memory, Linked Markdown, and the Wazoo platform."
+---
+
+This glossary covers the terms you meet across the docs. Terms are grouped by
+area; each entry links to the page that explains it in depth.
+
+## Neuro-symbolic and RDF fundamentals
+
+- **RDF (Resource Description Framework)** — W3C standard model for data
+  interchange, expressed as triples. Worlds stores facts as RDF.
+- **Triple** — an atomic graph statement of subject, predicate, and object, such
+  as `user:ethan` `schema:givenName` "Ethan".
+- **Quad** — a triple extended with a graph or world context.
+- **Subject** — the entity a statement is about, identified by a URI or blank
+  node.
+- **Predicate** — the property or relationship connecting subject and object.
+- **Object** — the value or target of a predicate: a literal or a URI.
+- **SPARQL** — W3C query language for RDF graphs. See [Query](/worlds/query).
+- **Graph filter** — a declarative query constraint matching explicit triple
+  patterns rather than similarity scores.
+- **SHACL (Shapes Constraint Language)** — W3C standard for validating RDF
+  graphs against structural shapes.
+- **Ontology / vocabulary** — a formal specification of concepts and
+  relationships in a domain, such as Schema.org or FOAF.
+- **Blank node** — an anonymous node in an RDF graph without a public URI.
+
+## Linked Markdown and the wiki toolchain
+
+- **Linked Markdown** — a specification for embedding JSON-LD and YAML-LD
+  frontmatter into standard CommonMark files. See
+  [Linked Markdown](/projects/linked-markdown).
+- **YAML-LD / JSON-LD** — Linked Data serializations that put structured data
+  into YAML frontmatter or JSON blocks.
+- **Wikilink** — an internal reference (`[[Page]]` or `[[page-id|Label]]`) that
+  links Markdown articles into a navigable graph.
+- **Wiki CLI** — a toolchain for linting, SHACL validation, SPARQL querying, and
+  static rendering of Linked Markdown wikis. See [Wiki](/projects/wiki).
+- **Gardening** — the continuous process of summarizing, linking, validating,
+  and updating compiled Markdown wiki articles.
+
+## Wazoo platform
+
+- **World** — an isolated knowledge graph instance containing verified facts and
+  quads. See [Worlds](/projects/worlds).
+- **Context engine** — the queryable backend that fuses graph filters, vector
+  embeddings, and full-text search.
+- **Verified fact** — a graph statement asserted into an append-only ledger with
+  explicit provenance.
+- **Provenance** — chronological, source-linked lineage of when, where, and by
+  whom a fact was asserted.
+- **Append-only ledger** — an immutable transaction history that preserves past
+  fact states and timestamps. See [Update](/worlds/update).
+- **Vector-graph fusion** — hybrid retrieval combining dense vector similarity
+  with deterministic SPARQL graph constraints. See [Search](/worlds/search).
+- **MemSDK** — the unified client SDK interface for agent memory backends. See
+  [MemSDK](/projects/memsdk).
+- **worlds-libsql** — the edge-embeddable LibSQL adapter that runs Worlds
+  context engines locally. See [Self-host](/contribute/self-host).
+
+## Memory and context
+
+- **Context window** — the model's context limit, managed through exact,
+  high-signal graph retrieval.
+- **Similarity vs relevance** — vector similarity alone does not equal factual
+  relevance. See [Comparisons](/comparisons/index).
+- **Sidecar index** — a derived secondary index, such as a vector chunk store,
+  running alongside the primary graph ledger.
+- **Fact ledger** — the single source of truth holding authoritative, verified
+  domain assertions.

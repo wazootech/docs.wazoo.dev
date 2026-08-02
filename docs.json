@@ -134,6 +134,10 @@
         ]
       },
       {
+        "group": "Reference",
+        "pages": ["reference/glossary"]
+      },
+      {
         "group": "Platform API",
         "openapi": "https://api.wazoo.dev/openapi.json",
         "pages": [
