@@ -1,0 +1,56 @@
+---
+title: "Google OKF (Open Knowledge Format)"
+description:
+  "Worlds vs Google OKF: RDF fact ledger vs open knowledge representation
+  format."
+hidden: true
+---
+
+## At a glance
+
+|               | Worlds                                                | Google OKF (Open Knowledge Format)                    |
+| :------------ | :---------------------------------------------------- | :---------------------------------------------------- |
+| Primary role  | Authoritative RDF fact ledger & SPARQL context engine | Open specification & format for structured knowledge  |
+| Data model    | RDF triples/quads in an append-only graph ledger      | Entity-attribute-value & schema-neutral graph payload |
+| Retrieval     | SPARQL graph queries, full-text, & vector fusion      | Schema parsing, serialization, & exchange format      |
+| Core strength | Deterministic multi-hop SPARQL graph verification     | Standardized schema payload interchange & format      |
+| Deployment    | Edge-ready adapters (LibSQL, Postgres) or Cloud       | Specification / interchange format                    |
+
+## Overlap and shared capabilities
+
+Both Worlds and Google OKF (Open Knowledge Format) aim to break structured
+knowledge out of proprietary silos into open, interoperable formats that AI
+models and software systems can parse deterministically.
+
+The difference is structural and functional:
+
+- Google OKF is an open knowledge specification and data format designed to
+  standardize structured entity payload interchange.
+- Worlds is a complete context engine and runtime platform. It stores assertions
+  in W3C RDF quads, enforces SHACL constraints, and executes multi-hop SPARQL
+  queries fused with vector similarity search.
+
+OKF defines a standardized payload layout for structured entity exchange,
+whereas Worlds is a context storage engine and SPARQL query platform.
+
+## When Worlds fits
+
+- You need an active context engine and SPARQL query server to store, index, and
+  query dynamic facts.
+- You require append-only quad ledgers with built-in provenance tracking and
+  hybrid search.
+- You want edge-deployable database adapters (LibSQL, Turso, Postgres) for live
+  agent fleets.
+
+## When Google OKF fits
+
+- You need a schema-neutral serialization format for transmitting knowledge
+  graph payloads between enterprise systems.
+- You are defining open knowledge exchange specifications across external APIs.
+- You are standardizing entity-attribute payload exports.
+
+## Coexistence and integration
+
+Google OKF payload schemas can be parsed and mapped directly into Worlds as RDF
+quads. Worlds serves as the queryable execution context and SPARQL engine for
+knowledge structured in open formats like OKF.
