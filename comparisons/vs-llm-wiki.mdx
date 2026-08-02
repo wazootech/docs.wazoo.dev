@@ -16,25 +16,25 @@ hidden: true
 | Provenance      | Quad-level, temporal, verifiable via SPARQL       | Article-level source citations & git commits               |
 | Primary surface | Context engine API & agent tool calls             | Human & agent-readable Markdown vault                      |
 
-## The philosophical difference
+## Overlap and shared capabilities
 
-The **LLM Wiki pattern** (popularized by Andrej Karpathy and exemplified by
-project Farzapedia) argues that instead of dumping raw interaction transcripts
-into opaque vector stores, agents should **compile and garden** their knowledge
-into a structured, interlinked Markdown wiki (`[[wikilinks]]`). Agents
-continuously synthesize new information into readable articles.
+The **LLM Wiki pattern** (popularized by Andrej Karpathy and demonstrated in
+project Farzapedia) and **Wazoo Worlds** share the exact same core philosophy:
+**agent memory should be compiled, structured, and interlinked rather than
+dumped into flat, opaque vector databases.**
 
-**Worlds** elevates this concept by bringing **semantic web rigor and
-deterministic verification** to compiled wikis. Where standard LLM wikis rely
-solely on unstructured prose and informal links, Worlds structures compiled
-facts into standard W3C RDF triples, validated by SHACL shapes and queryable via
-SPARQL.
+Both approaches organize knowledge into navigable graph nodes where links
+between concepts matter just as much as raw text search.
 
-- **LLM Wiki** provides a clean, human-readable workspace for agent gardening
-  and synthesis.
-- **Worlds** provides the underlying **schema-checked fact engine** ensuring
-  that compiled wiki knowledge remains structurally sound, non-contradictory,
-  and verifiable.
+Where they overlap and build on each other:
+
+- **LLM Wiki** defines the human-and-agent readable workspace—where agents
+  continuously summarize, synthesize, and interlink Markdown articles
+  (`[[wikilinks]]`).
+- **Worlds** provides the underlying **schema-checked fact engine**—taking those
+  compiled articles and frontmatter assertions, enforcing SHACL shape
+  validation, and allowing agents to execute SPARQL graph queries across the
+  knowledge graph.
 
 ## When Worlds fits
 

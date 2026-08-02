@@ -15,26 +15,23 @@ hidden: true
 | Incremental flow | Immutable append-only quads & patches                 | Memoized pipeline functions (`@coco.fn(memo=True)`) |
 | Deployment       | Edge-ready adapters (LibSQL, Postgres) or Cloud       | Python runtime + Postgres (Docker or PGlite)        |
 
-## The philosophical difference
+## Overlap and shared capabilities
 
-**CocoIndex** is an incremental data pipeline framework for materializing
-derived vector indexes from raw document stores (such as Markdown wikis). Using
-memoized pipeline functions, CocoIndex detects when a source file changes and
-incrementally updates vector chunks in a sidecar database (e.g. pgvector or
-PGlite).
+Both **Worlds** and **CocoIndex** address the need for structured, indexable
+context over Markdown documents. Both systems parse section headings, chunk
+content for search, and maintain fast retrieval pipelines so AI agents spend
+fewer tokens retrieving relevant context.
 
-**Worlds** serves as the **authoritative, single source of truth**. Rather than
-holding derived vector embeddings, Worlds maintains an append-only ledger of
-verified RDF triples, exposing SPARQL graph filters and deterministic
-provenance.
+The difference is in **which layer of the stack they manage**:
 
-The two tools are complementary rather than mutually exclusive:
+- **CocoIndex** is an incremental ETL sidecar pipeline. It continuously watches
+  source files and updates derived pgvector or WASM PGlite vector indexes.
+- **Worlds** is an authoritative RDF fact engine. It manages canonical triple
+  assertions, SHACL shapes, SPARQL graph filters, and immutable provenance.
 
-- **Worlds** owns canonical fact assertion, graph schemas (SHACL), SPARQL
-  verification, and temporal provenance.
-- **CocoIndex** sits alongside as an **incremental sidecar indexer**
-  (`wiki-cocoindex-template`), transforming Markdown source documents into
-  derived vector embeddings for fast semantic recall.
+Rather than competing, the two systems serve complementary steps in the context
+pipeline: CocoIndex handles background incremental indexing, while Worlds
+provides the authoritative SPARQL-driven knowledge ledger.
 
 ## When Worlds fits
 
@@ -54,7 +51,7 @@ The two tools are complementary rather than mutually exclusive:
 
 ## Coexistence & Integration
 
-CocoIndex is fully complementary to the Wazoo ecosystem. You can use CocoIndex
+CocoIndex and Wazoo tooling work together out of the box. You can use CocoIndex
 directly alongside the [Wiki toolchain](/projects/wiki), as demonstrated in the
 official
 [`wiki-cocoindex-template`](https://github.com/wazootech/wiki-templates/tree/main/cocoindex),
@@ -62,6 +59,6 @@ where Wiki CLI manages markdown source checking and CocoIndex builds derived
 sidecar vector indexes.
 
 As projects and team memory scale, we recommend integrating
-**[Wazoo Worlds](/projects/worlds)** as the central, edge-ready context
-engine—allowing CocoIndex to handle background incremental indexing while Worlds
-serves authoritative, SPARQL-driven graph retrieval.
+**[Wazoo Worlds](/projects/worlds)** as the central context engine—allowing
+CocoIndex to handle background incremental vector indexing while Worlds serves
+authoritative, SPARQL-driven graph retrieval.
