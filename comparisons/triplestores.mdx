@@ -1,0 +1,52 @@
+---
+title: "Triplestores (Fuseki, GraphDB, Blazegraph, Oxigraph)"
+description:
+  "Worlds vs Traditional RDF Triplestores: context engine vs enterprise SPARQL
+  engines."
+hidden: true
+---
+
+## At a glance
+
+|                   | Worlds                                               | Traditional Triplestores (Jena, GraphDB, Oxigraph) |
+| :---------------- | :--------------------------------------------------- | :------------------------------------------------- |
+| Primary role      | Multi-modal AI context engine & RDF fact ledger      | Dedicated RDF graph database & SPARQL endpoint     |
+| Data model        | Append-only RDF quad ledger + hybrid vector index    | RDF triples/quads with OWL/RDFS reasoning          |
+| Retrieval         | Reciprocal Rank Fusion (SPARQL + Vector + Full-text) | Standard W3C SPARQL 1.1 Query & Update             |
+| Embedding search  | Native vector index integrated into RRF retrieval    | Varies (plugin-based or external vector stores)    |
+| Storage Substrate | LibSQL/Turso, Deno KV, Postgres, or Cloud            | Custom disk structures / RocksDB / Java storage    |
+
+## Overlap and shared capabilities
+
+Worlds and traditional triplestores (such as Apache Jena Fuseki, Ontotext
+GraphDB, Blazegraph, and Oxigraph) share a foundation: W3C open-standard RDF
+data models and SPARQL query support. Both allow querying deterministic graph
+relationships using standard subject-predicate-object triples.
+
+The difference lies in target architecture:
+
+- Traditional triplestores are standalone graph databases optimized for heavy
+  Semantic Web reasoning (OWL/RDFS), enterprise ontologies, and pure SPARQL 1.1
+  endpoints.
+- Worlds is built specifically as an AI context engine. It fuses SPARQL graph
+  traversal with native vector embeddings and full-text search using Reciprocal
+  Rank Fusion (RRF), running on lightweight storage backends like LibSQL/Turso
+  and Postgres.
+
+## When Worlds fits
+
+- You need hybrid retrieval combining SPARQL graph filters with vector semantic
+  search for AI agents.
+- You want lightweight, edge-ready storage adapters (LibSQL, Deno KV, Postgres)
+  without managing a Java JVM cluster.
+- You require append-only quad ledgers with built-in provenance tracking for
+  agent context.
+
+## When Traditional Triplestores fit
+
+- You require complex OWL/RDFS enterprise reasoning and heavy semantic inference
+  rules.
+- You need a standard, standalone SPARQL endpoint for legacy Semantic Web
+  toolchains.
+- You are running dedicated graph database clusters (e.g. GraphDB Enterprise or
+  Blazegraph).

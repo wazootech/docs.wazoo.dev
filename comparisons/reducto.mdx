@@ -1,0 +1,61 @@
+---
+title: "Reducto"
+description:
+  "Worlds vs Reducto: RDF fact ledger vs document extraction pipeline."
+hidden: true
+---
+
+## At a glance
+
+|               | Worlds                                                | [Reducto](https://reducto.ai)                        |
+| :------------ | :---------------------------------------------------- | :--------------------------------------------------- |
+| Primary role  | Authoritative RDF fact ledger & SPARQL context engine | Document processing API & layout-aware parser        |
+| Data model    | RDF triples in an append-only graph ledger            | Extracted JSON schemas, markdown, & bounding boxes   |
+| Retrieval     | SPARQL graph queries, full-text, & vector fusion      | Document chunk search & structured JSON extraction   |
+| Core strength | Deterministic multi-hop SPARQL graph verification     | Complex document parsing (PDFs, tables, forms, scan) |
+| Deployment    | Edge-ready adapters (LibSQL, Postgres) or Cloud       | Managed Cloud API                                    |
+
+## Overlap and shared capabilities
+
+Both Worlds and [Reducto](https://reducto.ai) solve critical problems in the AI
+document processing and retrieval pipeline. Both systems convert unstructured
+content into machine-readable structures so AI agents spend fewer tokens
+retrieving context and avoid hallucinated values.
+
+The key distinction lies in where each system operates:
+
+- Reducto is a document parsing engine. It ingests complex, unstructured
+  documents (PDFs, multi-page financial forms, scans) and extracts visual
+  layouts, tables, and structured JSON schemas with high fidelity.
+- Worlds is an authoritative RDF fact engine. It takes verified assertions,
+  links them into an append-only RDF triple store, and provides SPARQL graph
+  queries alongside vector and full-text search.
+
+Reducto acts as an ingestion bridge, turning complex raw files into structured
+assertions that can be loaded directly into Worlds as verifiable facts.
+
+## When Worlds fits
+
+- You need deterministic graph querying (SPARQL) to verify multi-hop
+  relationships across enterprise domain facts.
+- You require immutable provenance, audit trails, and quad-level assertion
+  tracking.
+- You want open-standard RDF schemas that operate natively across edge adapters
+  (LibSQL, Postgres) and cloud infrastructure.
+
+## When Reducto fits
+
+- You need high-accuracy parsing of visually complex PDFs, tabular data, or
+  scanned forms.
+- You require bounding-box layout detection and chunking before passing document
+  content to LLMs.
+- You are building an upstream document extraction pipeline prior to context
+  storage.
+
+## Coexistence and integration
+
+Reducto and Worlds complement each other cleanly. In an enterprise pipeline,
+Reducto parses unstructured documents into structured JSON entities and
+key-value tuples. Those assertions are then imported into Worlds as RDF quads.
+Agents can then query Worlds via SPARQL and hybrid search to retrieve
+verifiable, interconnected knowledge.

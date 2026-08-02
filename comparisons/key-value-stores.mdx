@@ -1,0 +1,42 @@
+---
+title: "Key-Value Stores"
+description:
+  "Worlds vs Key-Value Stores: RDF fact ledger vs high-speed key-value caches."
+hidden: true
+---
+
+## At a glance
+
+|              | Worlds                                                | Key-Value Stores (Redis, Dragonfly, Memcached)        |
+| :----------- | :---------------------------------------------------- | :---------------------------------------------------- |
+| Primary role | Authoritative RDF fact ledger & SPARQL context engine | In-memory key-value caching & data structures         |
+| Data model   | RDF triples/quads in an append-only graph ledger      | Opaque byte arrays, strings, hashes, lists, sets      |
+| Querying     | SPARQL graph traversal, full-text, & vector fusion    | Direct key lookup, range queries, & pub/sub commands  |
+| Persistence  | Permanent append-only ledger on edge/cloud backends   | In-memory with optional asynchronous disk snapshots   |
+| Purpose      | Verifiable agent context engine                       | Low-latency caching, session storage, & rate limiting |
+
+## Overlap and shared capabilities
+
+Both Worlds and key-value stores prioritize retrieval performance and simple
+developer interfaces. Key-value stores like Deno KV can even serve as a
+underlying storage substrate for Worlds adapters.
+
+The difference:
+
+- Key-value stores treat values as opaque blobs accessible primarily by key.
+  They do not parse or index relationship graphs between stored items.
+- Worlds models data as explicit RDF quads, indexing subjects, predicates, and
+  objects so agents can query connections between facts.
+
+## When Worlds fits
+
+- You need graph relationship traversal (SPARQL) across stored facts.
+- You require verified context retrieval combining vector embeddings with graph
+  filters.
+- You need permanent quad provenance and change ledgers for AI agent operations.
+
+## When Key-Value Stores fit
+
+- You need ultra-low latency sub-millisecond caching for hot data.
+- You are managing ephemeral user sessions, rate limits, or pub/sub queues.
+- You only need direct key-to-value lookups without semantic relationships.

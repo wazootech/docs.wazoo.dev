@@ -1,0 +1,44 @@
+---
+title: "Message Queues"
+description:
+  "Worlds vs Message Queues: RDF fact ledger vs asynchronous event streams."
+hidden: true
+---
+
+## At a glance
+
+|              | Worlds                                                | Message Queues (Kafka, RabbitMQ, SQS, NATS)           |
+| :----------- | :---------------------------------------------------- | :---------------------------------------------------- |
+| Primary role | Authoritative RDF fact ledger & SPARQL context engine | Asynchronous message broker & event streaming bus     |
+| Data model   | RDF triples/quads in an append-only graph ledger      | Sequential message topics, queues, & event logs       |
+| Retrieval    | SPARQL graph queries, full-text, & vector fusion      | Consumer log offsets & push/pull queue delivery       |
+| Core purpose | Verifiable agent memory & context retrieval           | Decoupling microservices & streaming event processing |
+| Querying     | Complex multi-hop graph queries & vector search       | Topic streaming & consumer group offset tracking      |
+
+## Overlap and shared capabilities
+
+Both Worlds and streaming event logs (like Kafka) use immutable, append-only
+logs as core storage primitives. Both allow tracking temporal event changes over
+time.
+
+The difference:
+
+- Message queues stream events between microservices. They prioritize throughput
+  and queue delivery, but do not support indexing or querying graph
+  relationships across historical messages.
+- Worlds indexes assertions into an RDF knowledge graph, enabling agents to run
+  SPARQL queries and hybrid vector searches across historical facts.
+
+## When Worlds fits
+
+- You need to query the current state and provenance of connected facts.
+- You require hybrid vector + SPARQL graph search for AI agent context
+  retrieval.
+- You are storing durable knowledge rather than transient inter-service
+  messages.
+
+## When Message Queues fit
+
+- You need asynchronous task queueing or pub/sub broadcasting between services.
+- You are streaming high-volume raw telemetry or event logs.
+- You need microservice decoupling and guaranteed message delivery semantics.
