@@ -1,0 +1,46 @@
+---
+title: "Document Databases"
+description:
+  "Worlds vs Document Databases: RDF fact ledger vs JSON document stores."
+hidden: true
+---
+
+## At a glance
+
+|               | Worlds                                                | Document Databases (MongoDB, CouchDB, DynamoDB)     |
+| :------------ | :---------------------------------------------------- | :-------------------------------------------------- |
+| Primary role  | Authoritative RDF fact ledger & SPARQL context engine | Hierarchical JSON document storage & retrieval      |
+| Data model    | RDF triples/quads in an append-only graph ledger      | Semi-structured JSON/BSON documents                 |
+| Relationships | Explicit first-class graph edges with SPARQL queries  | Embedded subdocuments or manual document references |
+| Retrieval     | SPARQL graph queries, full-text, & vector fusion      | Field queries, aggregation pipelines, & key lookups |
+| Provenance    | Immutable quad provenance & assertion ledger          | Document revision histories or custom fields        |
+
+## Overlap and shared capabilities
+
+Both Worlds and document databases offer schema flexibility, allowing data
+structures to evolve without strict table migrations. Both support storing
+semi-structured metadata alongside content.
+
+The difference:
+
+- Document databases nest data hierarchically within document boundaries.
+  Cross-document relationships require manual references or expensive lookup
+  joins.
+- Worlds connects atomic facts into a unified RDF graph.
+  Subject-predicate-object triples allow agents to query relationships across
+  entity boundaries effortlessly.
+
+## When Worlds fits
+
+- You need interconnected knowledge retrieval across multiple domain entities.
+- You require SPARQL graph queries and quad provenance tracking for verifiable
+  agent responses.
+- You want hybrid search across RDF graphs, full-text indexes, and vector
+  embeddings.
+
+## When Document Databases fit
+
+- Your application data is naturally hierarchical and self-contained (e.g. user
+  profiles, blog posts).
+- You require rapid single-key JSON document retrieval.
+- You are building general document storage workflows.

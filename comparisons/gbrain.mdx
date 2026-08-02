@@ -1,0 +1,48 @@
+---
+title: "GBrain"
+description: "Worlds vs GBrain: RDF fact ledger vs personal AI memory store."
+hidden: true
+---
+
+## At a glance
+
+|               | Worlds                                                | GBrain                                                |
+| :------------ | :---------------------------------------------------- | :---------------------------------------------------- |
+| Primary role  | Authoritative RDF fact ledger & SPARQL context engine | Personal AI memory & context repository               |
+| Data model    | RDF triples in an append-only graph ledger            | Key-value / document memory notes & embeddings        |
+| Retrieval     | SPARQL graph queries, full-text, & vector fusion      | Semantic vector search & key lookup                   |
+| Target domain | Multi-agent context, enterprise domain graphs         | Personal context, developer notes, & user preferences |
+| Deployment    | Edge-ready adapters (LibSQL, Postgres) or Cloud       | Self-hosted / local runtime                           |
+
+## Overlap and shared capabilities
+
+Both Worlds and GBrain provide persistent memory for AI workflows, preventing
+LLMs from losing context across sessions. Both systems enable developers and
+agents to store facts, preferences, and notes outside the prompt window.
+
+The difference is structural:
+
+- GBrain is designed as a streamlined personal memory vault, optimized for
+  storing personal notes, quick context, and key-value memory blocks.
+- Worlds is a W3C open-standard RDF context engine. It provides quad-level
+  provenance, SHACL constraint validation, and deterministic SPARQL graph
+  queries alongside vector search.
+
+GBrain offers lightweight personal memory storage, while Worlds provides
+enterprise-grade, verifiable graph context for multi-agent systems.
+
+## When Worlds fits
+
+- You need deterministic graph querying (SPARQL) to verify multi-hop
+  relationships across domain facts.
+- You require immutable provenance and audit trails for every assertion.
+- You want open-standard RDF schemas that operate natively across edge adapters
+  (LibSQL, Postgres) and cloud databases.
+
+## When GBrain fits
+
+- You need a simple personal context vault for developer notes and user
+  preferences.
+- You want quick key-value memory retrieval without setting up RDF schemas or
+  SPARQL queries.
+- You are prototyping single-user agent memory workflows.

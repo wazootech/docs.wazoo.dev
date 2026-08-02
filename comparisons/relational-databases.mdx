@@ -1,0 +1,46 @@
+---
+title: "Relational Databases"
+description: "Worlds vs Relational Databases: RDF fact ledger vs SQL tables."
+hidden: true
+---
+
+## At a glance
+
+|                 | Worlds                                                | Relational Databases (Postgres, MySQL, SQLite)  |
+| :-------------- | :---------------------------------------------------- | :---------------------------------------------- |
+| Primary role    | Authoritative RDF fact ledger & SPARQL context engine | General-purpose relational data management      |
+| Data model      | RDF triples/quads in an append-only graph ledger      | Normalised SQL tables, rows, and foreign keys   |
+| Schema rigidity | Flexible graph triples with SHACL shape validation    | Fixed table schemas requiring DDL migrations    |
+| Retrieval       | SPARQL graph queries, full-text, & vector fusion      | SQL queries with JOINs, indexes, & aggregations |
+| Deployment      | Edge-ready adapters (LibSQL, Postgres) or Cloud       | Self-hosted or managed database instances       |
+
+## Overlap and shared capabilities
+
+Both Worlds and relational databases provide ACID-compliant data persistence and
+structured queries. In fact, Worlds can persist its RDF quad ledger directly to
+relational backends like Postgres or LibSQL via adapters (`worlds-postgres`,
+`worlds-libsql`).
+
+The structural difference:
+
+- Relational databases require rigid table schemas and explicit foreign-key
+  JOINs, making arbitrary multi-hop relationship discovery complex.
+- Worlds models data as flexible RDF graph triples. Relationships are
+  first-class entities that can be traversed dynamically via SPARQL without
+  schema migrations.
+
+## When Worlds fits
+
+- You are storing dynamic, evolving domain facts and agent memories where schema
+  rigidity is a bottleneck.
+- You need multi-hop graph queries (SPARQL) to verify connected facts.
+- You require hybrid vector + full-text + graph retrieval fused via Reciprocal
+  Rank Fusion.
+
+## When Relational Databases fit
+
+- You are managing standard OLTP application data (user accounts, orders,
+  transactions).
+- You require fixed table schemas and established SQL tooling.
+- You are building core relational infrastructure before adding an AI context
+  layer.

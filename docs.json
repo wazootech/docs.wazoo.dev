@@ -84,8 +84,13 @@
           "comparisons/cocoindex",
           "comparisons/diy-memory-infra",
           "comparisons/diy-triplestore",
+          "comparisons/document-databases",
+          "comparisons/gbrain",
+          "comparisons/google-dataplex",
+          "comparisons/google-okf",
           "comparisons/google-search",
           "comparisons/hermes",
+          "comparisons/key-value-stores",
           "comparisons/langmem",
           "comparisons/letta",
           "comparisons/llm-wiki",
@@ -97,9 +102,14 @@
           "comparisons/memsearch",
           "comparisons/memspan",
           "comparisons/memsync",
+          "comparisons/message-queues",
           "comparisons/palantir",
           "comparisons/polygres",
+          "comparisons/reducto",
+          "comparisons/relational-databases",
           "comparisons/supermemory",
+          "comparisons/textql",
+          "comparisons/triplestores",
           "comparisons/trustgraph",
           "comparisons/twilio-memory-store",
           "comparisons/vault-ld",
@@ -202,9 +212,7 @@
       },
       {
         "group": "Skills",
-        "pages": [
-          "skills/wazoo"
-        ]
+        "pages": ["skills/wazoo"]
       },
       {
         "group": "Integrations",
