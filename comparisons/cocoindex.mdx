@@ -17,16 +17,16 @@ hidden: true
 
 ## Overlap and shared capabilities
 
-Both **Worlds** and **CocoIndex** address the need for structured, indexable
-context over Markdown documents. Both systems parse section headings, chunk
-content for search, and maintain fast retrieval pipelines so AI agents spend
-fewer tokens retrieving relevant context.
+Both Worlds and CocoIndex address the need for structured, indexable context
+over Markdown documents. Both systems parse section headings, chunk content for
+search, and maintain fast retrieval pipelines so AI agents spend fewer tokens
+retrieving relevant context.
 
-The difference is in **which layer of the stack they manage**:
+The difference is in which layer of the stack they manage:
 
-- **CocoIndex** is an incremental ETL sidecar pipeline. It continuously watches
+- CocoIndex is an incremental ETL sidecar pipeline. It continuously watches
   source files and updates derived pgvector or WASM PGlite vector indexes.
-- **Worlds** is an authoritative RDF fact engine. It manages canonical triple
+- Worlds is an authoritative RDF fact engine. It manages canonical triple
   assertions, SHACL shapes, SPARQL graph filters, and immutable provenance.
 
 Rather than competing, the two systems serve complementary steps in the context
@@ -49,7 +49,7 @@ provides the authoritative SPARQL-driven knowledge ledger.
 - You are transforming raw document corpora into derived chunk indexes for LLM
   RAG pipelines.
 
-## Coexistence & Integration
+## Coexistence and integration
 
 CocoIndex and Wazoo tooling work together out of the box. You can use CocoIndex
 directly alongside the [Wiki toolchain](/projects/wiki), as demonstrated in the
@@ -59,6 +59,6 @@ where Wiki CLI manages markdown source checking and CocoIndex builds derived
 sidecar vector indexes.
 
 As projects and team memory scale, we recommend integrating
-**[Wazoo Worlds](/projects/worlds)** as the central context engine—allowing
-CocoIndex to handle background incremental vector indexing while Worlds serves
-authoritative, SPARQL-driven graph retrieval.
+[Worlds](/projects/worlds) as the central context engine, letting CocoIndex
+handle background incremental vector indexing while Worlds serves authoritative,
+SPARQL-driven graph retrieval.

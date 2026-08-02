@@ -4,22 +4,22 @@ description:
   "Worlds gives agents infinite context through verifiable knowledge graphs."
 ---
 
-Worlds is Wazoo's flagship context engine. It stores facts as knowledge graphs,
-exposes search and SPARQL query paths, and provides APIs that let agents
-retrieve and update verifiable context. Worlds lets models use tool calls to
-retrieve facts from a graph rather than infer them from model weights.
+Worlds is Wazoo's context engine. It stores facts as knowledge graphs, exposes
+search and SPARQL query paths, and provides APIs that let agents retrieve and
+update verifiable context. Worlds lets models use tool calls to retrieve facts
+from a graph rather than infer them from model weights.
 
-Worlds is designed for curated memory, not transcript accumulation. Store
-durable facts in a world and discard the rest.
+Worlds is designed for curated memory. Store durable facts in a world and
+discard the rest, instead of keeping every message.
 
 ## What Worlds provides
 
-- **Graph storage** - RDF triples and named graphs for durable facts.
-- **Hybrid search** - Keyword and vector retrieval over graph literals.
-- **SPARQL queries** - Declarative graph traversal and reasoning.
-- **API and CLI surfaces** - Programmatic and terminal workflows for creating,
+- **Graph storage**: RDF triples and named graphs for durable facts.
+- **Hybrid search**: Keyword and vector retrieval over graph literals.
+- **SPARQL queries**: Declarative graph traversal and reasoning.
+- **API and CLI surfaces**: Programmatic and terminal workflows for creating,
   importing, exporting, searching, and querying worlds.
-- **Edge-ready adapters** - LibSQL/Turso and Deno KV backends for durable
+- **Edge-ready adapters**: LibSQL/Turso and Deno KV backends for durable
   deployments.
 
 ## Repositories

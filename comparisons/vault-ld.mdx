@@ -20,9 +20,9 @@ hidden: true
 Both [Linked Markdown](/projects/linked-markdown) (by Wazoo) and
 [Vault-LD](https://github.com/The-Knowledge-Graph-Guys/vault-ld) (by
 [The Knowledge Graph Guys](https://www.knowledge-graph-guys.com/)) arrived at
-the same core realization: that standard CommonMark files with valid W3C JSON-LD
-/ YAML-LD frontmatter form the ideal open primitive for semantic Markdown and
-agent knowledge graphs.
+the same realization: standard CommonMark files with valid W3C JSON-LD / YAML-LD
+frontmatter are the open primitive for semantic Markdown and agent knowledge
+graphs.
 
 Because both specifications converged on zero nonstandard syntax and native
 JSON-LD semantics, an LMD document and a Vault-LD document accept the exact same
@@ -44,37 +44,35 @@ familyName: "Davidson"
 Ethan leads engineering and product on Wazoo/Worlds.
 ```
 
-The key distinction is not document format, but **toolchain maturity and
-real-world deployment**:
+The distinction is toolchain maturity and real-world deployment, not document
+format:
 
-- **Linked Markdown (LMD)** is backed by production-grade tooling: official
+- Linked Markdown (LMD) is backed by production-grade tooling: official
   multi-language Extract APIs (`linked-markdown-py` on PyPI,
   `@wazoo/linked-markdown` on JSR), a formal W3C Community Group Editor's Draft,
   a published research paper (Zenodo DOI: `10.5281/zenodo.21216085`), and a
   complete CLI toolchain (`wiki`, Wazoopedia, `memsdk`, and Wazoo Worlds).
-- **Vault-LD** is an open specification (`SPEC.md`) emphasizing lossless
-  round-trip parsing concepts for personal knowledge bases.
+- Vault-LD is an open specification (`SPEC.md`) for lossless round-trip parsing
+  in personal knowledge bases.
 
 ## Why choose Linked Markdown
 
-- **Production-Ready SDKs**: Ready-to-install packages for Python
+- Ready-to-install packages for Python
   ([`pip install linked-markdown`](https://pypi.org/project/linked-markdown/))
   and TypeScript
   ([`jsr:@wazoo/linked-markdown`](https://jsr.io/@wazoo/linked-markdown)) with
   deterministic
   [`extract()`](https://jsr.io/@wazoo/linked-markdown/doc/~/extract) APIs that
   convert markdown directly to RDF quads and JSON-LD nodes.
-- **W3C Community Draft & Academic Paper**: Backed by a formal W3C JSON-LD
-  Community Group specification and a published DOI paper on semantic Markdown
-  infrastructure.
-- **End-to-End Toolchain**: Native integration with `wiki` CLI (linting, SHACL
-  shape validation, SPARQL querying, and static site rendering) and Wazoo Worlds
-  context engines.
+- A formal W3C JSON-LD Community Group specification and a published DOI paper
+  on semantic Markdown infrastructure.
+- Native integration with the `wiki` CLI (linting, SHACL shape validation,
+  SPARQL querying, and static site rendering) and Wazoo Worlds context engines.
 
 ## Interoperability
 
 Because Linked Markdown and Vault-LD converged on the exact same underlying RDF
-1.1 data model and JSON-LD semantics, they are **100% interoperable**. Any
-Vault-LD document can be extracted, validated, and queried using
+1.1 data model and JSON-LD semantics, they are 100% interoperable. Any Vault-LD
+document can be extracted, validated, and queried with
 [`linked-markdown`](/projects/linked-markdown) SDKs or the
-[`wiki`](/projects/wiki) CLI toolchain out of the box.
+[`wiki`](/projects/wiki) CLI toolchain.

@@ -10,7 +10,8 @@ import, RDF export, search, and SPARQL.
 
 ## The connection model
 
-The connection model uses composable components to scale system complexity:
+The connection model uses composable components to keep system complexity
+manageable:
 
 - Client: Use the `@worlds/client` or standard HTTP requests inside an agent
   like Claude, Gemini, or a custom script to connect to the Worlds API.
@@ -271,14 +272,14 @@ logic.
 
 ### Hot memory
 
-The platform utilizes a WASM-compiled RDF store that runs entirely within the
+The platform uses a WASM-compiled RDF store that runs entirely within the
 JavaScript runtime. This maintains an in-memory state in the edge cache between
 requests to reduce read latency.
 
 ### Persistence and indexing
 
-Persistence utilizes an edge-distributed database to maintain semantic
-integrity. The system relies on a multi-index strategy:
+Persistence uses an edge-distributed database to maintain semantic integrity.
+The system relies on a multi-index strategy:
 
 - Graph indexing: Stores structural data records as an append-only chronological
   ledger. This enables rapid pattern matching.
@@ -286,9 +287,9 @@ integrity. The system relies on a multi-index strategy:
   enables semantic similarity search at the edge.
 - Full-text indexing: Provides exact keyword matching and ranking.
 
-When executing a search, the engine utilizes Reciprocal Rank Fusion (RRF) to
-combine results from the vector index and full-text index into a single, unified
-relevance ranking. Structural graph constraints further restrict these results.
+When executing a search, the engine uses Reciprocal Rank Fusion (RRF) to combine
+results from the vector index and full-text index into a single relevance
+ranking. Structural graph constraints further restrict these results.
 
 ## Resource hierarchy
 
@@ -356,8 +357,8 @@ operate on graph data.
 
 ## Semantic data model
 
-Worlds utilizes a standardized core ontology to provide agents with a
-predictable set of primitives for reasoning, alignment, and discovery.
+Worlds uses a standardized core ontology to provide agents with a predictable
+set of primitives for reasoning, alignment, and discovery.
 
 ### Core classes
 
@@ -496,7 +497,6 @@ changing the public API shape.
 
 Deployment modes may not be publicly available yet.
 
-The Worlds API integrates symbolic precision with the statistical power of large
-language models. By reifying facts and aligning state through human feedback,
-the platform provides a deterministic substrate for intentional agency in
-high-stakes contexts.
+The Worlds API combines symbolic precision with the statistical power of large
+language models. Reification and human-feedback alignment provide a
+deterministic substrate for intentional agency in high-stakes contexts.

@@ -4,7 +4,7 @@ description: "Semantic disambiguation and hybrid retrieval."
 ---
 
 Before reasoning about facts, agents must find the correct starting point.
-Hybrid search disambiguates natural language queries, resolving them to the
+Hybrid search disambiguates natural language queries and resolves them to the
 correct semantic entity (IRI) before executing symbolic logic.
 
 ## Why not only vector search?
@@ -16,9 +16,9 @@ identical in vector space.
 
 ## Hybrid retrieval
 
-Worlds fuses three complementary signals to guarantee retrieval accuracy. By
-layering keyword precision and structural graph filters on top of vector
-embeddings, hybrid search ensures the agent resolves the exact item it needs.
+Worlds combines three signals for accurate retrieval. Hybrid search layers
+keyword matching and structural graph filters over vector embeddings, so the
+agent resolves the exact item it needs.
 
 | Signal        | Technique                    | What it captures         |
 | :------------ | :--------------------------- | :----------------------- |
@@ -29,12 +29,12 @@ embeddings, hybrid search ensures the agent resolves the exact item it needs.
 ## Reciprocal rank fusion
 
 Results from each signal are merged using Reciprocal Rank Fusion (RRF), an
-algorithm that produces a single unified relevance ranking:
+algorithm that produces a single relevance ranking:
 
 $$score = \sum_{d \in D} \frac{1}{60 + rank(d)}$$
 
-This ensures that a result ranked highly by multiple signals surfaces to the
-top, while noise from any single signal is suppressed.
+This lifts results ranked highly by multiple signals to the top and suppresses
+noise from any single signal.
 
 ## Execute a search
 

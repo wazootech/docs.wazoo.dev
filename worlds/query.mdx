@@ -10,7 +10,7 @@ Language). This is the W3C standard for knowledge graphs.
 ## SPARQL reasoning
 
 SPARQL matches patterns against facts, follows relationships, and returns exact
-results without probabilistic guessing.
+results. It does not rely on probabilistic guessing.
 
 ### Symbolic logic
 
@@ -40,8 +40,8 @@ the deterministic traversal across verified facts.
 
 The Worlds API provides an external source of truth that an agent can
 deterministically verify. In practice, an LLM accesses this source of truth via
-tool calling, allowing it to ground its responses in **verified facts** rather
-than probabilistic weights.
+tool calling, which lets it ground its responses in verified facts rather than
+probabilistic weights.
 
 ## LLM inference vs. graph queries
 
@@ -86,8 +86,7 @@ flowchart LR
 | Graph query | Low        | Query-bound | Medium     | Low              | Verified factual lookup |
 
 This tradeoff is deliberate. The system uses storage and indexes to reduce
-repeated inference cost while preserving an inspectable path back to the source
-facts.
+repeated inference cost and keeps an inspectable path back to the source facts.
 
 ## Caching hot reads
 
@@ -114,8 +113,8 @@ flowchart LR
 ## High-stakes context
 
 Standard RAG struggles with evolving facts and complex relational queries.
-Worlds maintains a living knowledge graph where contradictions are resolved at
-the data layer.
+Worlds maintains a living knowledge graph and resolves contradictions at the
+data layer.
 
 ### The evolving fact
 
@@ -125,8 +124,8 @@ Consider a scenario where information changes rapidly:
 2. Wednesday: "I am pausing Apollo to focus on Project Hermes."
 3. Friday: "What am I working on?"
 
-Traditional RAG retrieves both contradictory chunks, forcing the LLM to guess.
-Worlds updates the specific graph relationship, ensuring the agent only
+Traditional RAG retrieves both contradictory chunks, which forces the LLM to
+guess. Worlds updates the specific graph relationship, so the agent only
 retrieves the current state.
 
 ### Grounding agents in ontologies
@@ -141,14 +140,14 @@ world's ontology before attempting to query it.
 
 ## Preference-aware retrieval
 
-While standard SPARQL is strictly deterministic, retrieval can be further
-aligned with human intent through feedback.
+While standard SPARQL is strictly deterministic, feedback can further align
+retrieval with human intent.
 
 When a query results in multiple valid paths, the engine uses the reshaped
 probability landscape to prefer the path that has historically yielded
 high-reward results.
 
-This transformation moves the system from deterministic reasoning to intentional
-agency. Learn more about the theory in the
+Feedback moves the system from deterministic reasoning to intentional agency.
+Learn more about the theory in the
 [Architecture](/contribute/architecture#alignment--intentional-agency)
 deep-dive.

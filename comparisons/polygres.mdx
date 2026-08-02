@@ -18,27 +18,24 @@ hidden: true
 
 ## The philosophical difference
 
-**Polygres** (and its underlying open-source extensions `pgGraph` and
-`pgContext` by **Evokoa**) makes standard PostgreSQL "AI-native." It treats your
-existing relational database tables as the source of truth, building an
-in-memory graph index over your custom SQL schemas so you can execute multi-hop
-graph traversals and vector searches directly inside Postgres without moving
-data.
+Polygres (with its underlying open-source extensions `pgGraph` and `pgContext`
+by Evokoa) makes standard PostgreSQL "AI-native." It treats your existing
+relational database tables as the source of truth, building an in-memory graph
+index over your custom SQL schemas so you can execute multi-hop graph traversals
+and vector searches directly inside Postgres without moving data.
 
-**Worlds** approaches context with **opinionated, interoperable defaults**.
-Instead of requiring you to design, migrate, and maintain custom relational
-table schemas and SQL join topologies, Worlds enforces standard RDF triples,
-append-only chronological ledgers, and SPARQL query verification out of the box.
+Worlds approaches context with opinionated, interoperable defaults. Instead of
+requiring you to design, migrate, and maintain custom relational table schemas
+and SQL join topologies, Worlds enforces standard RDF triples in an append-only
+chronological ledger, with SPARQL verification out of the box.
 
-The fundamental tradeoff is **do-it-yourself schema design vs. ready-to-use
-graph context**:
+The tradeoff is do-it-yourself schema design vs. ready-to-use graph context:
 
-- **Polygres** is ideal when you want to build graph-style retrieval over **your
-  own existing relational schemas** and custom Postgres tables ("DIY graph over
-  SQL").
-- **Worlds** is just as flexible, but provides **opinionated RDF defaults**,
+- Polygres is ideal when you want to build graph-style retrieval over your own
+  existing relational schemas and custom Postgres tables ("DIY graph over SQL").
+- Worlds is just as flexible, but provides opinionated RDF defaults,
   standards-based SPARQL verification, and portable memory SDKs (`memsdk`) so
-  you don't have to architect a custom graph database schema from scratch.
+  you do not have to design a custom graph database schema yourself.
 
 ## When Worlds fits
 
@@ -61,7 +58,7 @@ graph context**:
 
 ## Coexistence
 
-Applications backed by a primary Postgres database using Polygres for relational
-operations can use Worlds as the dedicated, SPARQL-driven agent context
-engine—syncing authoritative domain facts into Worlds while leveraging Polygres
-for operational SQL queries.
+Applications backed by a primary Postgres database can use Polygres for
+relational operations and Worlds as the SPARQL-driven agent context engine.
+Authoritative domain facts sync into Worlds, while operational SQL queries run
+on Polygres.
