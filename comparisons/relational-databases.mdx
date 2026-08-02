@@ -1,0 +1,49 @@
+---
+title: "Relational databases"
+description:
+  "Worlds vs relational databases: operational records against verifiable agent
+  context."
+---
+
+## At a glance
+
+|            | Worlds                  | Relational databases    |
+| :--------- | :---------------------- | :---------------------- |
+| Data model | RDF triples             | Tables and rows         |
+| Query      | SPARQL + hybrid search  | SQL                     |
+| Facts      | Asserted, ledger'd      | Inserted / updated rows |
+| Provenance | Fact-level ledger       | Your schema             |
+| Deployment | Hosted beta or embedded | You run it or cloud     |
+
+## The philosophical difference
+
+SQL is the most battle-tested data model in existence. Transactional integrity
+and a mature ecosystem make it the right home for operational records: orders,
+users, balances, and anything that needs ACID guarantees.
+
+Worlds is not a replacement for that. It is a context layer that answers "what
+is true, since when, and from where" for agents. Rows say what is; the
+append-only [ledger](/worlds/index) says what changed and who asserted it.
+
+## When Worlds fits
+
+- Agent-facing facts with relationships that need deterministic
+  [graph queries](/worlds/query).
+- Answers you can verify against a source rather than retrieved by similarity.
+- Hybrid retrieval alongside graph queries: vector, full-text, and RDF filters
+  in one call.
+
+## When Worlds does not fit
+
+- Transactional OLTP workloads that need ACID guarantees and mature tooling.
+- SQL-specific features as your interface of choice.
+- An existing Postgres estate with a strong schema and no agent-context layer.
+
+## Coexistence
+
+Keep operational data in Postgres or SQLite. Run a world on top of it through
+the [self-host adapters](/contribute/self-host): the `@worlds/postgres` and
+`worlds-libsql` adapters persist a world inside the database you already run,
+and the hosted platform provisions one Turso/libSQL database per world. Import
+distilled facts from the relational estate into the world when agents need to
+act on them.

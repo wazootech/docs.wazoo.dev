@@ -99,6 +99,7 @@
           "comparisons/memsync",
           "comparisons/palantir",
           "comparisons/polygres",
+          "comparisons/relational-databases",
           "comparisons/supermemory",
           "comparisons/trustgraph",
           "comparisons/twilio-memory-store",
