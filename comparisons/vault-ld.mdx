@@ -7,13 +7,13 @@ hidden: true
 
 ## At a glance
 
-|                | Linked Markdown (Wazoo)                                       | Vault-LD (The-Knowledge-Graph-Guys)                  |
-| :------------- | :------------------------------------------------------------ | :--------------------------------------------------- |
-| Core focus     | Formal W3C specification, multi-lang Extract API, & toolchain | Open specification & round-trip parser concept       |
-| Frontmatter    | Standard JSON-LD / YAML-LD frontmatter                        | YAML-LD (JSON-LD serialized as YAML) with `@context` |
-| Reference SDKs | PyPI (`linked-markdown`) & JSR (`@wazoo/linked-markdown`)     | Reference specification repo                         |
-| Ecosystem      | Integrated with `wiki` CLI, Wazoo Worlds, and `memsdk`        | Standalone note vault specification                  |
-| Publications   | Published W3C CG Editor's Draft & Zenodo DOI paper            | Open specification (`SPEC.md`)                       |
+|                | Linked Markdown (Wazoo)                                                                                                                          | Vault-LD (The-Knowledge-Graph-Guys)                  |
+| :------------- | :----------------------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------- |
+| Core focus     | Formal W3C specification, multi-lang Extract API, & toolchain                                                                                    | Open specification & round-trip parser concept       |
+| Frontmatter    | Standard JSON-LD / YAML-LD frontmatter                                                                                                           | YAML-LD (JSON-LD serialized as YAML) with `@context` |
+| Reference SDKs | PyPI ([`linked-markdown`](https://pypi.org/project/linked-markdown/)) & JSR ([`@wazoo/linked-markdown`](https://jsr.io/@wazoo/linked-markdown/)) | Reference specification repo                         |
+| Ecosystem      | Integrated with [`wiki`](/projects/wiki), [`Worlds`](/projects/worlds), and [`memsdk`](/projects/memsdk)                                         | Standalone note vault specification                  |
+| Publications   | Published W3C CG Editor's Draft & [Zenodo DOI paper](https://zenodo.org/records/21216085)                                                        | Open specification (`SPEC.md`)                       |
 
 ## The convergence of Linked Markdown and Vault-LD
 
@@ -58,9 +58,12 @@ real-world deployment**:
 ## Why choose Linked Markdown
 
 - **Production-Ready SDKs**: Ready-to-install packages for Python
-  (`pip install linked-markdown`) and TypeScript (`jsr:@wazoo/linked-markdown`)
-  with deterministic `extract()` APIs that convert markdown directly to RDF
-  quads and JSON-LD nodes.
+  ([`pip install linked-markdown`](https://pypi.org/project/linked-markdown/))
+  and TypeScript
+  ([`jsr:@wazoo/linked-markdown`](https://jsr.io/@wazoo/linked-markdown)) with
+  deterministic
+  [`extract()`](https://jsr.io/@wazoo/linked-markdown/doc/~/extract) APIs that
+  convert markdown directly to RDF quads and JSON-LD nodes.
 - **W3C Community Draft & Academic Paper**: Backed by a formal W3C JSON-LD
   Community Group specification and a published DOI paper on semantic Markdown
   infrastructure.
