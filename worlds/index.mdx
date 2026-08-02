@@ -3,8 +3,8 @@ title: "Worlds"
 description: "The neuro-symbolic components of verifiable context."
 ---
 
-A world is a stateful knowledge graph engine that functions as an agent's
-verifiable context.
+A world is a stateful knowledge graph engine that acts as an agent's verifiable
+context.
 
 Worlds works best when memory is curated, not accumulated. Store durable facts
 in a world and discard the rest.
@@ -27,7 +27,7 @@ A world is made of items made of facts.
 
 ## Items
 
-Worlds represent everything as an item, including the types themselves. This
+Worlds represents everything as an item, including the types themselves. This
 recursive structure enables granular, multi-hop reasoning.
 
 An item is...
@@ -41,18 +41,18 @@ An item is...
 ## Properties
 
 Properties connect items. They define actions or attributes, such as `worksFor`
-or `givenName`. The set of valid properties forms the graph's vocabulary,
-enabling agents to navigate and mutate state with precision.
+or `givenName`. The set of valid properties forms the graph's vocabulary. Agents
+use these properties to navigate and mutate state precisely.
 
 ## Facts
 
 A fact is a unit of data expressed as a structured statement that connects two
-items using a property. Every fact is inherently bound to the dimension of time.
-Worlds maintains an append-only, chronological ledger of facts, allowing agents
-to understand exactly how state and information evolve.
+items using a property. Every fact is tied to a moment in time. Worlds keeps an
+append-only, chronological ledger of facts, so agents can trace exactly how
+state and information change.
 
-Conceptually, a fact functions exactly like a structured assertion. For example,
-the assertion "Ethan is a person" can be represented as:
+Conceptually, a fact is a structured assertion. For example, you can represent
+the assertion "Ethan is a person" as:
 
 <div align="center">
 
@@ -97,9 +97,8 @@ types:
 
 - Item-to-item: Connects two distinct items e.g., `user:person` ->
   `schema:knowsAbout` -> `wazoo:worlds`
-- Item-to-value: Connects an item to a raw data value, adding searchable detail
-  but acting as a terminal point e.g., `user:person` -> `schema:givenName` ->
-  `"Ethan"`
+- Item-to-value: Connects an item to a raw data value that is searchable but
+  terminates the branch e.g., `user:person` -> `schema:givenName` -> `"Ethan"`
 
 <div align="center">
 
@@ -118,10 +117,9 @@ graph LR
 
 ### Serialization
 
-To codify knowledge, Worlds standard RDF serialization formats for expressing
-triples in plain text.
+Worlds uses standard RDF serialization formats to express triples in plain text.
 
-To assert "Ethan is a Person", the syntax goes:
+To assert "Ethan is a Person", use:
 
 <CodeGroup>
 
@@ -159,8 +157,8 @@ user:person a schema:Person .
 
 </CodeGroup>
 
-Items can consolidate multiple facts into a single structure. Here, we assert
-that Ethan is a person with the given name "Ethan":
+Items can consolidate multiple facts into a single structure. This example
+asserts that Ethan is a person with the given name "Ethan":
 
 <CodeGroup>
 
@@ -203,8 +201,8 @@ user:person a schema:Person ;
 
 ## Verification
 
-To verify a fact, Worlds uses the SPARQL ASK query. This provides a
-deterministic boolean answer without probabilistic guessing.
+To verify a fact, Worlds uses the SPARQL ASK query. This returns a deterministic
+boolean answer and does not rely on probabilistic guessing.
 
 For example, to verify if "Ethan knows about Worlds", use:
 
@@ -231,5 +229,5 @@ The response returns `boolean: true` when the fact is verified.
 
 ## Why care?
 
-Worlds is built on standard knowledge representation formats. This provides
-autonomous agents with an established, interoperable foundation for reasoning.
+Worlds is built on standard knowledge representation formats. This gives
+autonomous agents an interoperable foundation for reasoning.

@@ -9,9 +9,9 @@ stateful context.
 
 ## State mutations
 
-A world mutates its state using RDF patches, which are granular additions and
-deletions of facts. Because Worlds functions as a chronological, append-only
-ledger, these patches permanently preserve historical truth.
+A world mutates its state using RDF patches, which are additions and deletions
+of facts. Because Worlds is a chronological, append-only ledger, these patches
+permanently preserve historical truth.
 
 ### Import quads
 
@@ -31,14 +31,14 @@ curl -s -X POST "https://worlds-api.wazoo.dev/worlds/my-world-id/import" \
 The import above asserts that `wazoo:worlds` is a `schema:SoftwareApplication`.
 Set `contentType` to `text/plain` to ingest unstructured text chunks instead.
 
-Unlike traditional databases that overwrite records, Worlds utilizes RDF patches
-to maintain a chronological system of record.
+Unlike traditional databases that overwrite records, Worlds uses RDF patches to
+keep a chronological record of changes.
 
 ## Mutation and state
 
 Every update to a world is a transaction that appends new facts to the ledger.
-This ensures that agents can always query past states and understand how
-information has evolved over time.
+This ensures agents can always query past states and see how information has
+changed.
 
 ### RDF patches
 
@@ -85,10 +85,10 @@ curl -s -X POST "https://worlds-api.wazoo.dev/worlds/my-world-id/import" \
 ## Recursive learning
 
 As preferences accumulate, the world's probability landscape is reshaped.
-Retrieval results are boosted based on historical reward signals, creating a
-recursive loop where the system learns which triples are most useful or truthful
-for the agent's specific context.
+Historical reward signals boost retrieval results, which creates a recursive
+loop where the system learns which triples are most useful or truthful for the
+agent's context.
 
-This historical truth remains in the ledger, allowing future queries to be
-guided by this preference data. Learn more about steered retrieval in the
+This historical truth remains in the ledger, so this preference data can guide
+future queries. Learn more about steered retrieval in the
 [Alignment](/contribute/architecture#alignment--intentional-agency) deep-dive.

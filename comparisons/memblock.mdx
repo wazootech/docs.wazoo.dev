@@ -19,15 +19,14 @@ hidden: true
 ## The philosophical difference
 
 [Memblock](https://www.memblock.xyz/) provides block-structured memory
-management for LLM applications and agents, focusing on organizing short-term
-and long-term agent state into accessible, modular memory blocks. It helps
-agents retain conversation context and structured user variables across
-sessions.
+management for LLM applications and agents. It organizes short-term and
+long-term agent state into modular memory blocks and helps agents retain
+conversation context and structured user variables across sessions.
 
-Worlds treats agent memory as a **curated, verifiable knowledge graph**. Rather
-than storing memory as semi-structured blocks or key-value snippets, Worlds
-enforces RDF triples where every fact has explicit subjects, predicates,
-objects, and provenance.
+Worlds treats agent memory as a curated, verifiable knowledge graph. Rather than
+storing memory as semi-structured blocks or key-value snippets, Worlds enforces
+RDF triples where every fact has explicit subjects, predicates, objects, and
+provenance.
 
 Where Memblock optimizes for flexible agent scratchpads and block-level memory
 state, Worlds optimizes for strict fact precision, deterministic graph querying

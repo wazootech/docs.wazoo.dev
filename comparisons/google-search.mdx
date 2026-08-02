@@ -19,30 +19,29 @@ hidden: true
 
 ## Overlap and shared capabilities
 
-Both **Google Search** and **Wazoo Worlds** operate on the foundational
-realization that structured knowledge graphs outperform keyword strings alone
-("things, not strings").
+Both Google Search and Wazoo Worlds are built on the same premise: structured
+knowledge graphs answer queries better than keyword strings alone ("things, not
+strings").
 
-- **Google Knowledge Graph** (launched in 2012) transformed web search by
-  mapping entities, attributes, and real-world relationships using Schema.org
-  and RDF standards.
-- **Wazoo Worlds** applies that same neuro-symbolic RDF graph power to AI agent
-  memory—allowing agents to query connected entities with SPARQL rather than
-  relying solely on flat vector embeddings.
+- Google Knowledge Graph (launched in 2012) added entity search to the public
+  web by mapping entities, attributes, and real-world relationships with
+  Schema.org and RDF standards.
+- Wazoo Worlds applies the same RDF graph model to agent memory, so agents can
+  query connected entities with SPARQL instead of relying on flat vector
+  embeddings.
 
-The fundamental difference lies in **privacy, self-hostability, and domain
-scope**:
+The two differ in privacy, self-hostability, and domain scope:
 
-- **Google Search** indexes the public web for general human information
-  retrieval on proprietary cloud infrastructure.
-- **Worlds** is **fully self-hostable and open-source**, designed to manage
-  private enterprise facts, local codebases, and agent context graphs on edge
-  databases (LibSQL/SQLite), local servers, or private clouds.
+- Google Search indexes the public web for general human information retrieval
+  on proprietary cloud infrastructure.
+- Worlds is self-hostable and open-source. It manages private enterprise facts,
+  local codebases, and agent context graphs on edge databases (LibSQL/SQLite),
+  local servers, or private clouds.
 
 ## When Worlds fits
 
-- You need to **self-host your context engine** for total data privacy,
-  compliance, and air-gapped security.
+- You need to self-host your context engine for data privacy, compliance, and
+  air-gapped security.
 - You are building AI agents that query private enterprise domain facts,
   codebase structures, or local user state.
 - You require deterministic graph queries (SPARQL) to verify multi-hop
@@ -57,11 +56,11 @@ scope**:
 - Your application requires broad web-scale entity resolution across world
   facts.
 
-## Coexistence & Integration
+## Coexistence and integration
 
 Google Search and Wazoo Worlds are complementary tools in an AI agent's toolkit:
 
-- Agents use **web search tools** (Google Search API, Serper, Tavily) to
-  retrieve live, external information from the open web.
-- Agents query **Wazoo Worlds** for self-hosted, private domain facts, internal
+- Agents use web search tools (Google Search API, Serper, Tavily) to retrieve
+  live, external information from the open web.
+- Agents query Wazoo Worlds for self-hosted, private domain facts, internal
   project context, and verifiable memory.

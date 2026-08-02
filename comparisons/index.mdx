@@ -10,33 +10,33 @@ yourself.
 
 ## What Worlds provides
 
-- **Graph storage** - RDF triples in an append-only, chronological fact ledger.
-- **Hybrid search** - Vector, full-text, and RDF filters fused by reciprocal
-  rank fusion.
-- **SPARQL queries** - Declarative, deterministic graph traversal.
-- **Verifiable provenance** - Every fact carries a traceable path to its source.
-- **Provider-agnostic** - You connect your own LLMs and embedding providers.
-- **Edge-ready adapters** - LibSQL/Turso, Deno KV, and Postgres backends.
+- Graph storage: RDF triples in an append-only, chronological fact ledger.
+- Hybrid search: vector, full-text, and RDF filters fused by reciprocal rank
+  fusion.
+- SPARQL queries: declarative, deterministic graph traversal.
+- Verifiable provenance: every fact carries a traceable path to its source.
+- Provider-agnostic: you connect your own LLMs and embedding providers.
+- Edge-ready adapters: LibSQL/Turso, Deno KV, and Postgres backends.
 
 ## What Worlds does not do
 
 Worlds is deliberately narrow. It does not:
 
-- **Host an LLM.** You bring the model. Worlds stores and retrieves facts; the
-  model decides what to ask.
-- **Host an embedding service.** Embeddings come from the embedding provider you
+- Host an LLM. You bring the model. Worlds stores and retrieves facts; the model
+  decides what to ask.
+- Host an embedding service. Embeddings come from the embedding provider you
   configure.
-- **Extract memory automatically.** Memory in Worlds is curated. Facts enter a
-  world deliberately, through import and patches, rather than being inferred
-  from transcripts.
-- **Run agents.** Worlds is not an agent runtime. It is a context source that
-  agents query through tool calls.
-- **Replace your primary database.** Worlds is a context engine, not a general
+- Extract memory automatically. Memory in Worlds is curated. Facts enter a world
+  deliberately, through import and patches, rather than being inferred from
+  transcripts.
+- Run agents. Worlds is not an agent runtime. It is a context source that agents
+  query through tool calls.
+- Replace your primary database. Worlds is a context engine, not a general
   operational store. Adapters persist to your existing substrate.
-- **Equate vector similarity with relevance.** Similarity != relevance. Vectors
-  are only one retrieval signal in Worlds. The graph structure and SPARQL
-  filters ensure agents retrieve exact, verifiable facts rather than loose
-  semantic guesses.
+- Equate vector similarity with relevance. Similarity != relevance. Vectors are
+  only one retrieval signal in Worlds. The graph structure and SPARQL filters
+  ensure agents retrieve exact, verifiable facts rather than loose semantic
+  guesses.
 
 ## How the alternatives line up
 
@@ -85,8 +85,8 @@ ledger with deterministic SPARQL verification.
 Choose Worlds when conformance and interoperability are non-negotiable: agents
 that rely on W3C open standards (RDF, SPARQL), portable memory layers, and
 deterministic graph verification across any database or model provider. The
-append-only ledger and SPARQL query engine ensure your agent context is fully
-interoperable, vendor-agnostic, and inspectable.
+append-only ledger and SPARQL query engine keep agent context interoperable and
+inspectable across database and model providers.
 
 ## Next steps
 

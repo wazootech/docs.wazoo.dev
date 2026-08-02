@@ -18,23 +18,22 @@ hidden: true
 
 ## Overlap and shared capabilities
 
-The **LLM Wiki pattern** (popularized by Andrej Karpathy and demonstrated in
-project Farzapedia) and **Wazoo Worlds** share the exact same core philosophy:
-**agent memory should be compiled, structured, and interlinked rather than
-dumped into flat, opaque vector databases.**
+The LLM Wiki pattern (popularized by Andrej Karpathy and demonstrated in project
+Farzapedia) and Wazoo Worlds take the same position on agent memory: it should
+be compiled, structured, and interlinked rather than stored as flat, opaque
+vector databases.
 
 Both approaches organize knowledge into navigable graph nodes where links
 between concepts matter just as much as raw text search.
 
 Where they overlap and build on each other:
 
-- **LLM Wiki** defines the human-and-agent readable workspace—where agents
+- LLM Wiki defines the human-and-agent readable workspace, where agents
   continuously summarize, synthesize, and interlink Markdown articles
   (`[[wikilinks]]`).
-- **Worlds** provides the underlying **schema-checked fact engine**—taking those
-  compiled articles and frontmatter assertions, enforcing SHACL shape
-  validation, and allowing agents to execute SPARQL graph queries across the
-  knowledge graph.
+- Worlds provides the underlying schema-checked fact engine. It takes those
+  compiled articles and frontmatter assertions, enforces SHACL shape validation,
+  and lets agents execute SPARQL graph queries across the knowledge graph.
 
 ## When Worlds fits
 
@@ -52,16 +51,16 @@ Where they overlap and build on each other:
 - You are starting with raw transcripts and want agents to summarize and
   interlink information organically.
 
-## Coexistence & Integration
+## Coexistence and integration
 
-The LLM Wiki pattern is fully complementary to Wazoo context infrastructure. You
-can run an LLM Wiki directly using the [Wiki toolchain](/projects/wiki), as
+The LLM Wiki pattern is complementary to Wazoo context infrastructure. You can
+run an LLM Wiki directly using the [Wiki toolchain](/projects/wiki), as
 demonstrated in the official
 [`llm-wiki` starter template](https://github.com/wazootech/wiki-templates/tree/main/llm-wiki),
 where agents continuously garden Markdown articles while Wiki CLI validates RDF
 shapes.
 
 To scale agent knowledge across multi-agent fleets and production environments,
-we recommend pairing your LLM Wiki with **[Wazoo Worlds](/projects/worlds)** as
-the underlying context engine—allowing agents to maintain human-readable
-Markdown while querying Worlds via SPARQL for deterministic fact verification.
+we recommend pairing your LLM Wiki with [Wazoo Worlds](/projects/worlds) as the
+underlying context engine, so agents maintain human-readable Markdown while
+querying Worlds via SPARQL for deterministic fact verification.
