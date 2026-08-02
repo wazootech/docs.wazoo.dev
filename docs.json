@@ -69,18 +69,12 @@
     "groups": [
       {
         "group": "Welcome",
-        "pages": [
-          "introduction",
-          "getting-started",
-          "quickstart",
-          "projects",
-          "manifesto",
-          "glossary"
-        ]
+        "pages": ["introduction", "projects", "manifesto", "glossary"]
       },
       {
         "group": "Platform",
         "pages": [
+          "quickstart",
           "platform/private-beta",
           "platform/pricing",
           "platform",
@@ -114,6 +108,7 @@
       {
         "group": "Console",
         "pages": [
+          "getting-started",
           "console/overview",
           "console/sparql",
           "console/import",
