@@ -17,33 +17,31 @@ hidden: true
 
 ## The convergence of Linked Markdown and Vault-LD
 
-Both **Linked Markdown (LMD)** (by Wazoo) and
-**[Vault-LD](https://github.com/The-Knowledge-Graph-Guys/vault-ld)** (by The
-Knowledge Graph Guys) arrived at the **exact same core realization**: that
-standard CommonMark files with valid W3C JSON-LD / YAML-LD frontmatter form the
-ideal open primitive for semantic Markdown and agent knowledge graphs.
+Both [Linked Markdown](/projects/linked-markdown) (by Wazoo) and
+[Vault-LD](https://github.com/The-Knowledge-Graph-Guys/vault-ld) (by
+[The Knowledge Graph Guys](https://www.knowledge-graph-guys.com/)) arrived at
+the same core realization: that standard CommonMark files with valid W3C JSON-LD
+/ YAML-LD frontmatter form the ideal open primitive for semantic Markdown and
+agent knowledge graphs.
 
 Because both specifications converged on zero nonstandard syntax and native
-JSON-LD semantics, **an LMD document and a Vault-LD document accept the exact
-same document structure**. A single `.md` file functions simultaneously as
+JSON-LD semantics, an LMD document and a Vault-LD document accept the exact same
+document structure. A single `.md` file functions simultaneously as
 human-readable prose and a valid RDF graph node in both ecosystems.
 
 ```markdown
 ---
-"@id": "https://wazoo.dev/team/gregory-davidson"
+"@id": "https://wazoo.dev/team/Ethan_Davidson"
 "@type": "Person"
 "@context":
   "@vocab": "http://schema.org/"
-  "wazoo": "https://schema.wazoo.dev/"
-  "role":
-    "@type": "@id"
-name: "Gregory Davidson"
-wazoo:role: "Context Architect"
+givenName: "Ethan"
+familyName: "Davidson"
 ---
 
-# Gregory Davidson
+# Ethan Davidson
 
-Gregory leads context engineering on Worlds.
+Ethan leads engineering and product on Wazoo/Worlds.
 ```
 
 The key distinction is not document format, but **toolchain maturity and
@@ -75,4 +73,5 @@ real-world deployment**:
 Because Linked Markdown and Vault-LD converged on the exact same underlying RDF
 1.1 data model and JSON-LD semantics, they are **100% interoperable**. Any
 Vault-LD document can be extracted, validated, and queried using
-`linked-markdown` SDKs or the `wiki` CLI toolchain out of the box.
+[`linked-markdown`](/projects/linked-markdown) SDKs or the
+[`wiki`](/projects/wiki) CLI toolchain out of the box.
