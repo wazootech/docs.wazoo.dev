@@ -201,6 +201,12 @@
         ]
       },
       {
+        "group": "Skills",
+        "pages": [
+          "skills/wazoo"
+        ]
+      },
+      {
         "group": "Integrations",
         "pages": [
           "integrations/agents-skills-mcp",
