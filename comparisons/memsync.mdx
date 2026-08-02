@@ -9,19 +9,20 @@ hidden: true
 ## At a glance
 
 |                 | Worlds                        | [MemSync](https://github.com/memsync) |
-| :-------------- | :---------------------------- | :--------------------------- |
-| Data model      | RDF triples in a ledger       | Embeddings plus a memory API |
-| How facts enter | Import, patches, agent writes | REST writes                  |
-| Retrieval       | Hybrid search + SPARQL        | Similarity over embeddings   |
-| Provenance      | Fact-level ledger             | Inference-verifiable         |
-| Deployment      | Hosted beta or embedded       | Managed REST API             |
+| :-------------- | :---------------------------- | :------------------------------------ |
+| Data model      | RDF triples in a ledger       | Embeddings plus a memory API          |
+| How facts enter | Import, patches, agent writes | REST writes                           |
+| Retrieval       | Hybrid search + SPARQL        | Similarity over embeddings            |
+| Provenance      | Fact-level ledger             | Inference-verifiable                  |
+| Deployment      | Hosted beta or embedded       | Managed REST API                      |
 
 ## The philosophical difference
 
-[MemSync](https://github.com/memsync) is a managed REST API that adds a long-term memory layer on top of
-OpenGradient's verifiable inference and embeddings infrastructure. Verification
-happens at the computation layer: the memory service can attest that the
-inference producing an embedding ran on verified infrastructure.
+[MemSync](https://github.com/memsync) is a managed REST API that adds a
+long-term memory layer on top of OpenGradient's verifiable inference and
+embeddings infrastructure. Verification happens at the computation layer: the
+memory service can attest that the inference producing an embedding ran on
+verified infrastructure.
 
 Worlds verifies at the fact layer. A SPARQL ASK query returns a deterministic
 boolean for a specific assertion, and the ledger records when the fact entered

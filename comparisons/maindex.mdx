@@ -8,19 +8,19 @@ hidden: true
 ## At a glance
 
 |                 | Worlds                        | [Maindex](https://github.com/maindex) |
-| :-------------- | :---------------------------- | :---------------------- |
-| Data model      | RDF triples in a ledger       | Typed memory structures |
-| How facts enter | Import, patches, agent writes | API writes              |
-| Retrieval       | Hybrid search + SPARQL        | MCP-based retrieval     |
-| Provenance      | Fact-level ledger             | Provenance-attributed   |
-| Deployment      | Hosted beta or embedded       | Managed layer           |
+| :-------------- | :---------------------------- | :------------------------------------ |
+| Data model      | RDF triples in a ledger       | Typed memory structures               |
+| How facts enter | Import, patches, agent writes | API writes                            |
+| Retrieval       | Hybrid search + SPARQL        | MCP-based retrieval                   |
+| Provenance      | Fact-level ledger             | Provenance-attributed                 |
+| Deployment      | Hosted beta or embedded       | Managed layer                         |
 
 ## The philosophical difference
 
-[Maindex](https://github.com/maindex) is a cross-platform memory layer exposed as an MCP server. It acts as a
-source of truth across applications and agents, with typed structures,
-provenance attributes, and scoped user-controlled access. Memory travels with
-the tools that use it.
+[Maindex](https://github.com/maindex) is a cross-platform memory layer exposed
+as an MCP server. It acts as a source of truth across applications and agents,
+with typed structures, provenance attributes, and scoped user-controlled access.
+Memory travels with the tools that use it.
 
 Worlds shares the source-of-truth ambition, but the structures are graphs rather
 than typed records. A fact in Worlds is a triple: two items connected by a

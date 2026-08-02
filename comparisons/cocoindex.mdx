@@ -8,19 +8,19 @@ hidden: true
 ## At a glance
 
 |                  | Worlds                                                | [CocoIndex](https://github.com/cocoindex-io/cocoindex) |
-| :--------------- | :---------------------------------------------------- | :-------------------------------------------------- |
-| Primary role     | Authoritative RDF fact ledger & SPARQL context engine | Incremental ETL indexer & vector memory sidecar     |
-| Data model       | RDF triples in an append-only graph ledger            | Relational vector chunks (pgvector / PGlite)        |
-| Retrieval        | SPARQL graph queries, full-text, & vector fusion      | Vector similarity & chunk retrieval                 |
-| Incremental flow | Immutable append-only quads & patches                 | Memoized pipeline functions (`@coco.fn(memo=True)`) |
-| Deployment       | Edge-ready adapters (LibSQL, Postgres) or Cloud       | Python runtime + Postgres (Docker or PGlite)        |
+| :--------------- | :---------------------------------------------------- | :----------------------------------------------------- |
+| Primary role     | Authoritative RDF fact ledger & SPARQL context engine | Incremental ETL indexer & vector memory sidecar        |
+| Data model       | RDF triples in an append-only graph ledger            | Relational vector chunks (pgvector / PGlite)           |
+| Retrieval        | SPARQL graph queries, full-text, & vector fusion      | Vector similarity & chunk retrieval                    |
+| Incremental flow | Immutable append-only quads & patches                 | Memoized pipeline functions (`@coco.fn(memo=True)`)    |
+| Deployment       | Edge-ready adapters (LibSQL, Postgres) or Cloud       | Python runtime + Postgres (Docker or PGlite)           |
 
 ## Overlap and shared capabilities
 
-Both Worlds and [CocoIndex](https://github.com/cocoindex-io/cocoindex) address the need for structured, indexable context
-over Markdown documents. Both systems parse section headings, chunk content for
-search, and maintain fast retrieval pipelines so AI agents spend fewer tokens
-retrieving relevant context.
+Both Worlds and [CocoIndex](https://github.com/cocoindex-io/cocoindex) address
+the need for structured, indexable context over Markdown documents. Both systems
+parse section headings, chunk content for search, and maintain fast retrieval
+pipelines so AI agents spend fewer tokens retrieving relevant context.
 
 The difference is in which layer of the stack they manage:
 

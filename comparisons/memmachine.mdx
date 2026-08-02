@@ -9,20 +9,20 @@ hidden: true
 ## At a glance
 
 |                 | Worlds                        | [MemMachine](https://github.com/memmachine) |
-| :-------------- | :---------------------------- | :-------------------------------------- |
-| Data model      | RDF triples in a ledger       | Graph for episodes, SQL for profiles    |
-| How facts enter | Import, patches, agent writes | Logged conversations and profile writes |
-| Retrieval       | Hybrid search + SPARQL        | Graph traversal + vectors               |
-| Provenance      | Fact-level ledger             | Graph-derived                           |
-| Deployment      | Hosted beta or embedded       | Self-hosted or cloud                    |
+| :-------------- | :---------------------------- | :------------------------------------------ |
+| Data model      | RDF triples in a ledger       | Graph for episodes, SQL for profiles        |
+| How facts enter | Import, patches, agent writes | Logged conversations and profile writes     |
+| Retrieval       | Hybrid search + SPARQL        | Graph traversal + vectors                   |
+| Provenance      | Fact-level ledger             | Graph-derived                               |
+| Deployment      | Hosted beta or embedded       | Self-hosted or cloud                        |
 
 ## The philosophical difference
 
-[MemMachine](https://github.com/memmachine) is an open-source memory service that splits its model in two.
-Episodic memory, the relational context of conversations, lives in a Neo4j
-graph, while profile data lives in SQL. Retrieval walks the graph to reconstruct
-who said what to whom. It emphasizes token efficiency and works across LLM
-providers, including AWS Bedrock.
+[MemMachine](https://github.com/memmachine) is an open-source memory service
+that splits its model in two. Episodic memory, the relational context of
+conversations, lives in a Neo4j graph, while profile data lives in SQL.
+Retrieval walks the graph to reconstruct who said what to whom. It emphasizes
+token efficiency and works across LLM providers, including AWS Bedrock.
 
 Worlds stores relational structure too, but as RDF triples in an append-only
 ledger. The difference is where structure comes from. MemMachine derives context
