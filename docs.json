@@ -84,6 +84,7 @@
           "comparisons/cocoindex",
           "comparisons/diy-memory-infra",
           "comparisons/diy-triplestore",
+          "comparisons/google-search",
           "comparisons/hermes",
           "comparisons/langmem",
           "comparisons/letta",

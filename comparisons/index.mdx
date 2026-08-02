@@ -42,31 +42,32 @@ Worlds is deliberately narrow. It does not:
 
 {/* Alternatives table must be maintained in lexicographical (alphabetical) order by display name */}
 
-| Alternative                                             | Core model                      | Retrieval                   | Provenance         | Managed?              |
-| :------------------------------------------------------ | :------------------------------ | :-------------------------- | :----------------- | :-------------------- |
-| [CocoIndex](/comparisons/cocoindex)                     | Incremental vector sidecar      | Vector similarity & ETL     | Derived sidecar    | Python / Postgres     |
-| [DIY memory infra](/comparisons/diy-memory-infra)       | Custom stack                    | Custom                      | Your job           | You run it            |
-| [DIY triplestore](/comparisons/diy-triplestore)         | RDF graph                       | SPARQL                      | Your job           | You run it            |
-| [Hermes Agent Memory](/comparisons/hermes)              | Multi-tier memory & skills      | FTS5 search + system prompt | Session / file     | Local CLI runtime     |
-| [LangMem](/comparisons/langmem)                         | LangGraph vector memory         | Similarity search           | None               | SDK, self-managed     |
-| [Letta](/comparisons/letta)                             | Stateful agent runtime          | Files and vector index      | File-level         | Self-host             |
-| [LLM Wiki](/comparisons/llm-wiki)                       | Agent-compiled markdown wiki    | File traversal & wikilinks  | Article-level      | Vault files           |
-| [Maindex](/comparisons/maindex)                         | Typed memory layer              | MCP-based retrieval         | Provenance-typed   | Managed               |
-| [Mem0](/comparisons/mem0)                               | Extracted agent memories        | Similarity search           | Item-level         | Hosted or self-host   |
-| [Memblock](/comparisons/memblock)                       | Block-based memory structures   | Block lookup + vectors      | Session-level      | Managed               |
-| [MemClaw](/comparisons/memclaw)                         | Shared fleet partition          | Partition-aware retrieval   | Governed access    | Managed               |
-| [MemMachine](/comparisons/memmachine)                   | Graph + SQL hybrid              | Graph traversal + vectors   | Graph-derived      | Self-host or cloud    |
-| [MemSearch](/comparisons/memsearch)                     | Standalone memory library       | Similarity search           | None               | Library, self-managed |
-| [MemSpan](/comparisons/memspan)                         | Portable files                  | Dynamic file loading        | None               | Local files           |
-| [MemSync](/comparisons/memsync)                         | Verified-embedding memory API   | Similarity over embeddings  | Inference-verified | Managed               |
-| [Palantir Foundry](/comparisons/palantir)               | Enterprise Object Ontology      | Proprietary Ontology APIs   | Pipeline / Lineage | Enterprise SaaS       |
-| [Polygres](/comparisons/polygres)                       | Custom Postgres schemas + graph | `pgGraph` + `pgContext` SQL | Relational lineage | Managed or extensions |
-| [Supermemory](/comparisons/supermemory)                 | Extracted memories              | Search, memory graph        | Partial            | Hosted or self-host   |
-| [TrustGraph](/comparisons/trustgraph)                   | RDF graph (auto-extracted)      | GraphRAG + SPARQL           | Extraction traces  | Self-host             |
-| [Twilio Memory Store](/comparisons/twilio-memory-store) | Structured memory buckets       | Bucket lookup + vectors     | Bucket-level       | Managed               |
-| [Vault-LD](/comparisons/vault-ld)                       | Markdown to/from RDF round-trip | YAML-LD + `@context` parser | Note-level         | Open specification    |
-| [Vector databases](/comparisons/vector-databases)       | Embedding index                 | Nearest neighbors           | None               | Usually hosted        |
-| [Zep](/comparisons/zep)                                 | Extracted agent memories        | Similarity search           | Session-level      | Hosted or self-host   |
+| Alternative                                             | Core model                      | Retrieval                     | Provenance         | Managed?              |
+| :------------------------------------------------------ | :------------------------------ | :---------------------------- | :----------------- | :-------------------- |
+| [CocoIndex](/comparisons/cocoindex)                     | Incremental vector sidecar      | Vector similarity & ETL       | Derived sidecar    | Python / Postgres     |
+| [DIY memory infra](/comparisons/diy-memory-infra)       | Custom stack                    | Custom                        | Your job           | You run it            |
+| [DIY triplestore](/comparisons/diy-triplestore)         | RDF graph                       | SPARQL                        | Your job           | You run it            |
+| [Google Search](/comparisons/google-search)             | Knowledge Graph + Web Search    | Web search & Knowledge Panels | Web URLs           | Google Cloud          |
+| [Hermes Agent Memory](/comparisons/hermes)              | Multi-tier memory & skills      | FTS5 search + system prompt   | Session / file     | Local CLI runtime     |
+| [LangMem](/comparisons/langmem)                         | LangGraph vector memory         | Similarity search             | None               | SDK, self-managed     |
+| [Letta](/comparisons/letta)                             | Stateful agent runtime          | Files and vector index        | File-level         | Self-host             |
+| [LLM Wiki](/comparisons/llm-wiki)                       | Agent-compiled markdown wiki    | File traversal & wikilinks    | Article-level      | Vault files           |
+| [Maindex](/comparisons/maindex)                         | Typed memory layer              | MCP-based retrieval           | Provenance-typed   | Managed               |
+| [Mem0](/comparisons/mem0)                               | Extracted agent memories        | Similarity search             | Item-level         | Hosted or self-host   |
+| [Memblock](/comparisons/memblock)                       | Block-based memory structures   | Block lookup + vectors        | Session-level      | Managed               |
+| [MemClaw](/comparisons/memclaw)                         | Shared fleet partition          | Partition-aware retrieval     | Governed access    | Managed               |
+| [MemMachine](/comparisons/memmachine)                   | Graph + SQL hybrid              | Graph traversal + vectors     | Graph-derived      | Self-host or cloud    |
+| [MemSearch](/comparisons/memsearch)                     | Standalone memory library       | Similarity search             | None               | Library, self-managed |
+| [MemSpan](/comparisons/memspan)                         | Portable files                  | Dynamic file loading          | None               | Local files           |
+| [MemSync](/comparisons/memsync)                         | Verified-embedding memory API   | Similarity over embeddings    | Inference-verified | Managed               |
+| [Palantir Foundry](/comparisons/palantir)               | Enterprise Object Ontology      | Proprietary Ontology APIs     | Pipeline / Lineage | Enterprise SaaS       |
+| [Polygres](/comparisons/polygres)                       | Custom Postgres schemas + graph | `pgGraph` + `pgContext` SQL   | Relational lineage | Managed or extensions |
+| [Supermemory](/comparisons/supermemory)                 | Extracted memories              | Search, memory graph          | Partial            | Hosted or self-host   |
+| [TrustGraph](/comparisons/trustgraph)                   | RDF graph (auto-extracted)      | GraphRAG + SPARQL             | Extraction traces  | Self-host             |
+| [Twilio Memory Store](/comparisons/twilio-memory-store) | Structured memory buckets       | Bucket lookup + vectors       | Bucket-level       | Managed               |
+| [Vault-LD](/comparisons/vault-ld)                       | Markdown to/from RDF round-trip | YAML-LD + `@context` parser   | Note-level         | Open specification    |
+| [Vector databases](/comparisons/vector-databases)       | Embedding index                 | Nearest neighbors             | None               | Usually hosted        |
+| [Zep](/comparisons/zep)                                 | Extracted agent memories        | Similarity search             | Session-level      | Hosted or self-host   |
 
 Polygres adds graph-style retrieval over Postgres records rather than RDF
 triples. Turso is the substrate underneath Worlds' `worlds-libsql` adapter
