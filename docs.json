@@ -122,6 +122,7 @@
         "group": "Platform",
         "pages": [
           "platform/private-beta",
+          "platform/pricing",
           "platform",
           "platform/api",
           "platform/typescript-sdk",
