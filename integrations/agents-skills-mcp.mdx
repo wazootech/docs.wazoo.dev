@@ -8,21 +8,35 @@ description:
 
 AI agents interact with Wazoo memory across two primary API planes:
 
-- **Control plane** (`api.wazoo.dev`): Manage worlds, API keys, and account resources using `WAZOO_PLATFORM_TOKEN` (`wzp_`).
-- **Data plane** (`worlds-api.wazoo.dev`): Perform [import](/worlds/update), [hybrid search](/worlds/search), [pattern queries](/worlds/query), and export using `WORLDS_TOKEN` (`wzw_`).
+- **Control plane** (`api.wazoo.dev`): Manage worlds, API keys, and account
+  resources using `WAZOO_PLATFORM_TOKEN` (`wzp_`).
+- **Data plane** (`worlds-api.wazoo.dev`): Perform [import](/worlds/update),
+  [hybrid search](/worlds/search), [pattern queries](/worlds/query), and export
+  using `WORLDS_TOKEN` (`wzw_`).
 
-The Model Context Protocol (MCP) and Agent Skills standard provide native mechanisms for AI tools (Claude Code, Cursor, OpenCode, Gemini, etc.) to command these APIs seamlessly.
+The Model Context Protocol (MCP) and Agent Skills standard provide native
+mechanisms for AI tools (Claude Code, Cursor, OpenCode, Gemini, etc.) to command
+these APIs seamlessly.
 
 ## Quick Start with Wazoo Skill
 
-The primary way to equip your agent with Wazoo memory tools is the canonical `wazoo` skill from [wazootech/wazoo-skills](https://github.com/wazootech/wazoo-skills).
+The primary way to equip your agent with Wazoo memory tools is the canonical
+`wazoo` skill from
+[wazootech/wazoo-skills](https://github.com/wazootech/wazoo-skills).
 
-For complete installation instructions, environment setup, and operational guidance, see:
+For complete installation instructions, environment setup, and operational
+guidance, see:
 
-<Card title="Wazoo Skill Documentation" icon="puzzle-piece" href="/skills/wazoo">
-  Full guide on installing, configuring, and invoking the official Wazoo agent skill.
+<Card
+  title="Wazoo Skill Documentation"
+  icon="puzzle-piece"
+  href="/skills/wazoo"
+>
+  Full guide on installing, configuring, and invoking the official Wazoo agent
+  skill.
 </Card>
 
 ## Architecture & Protocol Access
 
-For deeper background on how skills, MCP servers, and REST APIs map to Wazoo's core memory stack, consult [Architecture & Design](/contribute/architecture).
+For deeper background on how skills, MCP servers, and REST APIs map to Wazoo's
+core memory stack, consult [Architecture & Design](/contribute/architecture).

@@ -1,44 +1,67 @@
 ---
 title: "DIY memory infra"
 description:
-  "Worlds vs assembling your own memory stack: Postgres plus vector indexes, triple stores, and custom pipelines."
+  "Worlds vs assembling your own memory stack: Postgres plus vector indexes,
+  triple stores, and custom pipelines."
 ---
 
 ## At a glance
 
-|                   | Worlds                 | DIY memory stack                                          |
-| :---------------- | :--------------------- | :-------------------------------------------------------- |
-| Graph model       | RDF triples            | Custom schema or relational tables                        |
-| Retrieval         | Hybrid search + pattern queries (SPARQL) | Custom vector + SQL index queries                     |
-| Provenance        | Fact-level ledger      | Custom versioning & logging tables                        |
-| Ingestion         | Import API             | Custom ETL pipeline & queues                              |
-| Pieces to operate | One engine             | Postgres, pgvector, queue worker, ETL script, audit log   |
+|                   | Worlds                                   | DIY memory stack                                        |
+| :---------------- | :--------------------------------------- | :------------------------------------------------------ |
+| Graph model       | RDF triples                              | Custom schema or relational tables                      |
+| Retrieval         | Hybrid search + pattern queries (SPARQL) | Custom vector + SQL index queries                       |
+| Provenance        | Fact-level ledger                        | Custom versioning & logging tables                      |
+| Ingestion         | Import API                               | Custom ETL pipeline & queues                            |
+| Pieces to operate | One engine                               | Postgres, pgvector, queue worker, ETL script, audit log |
 
 ## The hidden tax of building your own AI memory system
 
-As AI agents mature, engineering teams often begin by assembling a DIY memory stack: pairing [PostgreSQL](https://www.postgresql.org) and [pgvector](https://github.com/pgvector/pgvector) with an ingestion queue, embedding service, and custom schema.
+As AI agents mature, engineering teams often begin by assembling a DIY memory
+stack: pairing [PostgreSQL](https://www.postgresql.org) and
+[pgvector](https://github.com/pgvector/pgvector) with an ingestion queue,
+embedding service, and custom schema.
 
-While each individual component is standard infrastructure, assembling and maintaining an agent memory system introduces severe operational overhead:
+While each individual component is standard infrastructure, assembling and
+maintaining an agent memory system introduces severe operational overhead:
 
-- **Sync & Consistency Gaps**: Keeping vector embeddings, full-text indexes, and relational entity relationships synchronized across concurrent write traffic quickly leads to stale context and silent retrieval drift.
-- **Retrieval Fusion Complexity**: Fusing vector similarity with graph relationships requires custom algorithms (e.g. Reciprocal Rank Fusion) and manual tuning.
-- **Auditability & Provenance**: Agents require exact lineage for assertions. Adding multi-tenant, fact-level audit logs to a custom relational model demands extensive schema plumbing.
-- **Maintenance Overhead**: What begins as a simple table evolves into a multi-service pipeline requiring dedicated operational bandwidth.
+- **Sync & Consistency Gaps**: Keeping vector embeddings, full-text indexes, and
+  relational entity relationships synchronized across concurrent write traffic
+  quickly leads to stale context and silent retrieval drift.
+- **Retrieval Fusion Complexity**: Fusing vector similarity with graph
+  relationships requires custom algorithms (e.g. Reciprocal Rank Fusion) and
+  manual tuning.
+- **Auditability & Provenance**: Agents require exact lineage for assertions.
+  Adding multi-tenant, fact-level audit logs to a custom relational model
+  demands extensive schema plumbing.
+- **Maintenance Overhead**: What begins as a simple table evolves into a
+  multi-service pipeline requiring dedicated operational bandwidth.
 
-Worlds addresses these challenges out-of-the-box. Facts exist as RDF quads in an append-only ledger with built-in provenance, while retrieval natively combines vector similarity, keyword search, and pattern matching (SPARQL) in a unified context engine.
+Worlds addresses these challenges out-of-the-box. Facts exist as RDF quads in an
+append-only ledger with built-in provenance, while retrieval natively combines
+vector similarity, keyword search, and pattern matching (SPARQL) in a unified
+context engine.
 
 ## When Worlds fits
 
-- Facts, complex entity relationships, and provenance are core system requirements.
-- You want hybrid retrieval and graph query semantics pre-built without engineering custom fusion algorithms.
-- You prefer operating a single context engine rather than maintaining a multi-service pipeline stack.
+- Facts, complex entity relationships, and provenance are core system
+  requirements.
+- You want hybrid retrieval and graph query semantics pre-built without
+  engineering custom fusion algorithms.
+- You prefer operating a single context engine rather than maintaining a
+  multi-service pipeline stack.
 
 ## When Worlds does not fit
 
-- You have an existing database estate with simple fixed schemas that require basic relational lookups only.
-- You need bespoke, domain-specific indexing algorithms unexpressed by general engines.
+- You have an existing database estate with simple fixed schemas that require
+  basic relational lookups only.
+- You need bespoke, domain-specific indexing algorithms unexpressed by general
+  engines.
 - You intentionally want to own and maintain every layer of the memory stack.
 
 ## Coexistence
 
-The `@worlds/postgres` and `worlds-libsql` [adapters](/contribute/self-host) allow a world to run directly inside your existing storage substrate (LibSQL/Turso or Postgres). You preserve existing database infrastructure while utilizing Worlds as the specialized context engine for agent memory.
+The `@worlds/postgres` and `worlds-libsql` [adapters](/contribute/self-host)
+allow a world to run directly inside your existing storage substrate
+(LibSQL/Turso or Postgres). You preserve existing database infrastructure while
+utilizing Worlds as the specialized context engine for agent memory.

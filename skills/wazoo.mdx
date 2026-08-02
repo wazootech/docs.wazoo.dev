@@ -10,7 +10,9 @@ npx skills add wazootech/wazoo-skills --skill=wazoo
 
 ## Overview
 
-The `wazoo` skill packages Wazoo's control plane and data plane features into a skill interface compatible with AI coding agents (Claude Code, Cursor, OpenCode, Gemini, etc.).
+The `wazoo` skill packages Wazoo's control plane and data plane features into a
+skill interface compatible with AI coding agents (Claude Code, Cursor, OpenCode,
+Gemini, etc.).
 
 ## Prerequisites & Installation
 
@@ -74,21 +76,28 @@ bunx skills update wazoo
 
 The skill relies on environment variables depending on the operations required:
 
-| Variable | Prefix | Scope | Description |
-| :--- | :--- | :--- | :--- |
-| `WAZOO_PLATFORM_TOKEN` | `wzp_` | Control plane | World creation, token management, usage inspection |
-| `WORLDS_TOKEN` | `wzw_` | Data plane | Graph import, hybrid search, graph queries (SPARQL), export |
+| Variable               | Prefix | Scope         | Description                                                 |
+| :--------------------- | :----- | :------------ | :---------------------------------------------------------- |
+| `WAZOO_PLATFORM_TOKEN` | `wzp_` | Control plane | World creation, token management, usage inspection          |
+| `WORLDS_TOKEN`         | `wzw_` | Data plane    | Graph import, hybrid search, graph queries (SPARQL), export |
 
 ## Capabilities & Usage
 
 ### Control Plane Operations
-- **World Management**: Create, view, list, update, delete, and undelete memory worlds.
-- **Token Management**: Issue and revoke API tokens for scoped application access.
+
+- **World Management**: Create, view, list, update, delete, and undelete memory
+  worlds.
+- **Token Management**: Issue and revoke API tokens for scoped application
+  access.
 
 ### Data Plane Operations
-- **Graph Import**: Add Turtle, JSON-LD, N-Triples, or N-Quads data into active worlds.
-- **Hybrid Search**: Query memory using combined vector similarity and pattern matching filters.
-- **Graph Pattern Queries (SPARQL)**: Execute queries for deterministic knowledge graph retrieval.
+
+- **Graph Import**: Add Turtle, JSON-LD, N-Triples, or N-Quads data into active
+  worlds.
+- **Hybrid Search**: Query memory using combined vector similarity and pattern
+  matching filters.
+- **Graph Pattern Queries (SPARQL)**: Execute queries for deterministic
+  knowledge graph retrieval.
 - **Export**: Dump graph facts and provenance data.
 
 ## Related Links
