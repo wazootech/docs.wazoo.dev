@@ -1,0 +1,39 @@
+---
+title: "Pricing"
+description:
+  "Pricing and billing details during the Wazoo Platform private beta."
+---
+
+The Wazoo Platform is currently free during private beta. Payment is not
+required, and billing is not enforced.
+
+## Private beta pricing
+
+- **Free access**: Access to hosted Worlds, the Wazoo Console, and the Platform
+  API is completely free during private beta.
+- **Tracked, not metered**: Resource accounting tracks database operations,
+  import bytes, query durations, and storage bytes, but usage limits are not
+  enforced and live payment is not required.
+- **No self-service signup**: Private beta access is managed via allowlist. Sign
+  up at [wazoo.dev/beta](https://wazoo.dev/beta).
+
+## Billing architecture
+
+Stripe-backed billing endpoints exist in the Wazoo API infrastructure, but
+billing enforcement remains inactive for private beta accounts. For detailed
+information on resource-accounting dimensions and platform tokens, see the
+[Platform API reference](/platform/api).
+
+## Beta limitations
+
+To maintain parity with [Private Beta status](/platform/private-beta), active
+platform limitations include:
+
+- Data-plane API stability subject to minor updates before general availability.
+- Selective availability of console features.
+- Account onboarding restricted to allowlisted users via manual invite.
+- Search index updates require triggering a manual [reindex](/console/reindex)
+  after large imports.
+
+Commercial pricing tiers and self-service plans will be announced prior to
+general availability.
