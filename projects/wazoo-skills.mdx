@@ -1,0 +1,54 @@
+---
+title: "wazoo-skills"
+description: "Packaging, testing, and distributing skills for AI coding agents."
+---
+
+`wazoo-skills` is the official repository for Wazoo skills. It provides agent
+skill definitions, setup commands, and distribution patterns for AI pair
+programmers and CLI tools.
+
+## Key features
+
+- **Standardized skill definitions**: Clean `SKILL.md` frontmatter and
+  instruction layers following Wazoo customization patterns.
+- **Cross-environment compatibility**: Supports Claude Code, OpenCode, Codex,
+  and agentic workflows.
+- **Easy installation**: Add skills using the `skills` CLI runner across npm,
+  pnpm, yarn, and bun.
+
+## Available skills
+
+| Skill                    | Description                                       | Quickstart                                            |
+| :----------------------- | :------------------------------------------------ | :---------------------------------------------------- |
+| [`wazoo`](/skills/wazoo) | AI agent context integration and decision mapping | `npx skills add wazootech/wazoo-skills --skill=wazoo` |
+
+## Installation
+
+Install skills into your local agent environment:
+
+<CodeGroup>
+
+```bash npm
+npx skills add wazootech/wazoo-skills --skill=wazoo
+```
+
+```bash pnpm
+pnpm dlx skills add wazootech/wazoo-skills --skill=wazoo
+```
+
+```bash yarn
+yarn dlx skills add wazootech/wazoo-skills --skill=wazoo
+```
+
+```bash bun
+bunx skills add wazootech/wazoo-skills --skill=wazoo
+```
+
+</CodeGroup>
+
+## Next steps
+
+- Explore the [wazoo skill](/skills/wazoo) page
+- Learn about [Agents, Skills, and MCP](/integrations/agents-skills-mcp)
+- Inspect the
+  [wazoo-skills repository on GitHub](https://github.com/wazootech/wazoo-skills)

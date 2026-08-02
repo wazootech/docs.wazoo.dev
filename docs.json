@@ -188,7 +188,8 @@
           "projects/worlds",
           "projects/wiki",
           "projects/linked-markdown",
-          "projects/memsdk"
+          "projects/memsdk",
+          "projects/wazoo-skills"
         ]
       },
       {
@@ -202,9 +203,7 @@
       },
       {
         "group": "Skills",
-        "pages": [
-          "skills/wazoo"
-        ]
+        "pages": ["skills/wazoo"]
       },
       {
         "group": "Integrations",
