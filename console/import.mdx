@@ -24,7 +24,8 @@ The import page lets you upload RDF data files into a world.
 5. Click **Import**.
 
 The console shows a preview before importing. After the import completes, the
-console reports the number of triples added.
+console reports the number of triples added. If search results look stale after
+a large import, [reindex](/console/reindex) the world.
 
 ## Import from text
 
@@ -33,7 +34,8 @@ Paste RDF data directly into the text area and click **Import**.
 ## Merge behavior
 
 Import appends data to the existing graph. It does not replace existing triples.
-To replace data, delete the world and create a new one.
+To replace data, delete the world and create a new one. For how imports fit into
+the wider mutation model, see [Update](/worlds/update).
 
 ## Size limits
 

@@ -3,10 +3,10 @@ title: "TypeScript SDK"
 description: "Use @wazoo/client to manage Wazoo platform resources."
 ---
 
-`@wazoo/client` is the primary TypeScript SDK for the Wazoo Platform API. It
-provides a typed interface for managing your Wazoo infrastructure: provisioning
-Worlds, managing API tokens (`wzp_` and `wzw_`), and tracking resource usage and
-billing.
+`@wazoo/client` is the primary TypeScript SDK for the
+[Wazoo Platform API](/platform/api). It provides a typed interface for managing
+your Wazoo infrastructure: provisioning Worlds, managing API tokens (`wzp_` and
+`wzw_`), and tracking resource usage and billing.
 
 ## Install
 
@@ -88,8 +88,8 @@ await deleteWorld({ path: { worldId: "support-knowledge" } });
 ```
 
 Creating a platform world provisions a per-World Turso database. Use
-`worlds-api.wazoo.dev` or `@worlds/client` for graph data operations inside that
-world.
+`worlds-api.wazoo.dev` or [`@worlds/client`](/projects/worlds) for graph data
+operations inside that world.
 
 ## Platform API tokens
 

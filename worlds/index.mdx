@@ -118,6 +118,7 @@ graph LR
 ### Serialization
 
 Worlds uses standard RDF serialization formats to express triples in plain text.
+For how to load serialized data into a world, see [Update](/worlds/update).
 
 To assert "Ethan is a Person", use:
 
@@ -202,7 +203,8 @@ user:person a schema:Person ;
 ## Verification
 
 To verify a fact, Worlds uses the SPARQL ASK query. This returns a deterministic
-boolean answer and does not rely on probabilistic guessing.
+boolean answer and does not rely on probabilistic guessing. See
+[Query](/worlds/query) for how SPARQL works with Worlds.
 
 For example, to verify if "Ethan knows about Worlds", use:
 
@@ -231,3 +233,7 @@ The response returns `boolean: true` when the fact is verified.
 
 Worlds is built on standard knowledge representation formats. This gives
 autonomous agents an interoperable foundation for reasoning.
+
+## Next steps
+
+- [Search](/worlds/search): hybrid retrieval over a world
