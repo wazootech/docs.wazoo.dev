@@ -97,6 +97,7 @@
           "comparisons/memsearch",
           "comparisons/memspan",
           "comparisons/memsync",
+          "comparisons/message-queues",
           "comparisons/palantir",
           "comparisons/polygres",
           "comparisons/supermemory",

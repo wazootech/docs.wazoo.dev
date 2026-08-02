@@ -1,0 +1,45 @@
+---
+title: "Message queues"
+description:
+  "Worlds vs message queues: event streams against a queryable fact graph."
+---
+
+## At a glance
+
+|             | Worlds                  | Message queues        |
+| :---------- | :---------------------- | :-------------------- |
+| Model       | RDF triples             | Event streams         |
+| Consumption | SPARQL + hybrid search  | Consume by offset     |
+| State       | Ledger'd facts          | In-flight events      |
+| Guarantees  | Fact provenance         | Delivery and ordering |
+| Deployment  | Hosted beta or embedded | Managed or self-host  |
+
+## The philosophical difference
+
+Message queues and pub-sub systems decouple producers from consumers with
+backpressure, fan-out, replay, and stream position. A queue answers "what
+happened, in order". It is the nervous system of a distributed system.
+
+Worlds answers "what is true, and can it be verified". It is not an event bus;
+it is a queryable fact graph where facts live in an append-only
+[ledger](/worlds/index) with provenance. A queue carries the stream; a world is
+its memory.
+
+## When Worlds fits
+
+- Agents need the queryable projection of a stream, not the stream itself.
+- Facts must be verifiable after the event has passed.
+- You want hybrid retrieval over what happened, with relationships intact.
+
+## When Worlds does not fit
+
+- You need to decouple producers from consumers with delivery guarantees.
+- Your workload is replay, fan-out, or stream-position tracking.
+- You are building an event bus, not a knowledge layer.
+
+## Coexistence
+
+The queue carries the event stream; a consumer asserts distilled facts into a
+world through the [import and sync](/worlds/update) path. The world becomes the
+queryable projection of the stream, and the platform API exposes the matching
+endpoints for import and sync.
