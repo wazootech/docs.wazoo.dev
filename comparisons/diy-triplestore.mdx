@@ -16,10 +16,12 @@ description: "Worlds vs running your own RDF store: the cost of operations."
 
 ## The philosophical difference
 
-A triplestore such as Jena Fuseki, GraphDB, or Blazegraph gives you RDF and
-SPARQL, the same standards Worlds builds on. If you run one yourself, you get
-the graph and every operational problem that comes with it: provisioning,
-backups, security, scaling, rate limits, and observability.
+A triplestore such as
+[Jena Fuseki](https://jena.apache.org/documentation/fuseki2/) or
+[GraphDB](https://graphdb.ontotext.com/) gives you RDF and SPARQL, the same
+standards Worlds builds on. If you run one yourself, you get the graph and every
+operational problem that comes with it: provisioning, backups, security,
+scaling, rate limits, and observability.
 
 Worlds is a managed context engine. The data plane serves import, export, hybrid
 search, and SPARQL behind scoped tokens, and embedded adapters give you the same

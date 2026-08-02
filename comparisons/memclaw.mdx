@@ -8,20 +8,20 @@ hidden: true
 
 ## At a glance
 
-|                 | Worlds                        | MemClaw                     |
-| :-------------- | :---------------------------- | :-------------------------- |
-| Data model      | RDF triples in a ledger       | Shared memory partitions    |
-| How facts enter | Import, patches, agent writes | Agent writes to a partition |
-| Retrieval       | Hybrid search + SPARQL        | Partition-aware retrieval   |
-| Provenance      | Fact-level ledger             | Governed access             |
-| Deployment      | Hosted beta or embedded       | Cloud-managed               |
+|                 | Worlds                        | [MemClaw](https://github.com/memclaw) |
+| :-------------- | :---------------------------- | :------------------------------------ |
+| Data model      | RDF triples in a ledger       | Shared memory partitions              |
+| How facts enter | Import, patches, agent writes | Agent writes to a partition           |
+| Retrieval       | Hybrid search + SPARQL        | Partition-aware retrieval             |
+| Provenance      | Fact-level ledger             | Governed access                       |
+| Deployment      | Hosted beta or embedded       | Cloud-managed                         |
 
 ## The philosophical difference
 
-MemClaw targets fleets. A cloud-managed partition lets many agents write to and
-read from the same memory, with governance controlling who gets access. The
-design question is coordination: how a group of agents working together shares
-one memory safely.
+[MemClaw](https://github.com/memclaw) targets fleets. A cloud-managed partition
+lets many agents write to and read from the same memory, with governance
+controlling who gets access. The design question is coordination: how a group of
+agents working together shares one memory safely.
 
 Worlds is also shared: many agents query the same world. Isolation is per world,
 and data-plane tokens are scoped to a single world

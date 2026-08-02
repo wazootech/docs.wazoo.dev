@@ -16,9 +16,12 @@ description:
 
 ## The philosophical difference
 
-Vector databases answer "what is semantically similar?" They index embeddings
-and return the nearest neighbors. That is a useful primitive, and it is one
-signal among three in Worlds' [hybrid search](/worlds/search).
+Vector databases (such as [Pinecone](https://www.pinecone.io),
+[Qdrant](https://qdrant.tech), or
+[pgvector](https://github.com/pgvector/pgvector)) answer "what is semantically
+similar?" They index embeddings and return the nearest neighbors. That is a
+useful primitive, and it is one signal among three in Worlds'
+[hybrid search](/worlds/search).
 
 Worlds stores facts as RDF triples with typed relationships. Retrieval can walk
 the graph, filter by relationship, and fuse results with vector and full-text

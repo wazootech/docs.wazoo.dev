@@ -7,21 +7,21 @@ hidden: true
 
 ## At a glance
 
-|                 | Worlds                        | MemSpan                          |
-| :-------------- | :---------------------------- | :------------------------------- |
-| Data model      | RDF triples in a ledger       | Portable files                   |
-| How facts enter | Import, patches, agent writes | Export from platforms            |
-| Retrieval       | Hybrid search + SPARQL        | Dynamic file loading             |
-| Provenance      | Fact-level ledger             | File-level                       |
-| Deployment      | Hosted beta or embedded       | Local files, zero infrastructure |
+|                 | Worlds                        | [MemSpan](https://github.com/memspan) |
+| :-------------- | :---------------------------- | :------------------------------------ |
+| Data model      | RDF triples in a ledger       | Portable files                        |
+| How facts enter | Import, patches, agent writes | Export from platforms                 |
+| Retrieval       | Hybrid search + SPARQL        | Dynamic file loading                  |
+| Provenance      | Fact-level ledger             | File-level                            |
+| Deployment      | Hosted beta or embedded       | Local files, zero infrastructure      |
 
 ## The philosophical difference
 
-MemSpan treats memory as documents you own. It extracts identity and history
-from locked-in platforms such as ChatGPT, stores them as portable files, and
-loads them into local LLM interfaces like Claude Code. MemSpan runs entirely on
-local files, so there is no database or server to manage and no vendor locking
-you in.
+[MemSpan](https://github.com/memspan) treats memory as documents you own. It
+extracts identity and history from locked-in platforms such as ChatGPT, stores
+them as portable files, and loads them into local LLM interfaces like Claude
+Code. MemSpan runs entirely on local files, so there is no database or server to
+manage and no vendor locking you in.
 
 Worlds treats memory as facts in a graph. A file is readable, but it does not
 assert relationships or track when a fact changed. MemSpan optimizes for
