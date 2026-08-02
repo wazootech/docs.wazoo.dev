@@ -28,6 +28,24 @@ JSON-LD semantics, **an LMD document and a Vault-LD document accept the exact
 same document structure**. A single `.md` file functions simultaneously as
 human-readable prose and a valid RDF graph node in both ecosystems.
 
+```markdown
+---
+"@id": "https://wazoo.dev/team/gregory-davidson"
+"@type": "Person"
+"@context":
+  "@vocab": "http://schema.org/"
+  "wazoo": "https://schema.wazoo.dev/"
+  "role":
+    "@type": "@id"
+name: "Gregory Davidson"
+wazoo:role: "Context Architect"
+---
+
+# Gregory Davidson
+
+Gregory leads context engineering on Worlds.
+```
+
 The key distinction is not document format, but **toolchain maturity and
 real-world deployment**:
 
