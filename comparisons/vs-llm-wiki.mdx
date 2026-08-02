@@ -1,0 +1,60 @@
+---
+title: "LLM Wiki (Karpathy Pattern)"
+description:
+  "Worlds vs LLM Wiki: schema-validated RDF graphs vs agent-compiled markdown
+  wikis."
+hidden: true
+---
+
+## At a glance
+
+|                 | Worlds                                            | LLM Wiki (Farzapedia)                                      |
+| :-------------- | :------------------------------------------------ | :--------------------------------------------------------- |
+| Data model      | RDF triples in an append-only ledger              | Interlinked Markdown articles (`[[wikilinks]]`)            |
+| Gardening model | Schema-checked assertions & SHACL validation      | Continuous agent summarizing, linking, & synthesis         |
+| Retrieval       | Hybrid: SPARQL graph filters, vector, & full-text | File traversal (`ls`, `cat`, `grep`) & wikilink navigation |
+| Provenance      | Quad-level, temporal, verifiable via SPARQL       | Article-level source citations & git commits               |
+| Primary surface | Context engine API & agent tool calls             | Human & agent-readable Markdown vault                      |
+
+## The philosophical difference
+
+The **LLM Wiki pattern** (popularized by Andrej Karpathy and exemplified by
+project Farzapedia) argues that instead of dumping raw interaction transcripts
+into opaque vector stores, agents should **compile and garden** their knowledge
+into a structured, interlinked Markdown wiki (`[[wikilinks]]`). Agents
+continuously synthesize new information into readable articles.
+
+**Worlds** elevates this concept by bringing **semantic web rigor and
+deterministic verification** to compiled wikis. Where standard LLM wikis rely
+solely on unstructured prose and informal links, Worlds structures compiled
+facts into standard W3C RDF triples, validated by SHACL shapes and queryable via
+SPARQL.
+
+- **LLM Wiki** provides a clean, human-readable workspace for agent gardening
+  and synthesis.
+- **Worlds** provides the underlying **schema-checked fact engine** ensuring
+  that compiled wiki knowledge remains structurally sound, non-contradictory,
+  and verifiable.
+
+## When Worlds fits
+
+- You need strict schema validation (SHACL) to prevent metadata drift and
+  hallucinated facts in your knowledge base.
+- You require deterministic graph queries (SPARQL) across connected entities
+  rather than manual link-following.
+- You want an append-only ledger that tracks when facts were asserted and by
+  whom.
+
+## When LLM Wiki fits
+
+- You want a human-in-the-loop personal knowledge base (Obsidian/Logseq format)
+  where both humans and agents read and edit markdown articles.
+- You are starting with raw transcripts and want agents to summarize and
+  interlink information organically.
+
+## Coexistence
+
+The `llm-wiki` template in `wiki-templates` demonstrates how the two patterns
+unite: agents maintain and garden Markdown wiki articles, while Wiki CLI and
+Worlds index the underlying Linked Markdown frontmatter into an RDF graph for
+SPARQL verification.

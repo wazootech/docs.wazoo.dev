@@ -44,11 +44,13 @@ Worlds is deliberately narrow. It does not:
 
 | Alternative                                                | Core model                      | Retrieval                   | Provenance         | Managed?              |
 | :--------------------------------------------------------- | :------------------------------ | :-------------------------- | :----------------- | :-------------------- |
+| [CocoIndex](/comparisons/vs-cocoindex)                     | Incremental vector sidecar      | Vector similarity & ETL     | Derived sidecar    | Python / Postgres     |
 | [DIY memory infra](/comparisons/vs-diy-memory-infra)       | Custom stack                    | Custom                      | Your job           | You run it            |
 | [DIY triplestore](/comparisons/vs-diy-triplestore)         | RDF graph                       | SPARQL                      | Your job           | You run it            |
 | [Hermes Agent Memory](/comparisons/vs-hermes)              | Multi-tier memory & skills      | FTS5 search + system prompt | Session / file     | Local CLI runtime     |
 | [LangMem](/comparisons/vs-langmem)                         | LangGraph vector memory         | Similarity search           | None               | SDK, self-managed     |
 | [Letta](/comparisons/vs-letta)                             | Stateful agent runtime          | Files and vector index      | File-level         | Self-host             |
+| [LLM Wiki](/comparisons/vs-llm-wiki)                       | Agent-compiled markdown wiki    | File traversal & wikilinks  | Article-level      | Vault files           |
 | [Maindex](/comparisons/vs-maindex)                         | Typed memory layer              | MCP-based retrieval         | Provenance-typed   | Managed               |
 | [Mem0](/comparisons/vs-mem0)                               | Extracted agent memories        | Similarity search           | Item-level         | Hosted or self-host   |
 | [Memblock](/comparisons/vs-memblock)                       | Block-based memory structures   | Block lookup + vectors      | Session-level      | Managed               |

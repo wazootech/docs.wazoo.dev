@@ -1,0 +1,60 @@
+---
+title: "CocoIndex"
+description:
+  "Worlds vs CocoIndex: RDF fact ledger vs incremental vector sidecar indexing."
+hidden: true
+---
+
+## At a glance
+
+|                  | Worlds                                                | CocoIndex                                           |
+| :--------------- | :---------------------------------------------------- | :-------------------------------------------------- |
+| Primary role     | Authoritative RDF fact ledger & SPARQL context engine | Incremental ETL indexer & vector memory sidecar     |
+| Data model       | RDF triples in an append-only graph ledger            | Relational vector chunks (pgvector / PGlite)        |
+| Retrieval        | SPARQL graph queries, full-text, & vector fusion      | Vector similarity & chunk retrieval                 |
+| Incremental flow | Immutable append-only quads & patches                 | Memoized pipeline functions (`@coco.fn(memo=True)`) |
+| Deployment       | Edge-ready adapters (LibSQL, Postgres) or Cloud       | Python runtime + Postgres (Docker or PGlite)        |
+
+## The philosophical difference
+
+**CocoIndex** is an incremental data pipeline framework for materializing
+derived vector indexes from raw document stores (such as Markdown wikis). Using
+memoized pipeline functions, CocoIndex detects when a source file changes and
+incrementally updates vector chunks in a sidecar database (e.g. pgvector or
+PGlite).
+
+**Worlds** serves as the **authoritative, single source of truth**. Rather than
+holding derived vector embeddings, Worlds maintains an append-only ledger of
+verified RDF triples, exposing SPARQL graph filters and deterministic
+provenance.
+
+The two tools are complementary rather than mutually exclusive:
+
+- **Worlds** owns canonical fact assertion, graph schemas (SHACL), SPARQL
+  verification, and temporal provenance.
+- **CocoIndex** sits alongside as an **incremental sidecar indexer**
+  (`wiki-cocoindex-template`), transforming Markdown source documents into
+  derived vector embeddings for fast semantic recall.
+
+## When Worlds fits
+
+- You need deterministic graph querying (SPARQL) to verify multi-hop
+  relationships across enterprise domain facts.
+- You require immutable provenance and audit trails for every assertion.
+- You want open-standard RDF schemas that operate natively across edge adapters
+  (LibSQL) and cloud databases.
+
+## When CocoIndex fits
+
+- You want an incremental background pipeline that updates vector embeddings as
+  Markdown files change.
+- You need zero-Docker local vector sidecars via WASM PGlite.
+- You are transforming raw document corpora into derived chunk indexes for LLM
+  RAG pipelines.
+
+## Coexistence
+
+Wazoo maintains an official template, **`wiki-cocoindex-template`**,
+demonstrating how Wiki CLI and CocoIndex work together: Wiki CLI owns the
+semantic source of truth, while CocoIndex maintains a derived pgvector sidecar
+index for fast hybrid retrieval.
