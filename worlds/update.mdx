@@ -15,8 +15,9 @@ permanently preserve historical truth.
 
 ### Import quads
 
-The mutation path on the hosted API is the import endpoint. SPARQL on the data
-plane is read-only; to change state, send quads to import:
+The mutation path on the hosted API is the [import endpoint](/console/import).
+[SPARQL](/worlds/query) on the data plane is read-only; to change state, send
+quads to import:
 
 ```bash
 curl -s -X POST "https://worlds-api.wazoo.dev/worlds/my-world-id/import" \

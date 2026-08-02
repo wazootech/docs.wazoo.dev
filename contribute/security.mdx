@@ -13,8 +13,8 @@ The platform uses separate token kinds depending on the use case.
 ### Platform tokens
 
 Platform tokens use the `wzp_` prefix. They authenticate management operations
-against the Wazoo Platform API, including user-owned World metadata, platform
-tokens, world auth tokens, and usage records.
+against the [Wazoo Platform API](/platform/api), including user-owned World
+metadata, platform tokens, world auth tokens, and usage records.
 
 Include the token in the `Authorization` header:
 
@@ -26,7 +26,8 @@ Authorization: Bearer wzp_...
 
 World tokens use the `wzw_` prefix. They are data-plane credentials for access
 to specific worlds. Agents and applications should use world tokens when they
-query or update graph data.
+query or update graph data. Create and revoke them from the
+[Console](/console/tokens).
 
 Store world tokens separately from platform tokens. A world token should not be
 able to manage platform metadata or mint new platform credentials.
