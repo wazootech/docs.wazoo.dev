@@ -1,0 +1,61 @@
+---
+title: "Google Dataplex"
+description:
+  "Worlds vs Google Dataplex: RDF fact ledger vs enterprise data fabric &
+  governance."
+hidden: true
+---
+
+## At a glance
+
+|               | Worlds                                                | [Google Dataplex](https://cloud.google.com/dataplex)      |
+| :------------ | :---------------------------------------------------- | :-------------------------------------------------------- |
+| Primary role  | Authoritative RDF fact ledger & SPARQL context engine | Enterprise data fabric, governance, & metadata management |
+| Data model    | RDF triples/quads in an append-only graph ledger      | Distributed data lakes, BigQuery tables, & asset catalog  |
+| Retrieval     | SPARQL graph queries, full-text, & vector fusion      | Data catalog search, SQL queries, & policy controls       |
+| Core strength | Deterministic multi-hop SPARQL graph verification     | Cross-cloud data governance, quality, & lineage metadata  |
+| Deployment    | Edge-ready adapters (LibSQL, Postgres) or Cloud       | Google Cloud Platform (GCP)                               |
+
+## Overlap and shared capabilities
+
+Both Worlds and [Google Dataplex](https://cloud.google.com/dataplex) provide
+structure, lineage tracking, and governance over enterprise data assets so
+applications and AI models can consume reliable information.
+
+The difference is structural and operational:
+
+- Google Dataplex is an enterprise data fabric platform within GCP. It unifies
+  metadata management, data quality checks, security policies, and cataloging
+  across distributed BigQuery datasets and GCS data lakes.
+- Worlds is an RDF knowledge graph context engine. It manages persistent triple
+  assertions, subject-predicate-object graphs, and SPARQL queries with immutable
+  quad provenance for AI agents.
+
+Dataplex manages enterprise data lakes and governance policies across Google
+Cloud, while Worlds provides a queryable, verifiable RDF fact ledger for
+software agents.
+
+## When Worlds fits
+
+- You need deterministic graph querying (SPARQL) to verify multi-hop
+  relationships across domain facts.
+- You require immutable provenance and quad-level assertion tracking for AI
+  agent context.
+- You want open-standard RDF schemas that operate natively across edge adapters
+  (LibSQL, Postgres) and cloud infrastructure.
+
+## When Google Dataplex fits
+
+- You manage enterprise data lakes and BigQuery warehouses requiring centralized
+  governance, data quality monitoring, and access controls on GCP.
+- You need automated data discovery, classification, and business glossary
+  cataloging across Google Cloud assets.
+- Your primary data infrastructure relies on GCP analytical storage rather than
+  RDF graph stores.
+
+## Coexistence and integration
+
+Google Dataplex and Worlds operate at different levels of the enterprise data
+architecture. Dataplex governs large-scale GCP data lakes and relational
+analytical tables, while Worlds acts as the context engine and RDF fact ledger
+for AI agent fleets.

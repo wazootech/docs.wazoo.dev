@@ -86,6 +86,7 @@
           "comparisons/diy-triplestore",
           "comparisons/document-databases",
           "comparisons/gbrain",
+          "comparisons/google-dataplex",
           "comparisons/google-search",
           "comparisons/hermes",
           "comparisons/key-value-stores",
