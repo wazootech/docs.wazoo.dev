@@ -1,0 +1,64 @@
+---
+title: "Vault-LD"
+description:
+  "Linked Markdown vs Vault-LD: portable RDF-in-markdown specs compared."
+hidden: true
+---
+
+## At a glance
+
+|               | Linked Markdown (Wazoo)                           | Vault-LD (The-Knowledge-Graph-Guys)                  |
+| :------------ | :------------------------------------------------ | :--------------------------------------------------- |
+| Core focus    | Pragmatic Markdown-to-RDF spec & multi-lang SDKs  | Lossless round-trip specification (Markdown <-> RDF) |
+| Frontmatter   | YAML frontmatter with RDF predicates/curated IRIs | YAML-LD (JSON-LD serialized as YAML) with `@context` |
+| Serialization | Frontmatter + Wikilinks + HTML Microdata          | YAML-LD frontmatter & controlled vocabulary specs    |
+| Ecosystem     | Integrated with Wiki CLI, Worlds, and `memsdk`    | Standalone specification & reference parser          |
+| Primary use   | Agent context, memory ledgers, and wiki graphs    | Bi-directional RDF graph conversion for PKM notes    |
+
+## The philosophical difference
+
+Both **Linked Markdown** (by Wazoo) and
+**[Vault-LD](https://github.com/The-Knowledge-Graph-Guys/vault-ld)** (by The
+Knowledge Graph Guys) address the exact same challenge: turning human-readable
+Markdown files into structured, machine-queryable Linked Data (RDF) knowledge
+graphs without sacrificing readability.
+
+The difference lies in design philosophy and ecosystem scope:
+
+- **Vault-LD** focuses heavily on **lossless bi-directional round-tripping**
+  between Markdown and RDF. It uses strict **YAML-LD** (JSON-LD expressed in
+  YAML) in note frontmatter with a shared `@context` mapping file. It is
+  primarily a formal specification for note vaults.
+- **Linked Markdown** is designed for **pragmatic agent memory and developer
+  workflows**. It pairs clean YAML frontmatter, standard Markdown
+  `[[wikilinks]]`, and embedded Microdata with multi-language SDKs
+  (`linked-markdown-py`, `linked-markdown-ts`) and CLI tooling (`wiki`).
+
+Where Vault-LD optimizes for strict 1:1 round-trip conversion back and forth
+between graphs and notes, Linked Markdown optimizes for agent ergonomics, fast
+RDF parsing, and seamless integration into context engines like Worlds.
+
+## When Linked Markdown fits
+
+- You are building AI agent workflows, context engines, or memory sidecars.
+- You want ready-to-use Python and TypeScript packages (`linked-markdown-py`,
+  `linked-markdown-ts`) for parsing and indexing.
+- You want clean YAML frontmatter and `[[wikilinks]]` without writing explicit
+  JSON-LD/YAML-LD `@context` blocks in every vault.
+- You use Wazoo tools like `wiki` CLI or Worlds context engine out of the box.
+
+## When Vault-LD fits
+
+- You require formal, lossless bi-directional conversion where RDF graph edits
+  write back into exact Markdown files without formatting loss.
+- Your project specifically enforces YAML-LD frontmatter definitions and custom
+  JSON-LD context schemas.
+- You are developing desktop PKM extensions (Obsidian/Logseq) centered on formal
+  Linked Data standards.
+
+## Interoperability
+
+Because both specifications parse down to W3C RDF triples, Linked Markdown tools
+and Vault-LD vaults are fundamentally interoperable at the graph layer. A vault
+written using Vault-LD conventions can be ingested and queried via SPARQL inside
+Wazoo Worlds or the `wiki` CLI.
