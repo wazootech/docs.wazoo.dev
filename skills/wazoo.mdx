@@ -8,43 +8,13 @@ description:
 npx skills add wazootech/wazoo-skills --skill=wazoo
 ```
 
-## What it does
+## Overview
 
-Explains the core purpose and functionality of the tool, detailing how it breaks
-down large, ambiguous efforts into a map of actionable decision tickets.
+The `wazoo` skill packages Wazoo's control plane and data plane features into a skill interface compatible with AI coding agents (Claude Code, Cursor, OpenCode, Gemini, etc.).
 
-## When to reach for it
+## Prerequisites & Installation
 
-Identifies the exact scenarios and thresholds for invoking the tool,
-specifically when a project is too large or "foggy" to be handled in a single
-session.
-
-## Prerequisites
-
-Lists the required system configurations, environmental setup, or dependencies
-(like issue tracker wiring) needed before the tool can operate.
-
-## The map is an index, fog is the frontier (Concept / Mechanism Overview)
-
-Describes the underlying conceptual model and mechanics of the tool, explaining
-how it tracks known decisions as an index while treating unknown variables as a
-frontier to be explored.
-
-## It's working if
-
-Provides concrete success criteria and expected behaviors, allowing the user to
-verify that the tool is functioning and progressing correctly.
-
-## Where it fits
-
-Contextualizes the tool within the broader development lifecycle, explaining
-what precedes its use and what downstream tools (like spec-writers or
-implementation) follow it.
-
-## Install the skill / Quickstart
-
-Provides the exact, runnable terminal commands required to install, update, and
-invoke the tool:
+Install the `wazoo` skill into your agent workspace or global agent environment:
 
 <CodeGroup>
 
@@ -66,7 +36,19 @@ bunx skills add wazootech/wazoo-skills --skill=wazoo
 
 </CodeGroup>
 
-### Update skill
+### Manual placement
+
+Place the `SKILL.md` file directly into your workspace:
+
+```bash
+mkdir -p .agents/skills/wazoo
+curl -o .agents/skills/wazoo/SKILL.md \
+  https://raw.githubusercontent.com/wazootech/wazoo-skills/main/skills/engineering/wazoo/SKILL.md
+```
+
+Gemini agents read skills from `~/.gemini/config/skills/` instead.
+
+### Updating the skill
 
 <CodeGroup>
 
@@ -88,7 +70,28 @@ bunx skills update wazoo
 
 </CodeGroup>
 
-## Related reading
+## Environment Setup
+
+The skill relies on environment variables depending on the operations required:
+
+| Variable | Prefix | Scope | Description |
+| :--- | :--- | :--- | :--- |
+| `WAZOO_PLATFORM_TOKEN` | `wzp_` | Control plane | World creation, token management, usage inspection |
+| `WORLDS_TOKEN` | `wzw_` | Data plane | Graph import, hybrid search, graph queries (SPARQL), export |
+
+## Capabilities & Usage
+
+### Control Plane Operations
+- **World Management**: Create, view, list, update, delete, and undelete memory worlds.
+- **Token Management**: Issue and revoke API tokens for scoped application access.
+
+### Data Plane Operations
+- **Graph Import**: Add Turtle, JSON-LD, N-Triples, or N-Quads data into active worlds.
+- **Hybrid Search**: Query memory using combined vector similarity and pattern matching filters.
+- **Graph Pattern Queries (SPARQL)**: Execute queries for deterministic knowledge graph retrieval.
+- **Export**: Dump graph facts and provenance data.
+
+## Related Links
 
 - [Agents, Skills, and MCP](/integrations/agents-skills-mcp)
 - [Wazoo Platform API Reference](/platform/api)
