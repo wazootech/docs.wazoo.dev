@@ -6,37 +6,26 @@ description:
 
 ## Overview
 
-AI agents interact with Wazoo memory across two primary API planes:
+Agents connect to Wazoo through two REST surfaces (see
+[architecture](/contribute/architecture)):
 
-- **Control plane** (`api.wazoo.dev`): Manage worlds, API keys, and account
-  resources using `WAZOO_PLATFORM_TOKEN` (`wzp_`).
-- **Data plane** (`worlds-api.wazoo.dev`): Perform [import](/worlds/update),
-  [hybrid search](/worlds/search), [pattern queries](/worlds/query), and export
-  using `WORLDS_TOKEN` (`wzw_`).
+- **Control plane** (`api.wazoo.dev`): manage worlds and API tokens with a
+  `wzp_` token.
+- **Data plane** (`worlds-api.wazoo.dev`): [import](/worlds/update),
+  [search](/worlds/search), [pattern queries](/worlds/query), and
+  [export](/console/export) using a `wzw_` token.
 
-The Model Context Protocol (MCP) and Agent Skills standard provide native
-mechanisms for AI tools (Claude Code, Cursor, OpenCode, Gemini, etc.) to command
-these APIs seamlessly.
+The MCP protocol is part of this agent-native surface. The REST endpoints above
+are the stable way to reach it today.
 
-## Quick Start with Wazoo Skill
+## Install the `wazoo` skill
 
-The primary way to equip your agent with Wazoo memory tools is the canonical
-`wazoo` skill from
-[wazootech/wazoo-skills](https://github.com/wazootech/wazoo-skills).
+Install the skill from
+[wazootech/wazoo-skills](https://github.com/wazootech/wazoo-skills) into your
+agent's environment:
 
-For complete installation instructions, environment setup, and operational
-guidance, see:
+```bash
+npx skills add wazootech/wazoo-skills --skill=wazoo
+```
 
-<Card
-  title="Wazoo Skill Documentation"
-  icon="puzzle-piece"
-  href="/skills/wazoo"
->
-  Full guide on installing, configuring, and invoking the official Wazoo agent
-  skill.
-</Card>
-
-## Architecture & Protocol Access
-
-For deeper background on how skills, MCP servers, and REST APIs map to Wazoo's
-core memory stack, consult [Architecture & Design](/contribute/architecture).
+For the complete reference, see [the `wazoo` skill docs](/skills/wazoo).

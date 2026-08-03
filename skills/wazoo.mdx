@@ -11,10 +11,10 @@ npx skills add wazootech/wazoo-skills --skill=wazoo
 ## Overview
 
 The `wazoo` skill packages Wazoo's control plane and data plane features into a
-skill interface compatible with AI coding agents (Claude Code, Cursor, OpenCode,
-Gemini, etc.).
+skill that AI coding agents (Claude Code, Cursor, OpenCode, Gemini, and others)
+can load.
 
-## Prerequisites & Installation
+## Prerequisites and installation
 
 Install the `wazoo` skill into your agent workspace or global agent environment:
 
@@ -72,36 +72,33 @@ bunx skills update wazoo
 
 </CodeGroup>
 
-## Environment Setup
+## Environment setup
 
-The skill relies on environment variables depending on the operations required:
+The skill reads two environment variables, one per plane:
 
 | Variable               | Prefix | Scope         | Description                                                 |
 | :--------------------- | :----- | :------------ | :---------------------------------------------------------- |
 | `WAZOO_PLATFORM_TOKEN` | `wzp_` | Control plane | World creation, token management, usage inspection          |
 | `WORLDS_TOKEN`         | `wzw_` | Data plane    | Graph import, hybrid search, graph queries (SPARQL), export |
 
-## Capabilities & Usage
+## What it covers
 
-### Control Plane Operations
+### Control plane
 
-- **World Management**: Create, view, list, update, delete, and undelete memory
-  worlds.
-- **Token Management**: Issue and revoke API tokens for scoped application
+- **World management**: create, view, list, update, delete, and undelete worlds.
+- **Token management**: issue and revoke API tokens for scoped application
   access.
 
-### Data Plane Operations
+### Data plane
 
-- **Graph Import**: Add Turtle, JSON-LD, N-Triples, or N-Quads data into active
-  worlds.
-- **Hybrid Search**: Query memory using combined vector similarity and pattern
-  matching filters.
-- **Graph Pattern Queries (SPARQL)**: Execute queries for deterministic
-  knowledge graph retrieval.
-- **Export**: Dump graph facts and provenance data.
+- **Graph import**: add Turtle, JSON-LD, N-Triples, or N-Quads data into worlds.
+- **Hybrid search**: query across vector similarity and pattern matching.
+- **Graph pattern queries (SPARQL)**: run graph queries for deterministic
+  retrieval.
+- **Export**: dump graph facts and provenance data.
 
-## Related Links
+## Related links
 
 - [Agents, Skills, and MCP](/integrations/agents-skills-mcp)
 - [Wazoo Platform API Reference](/platform/api)
-- [Wazoo CLI Reference](/reference/cli/index)
+- [Wazoo CLI](/reference/cli)
