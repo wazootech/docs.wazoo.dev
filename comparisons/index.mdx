@@ -98,6 +98,20 @@ deterministic graph verification across any database or model provider. The
 append-only ledger and SPARQL query engine keep agent context interoperable and
 inspectable across database and model providers.
 
+Real-world scenarios where Worlds fits:
+
+- **AI coding assistants and memory**: Persist codebase context across developer
+  sessions. Store facts about your APIs, conventions, and past decisions in a
+  world so the next session resumes from verified graph state instead of a
+  truncated conversation log.
+- **Agent workflows and multi-hop reasoning**: Verify each step of a long task
+  chain. SPARQL pattern matching confirms that entities and relationships exist
+  before the agent acts on them, keeping multi-step reasoning grounded in facts
+  rather than similarity.
+- **Compliance and auditability**: Trace every assertion to its source. The
+  append-only ledger records quad-level provenance, so you can answer "where did
+  this fact come from?" in strict environments.
+
 ## Next steps
 
 - [Worlds overview](/projects/worlds)
