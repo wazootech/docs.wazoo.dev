@@ -54,9 +54,9 @@ and carry provenance you can trace to their source.
 
     ```yaml
     ---
-    id: company:DecisionShape
+    id: wiki:DecisionShape
     type: sh:NodeShape
-    sh:targetClass: company:Decision
+    sh:targetClass: wiki:Decision
     sh:property:
       sh:path: schema:name
       sh:datatype: xsd:string
@@ -69,8 +69,8 @@ and carry provenance you can trace to their source.
 
     ```yaml
     ---
-    id: company:ADR-004
-    type: company:Decision
+    id: wiki:ADR-004
+    type: wiki:Decision
     name: Adopt Worlds as the company context engine
     status: Accepted
     author: https://wazoo.dev/team/Ethan_Davidson
@@ -94,9 +94,10 @@ and carry provenance you can trace to their source.
   </Step>
   <Step title="Import verified facts into the world">
 
-    Export the validated documents as RDF and import them into the world:
+    Export the validated ADR as Turtle, then import it into the world:
 
     ```bash
+    wiki export brain/decisions/ADR-004.md -f turtle -o brain/ADR-004.ttl
     wazoo worlds import company-brain --file ./brain/ADR-004.ttl
     ```
 
@@ -122,7 +123,8 @@ and carry provenance you can trace to their source.
     ```
 
     Claude Code, Cursor, OpenCode, and Gemini agents pick up the skill from
-    their workspace automatically.
+    their workspace automatically. See the [Wazoo skill](/skills/wazoo) page
+    for environment setup and update instructions.
 
   </Step>
 </Steps>
