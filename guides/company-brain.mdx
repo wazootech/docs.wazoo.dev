@@ -1,0 +1,163 @@
+---
+title: "Build a company brain"
+description:
+  "Turn scattered team knowledge into a verifiable knowledge graph agents can
+  query."
+---
+
+A company brain is a shared knowledge graph that your agents query instead of
+scraping Slack threads and stale Notion pages. This guide builds one with
+Worlds, the Wiki CLI, and the `wazoo` agent skill.
+
+Vector-only chunk search returns whatever text is most similar to a query. A
+company brain returns verified facts: assertions that passed shape validation
+and carry provenance you can trace to their source.
+
+## Prerequisites
+
+- A Wazoo private beta account. Sign up at
+  [wazoo.dev/beta](https://wazoo.dev/beta).
+- A platform token (`wzp_`) with world permissions. Generate one on the
+  [Console tokens page](/console/tokens).
+- The `wazoo` CLI, installed per the [CLI reference](/reference/cli).
+- The `wiki` CLI, installed per the
+  [Wiki install guide](/projects/wiki#install).
+
+## Steps
+
+<Steps>
+  <Step title="Create the company brain world">
+
+    Worlds stores facts in isolated worlds. Create one for the company brain:
+
+    ```bash
+    wazoo worlds create company-brain --name "Company Brain"
+    ```
+
+    The world ID `company-brain` is public and used in every data-plane
+    request. Choose a descriptive ID so agents can find the right world.
+
+  </Step>
+  <Step title="Model the core schemas">
+
+    Define SHACL shape constraints for the entities your company tracks:
+    `Person`, `Team`, `Project`, `Decision`, `Meeting`, and `Architecture`.
+    Wiki validates documents against these shapes before they reach the world.
+
+    Start a wiki vault:
+
+    ```bash
+    wiki init
+    ```
+
+    Add a shape for decisions in `brain/shapes/decision.md`:
+
+    ```yaml
+    ---
+    id: wiki:DecisionShape
+    type: sh:NodeShape
+    sh:targetClass: wiki:Decision
+    sh:property:
+      sh:path: schema:name
+      sh:datatype: xsd:string
+      sh:minCount: 1
+    ---
+    ```
+
+    Write an architecture decision record that satisfies the shape in
+    `brain/decisions/ADR-004.md`:
+
+    ```yaml
+    ---
+    id: wiki:ADR-004
+    type: wiki:Decision
+    name: Adopt Worlds as the company context engine
+    status: Accepted
+    author: https://wazoo.dev/team/Ethan_Davidson
+    ---
+    ```
+
+  </Step>
+  <Step title="Enforce quality gates in CI">
+
+    Run the integrity and convention checks before any document syncs into the
+    company brain:
+
+    ```bash
+    wiki check --strict
+    wiki lint
+    ```
+
+    Add both to your CI pipeline so a document with a broken shape or a
+    dangling link cannot reach the ledger.
+
+  </Step>
+  <Step title="Import verified facts into the world">
+
+    Export the validated ADR as Turtle, then import it into the world:
+
+    ```bash
+    wiki export brain/decisions/ADR-004.md -f turtle -o brain/ADR-004.ttl
+    wazoo worlds import company-brain --file ./brain/ADR-004.ttl
+    ```
+
+    The import endpoint accepts Turtle, JSON-LD, N-Triples, N-Quads, and Trig.
+    Every import appends to the chronological ledger, so the brain keeps a
+    complete history of what it knows.
+
+  </Step>
+  <Step title="Connect agent runtimes">
+
+    Install the `wazoo` skill so coding agents can query the brain with native
+    tool calls:
+
+    ```bash
+    npx skills add wazootech/wazoo-skills --skill=wazoo
+    ```
+
+    Export the tokens the skill reads:
+
+    ```bash
+    export WAZOO_PLATFORM_TOKEN=wzp_YOUR_PLATFORM_TOKEN
+    export WORLDS_TOKEN=wzw_YOUR_WORLDS_TOKEN
+    ```
+
+    Claude Code, Cursor, OpenCode, and Gemini agents pick up the skill from
+    their workspace automatically. See the [Wazoo skill](/skills/wazoo) page
+    for environment setup and update instructions.
+
+  </Step>
+</Steps>
+
+## Check for success
+
+Search the brain for the decision you imported:
+
+```bash
+wazoo worlds search company-brain --query "company context engine"
+```
+
+Then confirm the fact exists in the graph with a SPARQL query:
+
+```bash
+wazoo worlds sparql company-brain --query "SELECT * WHERE { ?s ?p ?o } LIMIT 10"
+```
+
+The search returns the ADR document, and the SPARQL query returns its quads.
+Both results prove the agent-facing ledger contains verified, queryable facts.
+
+## Use cases
+
+- **Autonomous onboarding**: New engineers query the brain for architecture
+  decisions, system topology, and team roles instead of asking in Slack.
+- **Verifiable ADR tracking**: Agents check accepted decisions before proposing
+  refactors or API changes.
+- **Multi-agent fleet coordination**: A shared ledger keeps Letta, Hermes, and
+  custom bots working from the same verified facts.
+
+## Next steps
+
+- [Worlds overview](/projects/worlds): understand worlds, items, and facts
+- [Hybrid search](/worlds/search): tune retrieval for your agents
+- [Graph queries](/worlds/query): write SPARQL patterns against the brain
+- [MemSDK](/projects/memsdk): add a backend-agnostic memory interface

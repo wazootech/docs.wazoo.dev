@@ -106,6 +106,10 @@
         ]
       },
       {
+        "group": "Guides",
+        "pages": ["guides/company-brain"]
+      },
+      {
         "group": "Console",
         "pages": [
           "getting-started",
