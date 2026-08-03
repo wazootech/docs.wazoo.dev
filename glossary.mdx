@@ -5,22 +5,20 @@ description:
   platform."
 ---
 
-This glossary defines technical terms, standards, and concepts used throughout
-Wazoo documentation, APIs, and SDKs.
+## Knowledge graph & RDF concepts
 
-## Knowledge Graph & RDF Concepts
+### RDF (Resource description framework)
 
-### RDF (Resource Description Framework)
-
-A W3C standard framework for representing information about resources on the web
-using Subject-Predicate-Object triples.
+A [W3C RDF standard](https://www.w3.org/RDF/) framework for representing
+information about resources on the web using Subject-Predicate-Object triples.
 
 ### SPARQL
 
-A declarative query language and protocol for RDF graph databases. SPARQL allows
-agents to perform deterministic graph traversals and pattern matching.
+A declarative query language and protocol for RDF graph databases defined by the
+[W3C SPARQL 1.1 specification](https://www.w3.org/TR/sparql11-query/). SPARQL
+allows agents to perform deterministic graph traversals and pattern matching.
 
-### Triple / Quad
+### Triple / quad
 
 The foundational unit of RDF data:
 
@@ -28,42 +26,46 @@ The foundational unit of RDF data:
 - **Quad**: A triple bound to a named graph context (Subject, Predicate, Object,
   Graph/World ID).
 
-### SHACL (Shapes Constraint Language)
+### SHACL (Shapes constraint language)
 
-A W3C standard language for validating RDF graphs against specified shapes and
-constraints.
+A [W3C SHACL standard](https://www.w3.org/TR/shacl/) language for validating RDF
+graphs against specified shapes and constraints.
 
-## Neuro-Symbolic AI & Memory
+## Neuro-symbolic AI & memory
 
-### Context Engine
+### Context engine
 
 A specialized system that combines structured knowledge graph querying with
 vector similarity search to provide precise, verifiable context to AI models.
 
-### Reciprocal Rank Fusion (RRF)
+### Reciprocal rank fusion (RRF)
 
 An algorithmic technique used by Worlds to fuse search rankings from multiple
-retrieval signals (SPARQL graph queries, full-text search, and vector
-embeddings) into a single, optimized rank list.
+retrieval signals (pattern queries, full-text search, and vector embeddings)
+into a single, optimized rank list.
 
 ### Provenance
 
 The immutable, auditable lineage of facts stored in Worlds, tracking the exact
 source, timestamp, and context of every quad assertion.
 
-## Wazoo Ecosystem
+## Wazoo ecosystem
 
 ### Worlds
 
-The authoritative context engine and RDF fact ledger platform built by Wazoo
+The authoritative context engine and RDF fact ledger platform
+([wazootech/worlds](https://github.com/wazootech/worlds-api)) built by Wazoo
 Technologies.
 
 ### MemSDK
 
-A backend-agnostic TypeScript SDK interface that standardizes memory operations
-(add, search, profile, forget) across multiple memory backends.
+A backend-agnostic TypeScript SDK interface
+([wazootech/memsdk](https://github.com/wazootech/memsdk)) that standardizes
+memory operations (add, search, profile, forget) across multiple memory
+backends.
 
-### Wazoo Skill
+### Wazoo skills
 
-The official skill package (`wazootech/wazoo-skills`) that equips AI coding
-agents with decision mapping and memory context tools.
+The official skills package
+([wazootech/wazoo-skills](https://github.com/wazootech/wazoo-skills)) that
+equips AI coding agents with decision mapping and memory context tools.

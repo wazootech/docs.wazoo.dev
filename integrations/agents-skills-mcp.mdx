@@ -1,94 +1,42 @@
 ---
 title: "Agents, skills, and MCP"
 description:
-  "Give AI coding agents access to Wazoo memory with the wazoo skill."
+  "How AI coding agents connect to Wazoo memory using skills and MCP protocol."
 ---
 
-## Two ways agents reach Wazoo
+## Overview
 
-Agents connect to Wazoo through two REST surfaces (see
-[architecture](/contribute/architecture)):
+AI agents interact with Wazoo memory across two primary API planes:
 
-- Platform API (`api.wazoo.dev`): the control plane. Manage worlds and API
-  tokens with a `wzp_` token.
-- Worlds API (`worlds-api.wazoo.dev`): the data plane. [Import](/worlds/update),
-  [search](/worlds/search), run [SPARQL](/worlds/query), and export against a
-  world with a `wzw_` token.
+- **Control plane** (`api.wazoo.dev`): Manage worlds, API keys, and account
+  resources using `WAZOO_PLATFORM_TOKEN` (`wzp_`).
+- **Data plane** (`worlds-api.wazoo.dev`): Perform [import](/worlds/update),
+  [hybrid search](/worlds/search), [pattern queries](/worlds/query), and export
+  using `WORLDS_TOKEN` (`wzw_`).
 
-The MCP protocol is part of the agent-native surface in the architecture. The
-REST endpoints above are the stable path to it today.
+The Model Context Protocol (MCP) and Agent Skills standard provide native
+mechanisms for AI tools (Claude Code, Cursor, OpenCode, Gemini, etc.) to command
+these APIs seamlessly.
 
-## Install the `wazoo` skill
+## Quick Start with Wazoo Skill
 
-The [wazoo-skills](https://github.com/wazootech/wazoo-skills) repository
-publishes the `wazoo` skill, which packages the full agent-operational surface
-in one place:
+The primary way to equip your agent with Wazoo memory tools is the canonical
+`wazoo` skill from
+[wazootech/wazoo-skills](https://github.com/wazootech/wazoo-skills).
 
-<CodeGroup>
+For complete installation instructions, environment setup, and operational
+guidance, see:
 
-```bash npm
-npx skills add wazootech/wazoo-skills --skill=wazoo
-```
+<Card
+  title="Wazoo Skill Documentation"
+  icon="puzzle-piece"
+  href="/skills/wazoo"
+>
+  Full guide on installing, configuring, and invoking the official Wazoo agent
+  skill.
+</Card>
 
-```bash pnpm
-pnpm dlx skills add wazootech/wazoo-skills --skill=wazoo
-```
+## Architecture & Protocol Access
 
-```bash yarn
-yarn dlx skills add wazootech/wazoo-skills --skill=wazoo
-```
-
-```bash bun
-bunx skills add wazootech/wazoo-skills --skill=wazoo
-```
-
-</CodeGroup>
-
-Update the skill when a new version is published:
-
-<CodeGroup>
-
-```bash npm
-npx skills update wazoo
-```
-
-```bash pnpm
-pnpm dlx skills update wazoo
-```
-
-```bash yarn
-yarn dlx skills update wazoo
-```
-
-```bash bun
-bunx skills update wazoo
-```
-
-</CodeGroup>
-
-### Manual placement
-
-For agents that do not use the skills CLI, place the `SKILL.md` directly:
-
-```bash
-mkdir -p .agents/skills/wazoo
-curl -o .agents/skills/wazoo/SKILL.md \
-  https://raw.githubusercontent.com/wazootech/wazoo-skills/main/skills/engineering/wazoo/SKILL.md
-```
-
-Gemini agents read skills from `~/.gemini/config/skills/` instead.
-
-## Environment
-
-The skill reads two environment variables:
-
-| Variable               | Prefix | Plane                                       |
-| :--------------------- | :----- | :------------------------------------------ |
-| `WAZOO_PLATFORM_TOKEN` | `wzp_` | Control plane (worlds, tokens, usage)       |
-| `WORLDS_TOKEN`         | `wzw_` | Data plane (import, search, SPARQL, export) |
-
-## What the skill covers
-
-- Control plane: list, create, read, update, delete, and undelete worlds;
-  create, list, and revoke platform and world tokens.
-- Data plane: import graph data, hybrid search, SPARQL queries, and export.
+For deeper background on how skills, MCP servers, and REST APIs map to Wazoo's
+core memory stack, consult [Architecture & Design](/contribute/architecture).

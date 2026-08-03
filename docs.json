@@ -69,13 +69,79 @@
     "groups": [
       {
         "group": "Welcome",
+        "pages": ["introduction", "projects", "manifesto", "glossary"]
+      },
+      {
+        "group": "Platform",
         "pages": [
-          "introduction",
-          "getting-started",
-          "projects",
           "quickstart",
-          "manifesto",
-          "glossary"
+          "platform/private-beta",
+          "platform/pricing",
+          "platform",
+          "platform/api",
+          "platform/typescript-sdk",
+          "platform/troubleshooting"
+        ]
+      },
+      {
+        "group": "Skills",
+        "pages": ["skills/wazoo"]
+      },
+      {
+        "group": "Projects",
+        "pages": [
+          "projects/worlds",
+          "projects/wiki",
+          "projects/linked-markdown",
+          "projects/memsdk"
+        ]
+      },
+      {
+        "group": "Worlds",
+        "pages": [
+          "worlds/index",
+          "worlds/search",
+          "worlds/query",
+          "worlds/update"
+        ]
+      },
+      {
+        "group": "Console",
+        "pages": [
+          "getting-started",
+          "console/overview",
+          "console/sparql",
+          "console/import",
+          "console/search",
+          "console/tokens",
+          "console/export",
+          "console/reindex"
+        ]
+      },
+      {
+        "group": "Wazoo CLI",
+        "pages": [
+          "reference/cli/index",
+          "reference/cli/health",
+          "reference/cli/tokens",
+          "reference/cli/usage",
+          "reference/cli/worlds"
+        ]
+      },
+      {
+        "group": "Integrations",
+        "pages": [
+          "integrations/agents-skills-mcp",
+          "integrations/ai-sdk",
+          "integrations/claude-code",
+          "integrations/gemini-api",
+          "integrations/mastra",
+          "integrations/n8n",
+          "integrations/openclaw",
+          "integrations/opencode",
+          "integrations/openai",
+          "integrations/zapier",
+          "integrations/zo"
         ]
       },
       {
@@ -119,30 +185,12 @@
         ]
       },
       {
-        "group": "Platform",
+        "group": "Open source",
         "pages": [
-          "platform/private-beta",
-          "platform/pricing",
-          "platform",
-          "platform/api",
-          "platform/typescript-sdk",
-          "platform/troubleshooting"
-        ]
-      },
-      {
-        "group": "Wazoo CLI",
-        "pages": [
-          "reference/cli/index",
-          "reference/cli/health",
-          "reference/cli/tokens",
-          "reference/cli/usage",
-          "reference/cli/create",
-          "reference/cli/get",
-          "reference/cli/list",
-          "reference/cli/import",
-          "reference/cli/export",
-          "reference/cli/search",
-          "reference/cli/sparql"
+          "contribute/architecture",
+          "contribute/style",
+          "contribute/security",
+          "contribute/self-host"
         ]
       },
       {
@@ -180,65 +228,6 @@
           "POST /worlds/{id}/sparql",
           "GET /api-keys",
           "POST /api-keys"
-        ]
-      },
-      {
-        "group": "Console",
-        "pages": [
-          "console/overview",
-          "console/sparql",
-          "console/import",
-          "console/search",
-          "console/tokens",
-          "console/export",
-          "console/reindex"
-        ]
-      },
-      {
-        "group": "Projects",
-        "pages": [
-          "projects/worlds",
-          "projects/wiki",
-          "projects/linked-markdown",
-          "projects/memsdk"
-        ]
-      },
-      {
-        "group": "Worlds",
-        "pages": [
-          "worlds/index",
-          "worlds/search",
-          "worlds/query",
-          "worlds/update"
-        ]
-      },
-      {
-        "group": "Skills",
-        "pages": ["skills/wazoo"]
-      },
-      {
-        "group": "Integrations",
-        "pages": [
-          "integrations/agents-skills-mcp",
-          "integrations/ai-sdk",
-          "integrations/claude-code",
-          "integrations/gemini-api",
-          "integrations/mastra",
-          "integrations/n8n",
-          "integrations/openclaw",
-          "integrations/opencode",
-          "integrations/openai",
-          "integrations/zapier",
-          "integrations/zo"
-        ]
-      },
-      {
-        "group": "Open source",
-        "pages": [
-          "contribute/architecture",
-          "contribute/style",
-          "contribute/security",
-          "contribute/self-host"
         ]
       }
     ]
