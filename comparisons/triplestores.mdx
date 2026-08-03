@@ -14,7 +14,7 @@ hidden: true
 | Data model        | Append-only RDF quad ledger + hybrid vector index    | RDF triples/quads with OWL/RDFS reasoning          |
 | Retrieval         | Reciprocal Rank Fusion (SPARQL + Vector + Full-text) | Standard W3C SPARQL 1.1 Query & Update             |
 | Embedding search  | Native vector index integrated into RRF retrieval    | Varies (plugin-based or external vector stores)    |
-| Storage Substrate | LibSQL/Turso, Deno KV, Postgres, or Cloud            | Custom disk structures / RocksDB / Java storage    |
+| Storage Substrate | LibSQL/Turso, Postgres, or Cloud                     | Custom disk structures / RocksDB / Java storage    |
 
 ## Overlap and shared capabilities
 
@@ -37,8 +37,8 @@ The difference lies in target architecture:
 
 - You need hybrid retrieval combining SPARQL graph filters with vector semantic
   search for AI agents.
-- You want lightweight, edge-ready storage adapters (LibSQL, Deno KV, Postgres)
-  without managing a Java JVM cluster.
+- You want lightweight, edge-ready storage adapters (LibSQL, Postgres) without
+  managing a Java JVM cluster.
 - You require append-only quad ledgers with built-in provenance tracking for
   agent context.
 
