@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "mintlify dev",
     "check": "mintlify validate",
+    "broken-links": "mintlify broken-links",
     "format": "prettier \"**/*.{md,mdx,json}\" --write",
     "format:check": "prettier \"**/*.{md,mdx,json}\" --check",
     "precommit": "npm run format:check --silent && npm run check --silent"
