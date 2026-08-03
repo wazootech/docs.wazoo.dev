@@ -88,7 +88,7 @@
         "pages": ["skills/wazoo"]
       },
       {
-        "group": "Projects",
+        "group": "Ecosystem",
         "pages": [
           "projects/worlds",
           "projects/wiki",
