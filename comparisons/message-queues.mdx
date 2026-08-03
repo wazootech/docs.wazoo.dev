@@ -7,13 +7,13 @@ hidden: true
 
 ## At a glance
 
-|              | Worlds                                                | Message Queues ([Kafka](https://kafka.apache.org/documentation/), [RabbitMQ](https://www.rabbitmq.com/documentation.html), [SQS](https://docs.aws.amazon.com/sqs/), [NATS](https://docs.nats.io/)) |
-| :----------- | :---------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Primary role | Authoritative RDF fact ledger & SPARQL context engine | Asynchronous message broker & event streaming bus                                                                                                                                                  |
-| Data model   | RDF triples/quads in an append-only graph ledger      | Sequential message topics, queues, & event logs                                                                                                                                                    |
-| Retrieval    | SPARQL graph queries, full-text, & vector fusion      | Consumer log offsets & push/pull queue delivery                                                                                                                                                    |
-| Core purpose | Verifiable agent memory & context retrieval           | Decoupling microservices & streaming event processing                                                                                                                                              |
-| Querying     | Complex multi-hop graph queries & vector search       | Topic streaming & consumer group offset tracking                                                                                                                                                   |
+|              | Worlds                                                | Message Queues ([Kafka](https://kafka.apache.org/documentation/), [RabbitMQ](https://www.rabbitmq.com/documentation.html), [SQS](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/), [NATS](https://docs.nats.io/)) |
+| :----------- | :---------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Primary role | Authoritative RDF fact ledger & SPARQL context engine | Asynchronous message broker & event streaming bus                                                                                                                                                                                             |
+| Data model   | RDF triples/quads in an append-only graph ledger      | Sequential message topics, queues, & event logs                                                                                                                                                                                               |
+| Retrieval    | SPARQL graph queries, full-text, & vector fusion      | Consumer log offsets & push/pull queue delivery                                                                                                                                                                                               |
+| Core purpose | Verifiable agent memory & context retrieval           | Decoupling microservices & streaming event processing                                                                                                                                                                                         |
+| Querying     | Complex multi-hop graph queries & vector search       | Topic streaming & consumer group offset tracking                                                                                                                                                                                              |
 
 ## Overlap and shared capabilities
 
