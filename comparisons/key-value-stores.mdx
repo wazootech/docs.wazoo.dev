@@ -7,13 +7,13 @@ hidden: true
 
 ## At a glance
 
-|              | Worlds                                                | Key-Value Stores (Redis, Dragonfly, Memcached)        |
-| :----------- | :---------------------------------------------------- | :---------------------------------------------------- |
-| Primary role | Authoritative RDF fact ledger & SPARQL context engine | In-memory key-value caching & data structures         |
-| Data model   | RDF triples/quads in an append-only graph ledger      | Opaque byte arrays, strings, hashes, lists, sets      |
-| Querying     | SPARQL graph traversal, full-text, & vector fusion    | Direct key lookup, range queries, & pub/sub commands  |
-| Persistence  | Permanent append-only ledger on edge/cloud backends   | In-memory with optional asynchronous disk snapshots   |
-| Purpose      | Verifiable agent context engine                       | Low-latency caching, session storage, & rate limiting |
+|              | Worlds                                                | Key-Value Stores ([Redis](https://redis.io/docs/), [Dragonfly](https://www.dragonflydb.io/docs/), [Memcached](https://memcached.org/)) |
+| :----------- | :---------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------- |
+| Primary role | Authoritative RDF fact ledger & SPARQL context engine | In-memory key-value caching & data structures                                                                                          |
+| Data model   | RDF triples/quads in an append-only graph ledger      | Opaque byte arrays, strings, hashes, lists, sets                                                                                       |
+| Querying     | SPARQL graph traversal, full-text, & vector fusion    | Direct key lookup, range queries, & pub/sub commands                                                                                   |
+| Persistence  | Permanent append-only ledger on edge/cloud backends   | In-memory with optional asynchronous disk snapshots                                                                                    |
+| Purpose      | Verifiable agent context engine                       | Low-latency caching, session storage, & rate limiting                                                                                  |
 
 ## Overlap and shared capabilities
 
