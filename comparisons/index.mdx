@@ -98,19 +98,23 @@ deterministic graph verification across any database or model provider. The
 append-only ledger and SPARQL query engine keep agent context interoperable and
 inspectable across database and model providers.
 
-Real-world scenarios where Worlds fits:
+Real-world problems Worlds solves:
 
-- **AI coding assistants and memory**: Persist codebase context across developer
-  sessions. Store facts about your APIs, conventions, and past decisions in a
-  world so the next session resumes from verified graph state instead of a
-  truncated conversation log.
-- **Agent workflows and multi-hop reasoning**: Verify each step of a long task
-  chain. SPARQL pattern matching confirms that entities and relationships exist
-  before the agent acts on them, keeping multi-step reasoning grounded in facts
-  rather than similarity.
-- **Compliance and auditability**: Trace every assertion to its source. The
-  append-only ledger records quad-level provenance, so you can answer "where did
-  this fact come from?" in strict environments.
+- **Your AI coding assistant forgets your codebase between sessions.** Chat logs
+  truncate and vector recall drifts from the facts. Store facts about your APIs,
+  conventions, and past decisions in a world so the next session resumes from
+  verified graph state instead of a truncated conversation log.
+- **Your multi-step agent drifts from the facts mid-task.** Long task chains
+  accumulate errors when each step reasons from fuzzy similarity. SPARQL pattern
+  matching confirms that entities and relationships exist before the agent acts
+  on them, keeping multi-hop reasoning grounded in facts.
+- **You cannot answer "where did this fact come from?"** In strict environments,
+  every assertion needs a traceable source. The append-only ledger records
+  quad-level provenance, so you can audit where each fact came from and when it
+  entered the world.
+- **You are locked into one vector store or model provider.** Worlds is
+  provider-agnostic: you bring your own LLMs and embedding providers, and
+  adapters persist to LibSQL/Turso or Postgres, so context stays portable.
 
 ## Next steps
 
