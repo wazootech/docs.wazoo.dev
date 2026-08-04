@@ -28,6 +28,49 @@ Ethan Davidson is a
 [knowledge graph engineer](./roles/knowledge-graph-engineer.md).
 ```
 
+## Markdown to JSON-LD
+
+Before: a plain Markdown page with no machine-readable structure.
+
+```md
+# Ethan Davidson
+
+Ethan Davidson is a knowledge graph engineer.
+```
+
+After: the same content as a Linked Markdown document, where the frontmatter
+block parses as JSON-LD.
+
+```md
+---
+{
+  "@id": "https://example.org/docs/ethan-davidson",
+  "@type": "schema:Person",
+  "@context": { "schema": "https://schema.org/" },
+  "schema:givenName": "Ethan",
+  "schema:familyName": "Davidson",
+  "schema:jobTitle": "Knowledge graph engineer",
+}
+---
+
+# Ethan Davidson
+
+Ethan Davidson is a knowledge graph engineer.
+```
+
+The frontmatter parses directly into JSON-LD attributes via `extract`:
+
+```json
+{
+  "@id": "https://example.org/docs/ethan-davidson",
+  "@type": "schema:Person",
+  "@context": { "schema": "https://schema.org/" },
+  "schema:givenName": "Ethan",
+  "schema:familyName": "Davidson",
+  "schema:jobTitle": "Knowledge graph engineer"
+}
+```
+
 ## What it unlocks
 
 - Markdown that remains pleasant for humans to write.

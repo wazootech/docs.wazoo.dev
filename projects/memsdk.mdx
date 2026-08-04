@@ -107,17 +107,26 @@ compiled ESM entrypoints and TypeScript declarations from `dist`.
 
 ### Runtime support
 
-| Runtime        | Core | Letta adapter        |
-| -------------- | ---- | -------------------- |
-| Node.js        | ✓    | ✓                    |
-| pnpm / yarn    | ✓    | ✓                    |
-| Bun            | ✓    | ✓                    |
-| Vite / browser | ✓¹   | ✗ (server-side only) |
-| Deno           | ⚠    | ⚠                    |
-| Browser / CDN  | ✗    | ✗                    |
+`memsdk` is plain ESM compiled with `tsc`. Zod is the only runtime dependency,
+and the package declares no `engines` constraint. Runtime support therefore
+comes down to how the package is resolved, not runtime-specific code:
 
-¹ The core package is primarily TypeScript contracts and Zod schemas, so it
-bundles cleanly. The Letta adapter depends on the Letta SDK and should run
+| Runtime       | Status                    | Resolution path                                                                                   |
+| ------------- | ------------------------- | ------------------------------------------------------------------------------------------------- |
+| Node.js       | Supported                 | Any npm-compatible package manager (`npm`, `pnpm`, `yarn`)                                        |
+| Bun           | Supported                 | `bun add github:wazootech/memsdk`                                                                 |
+| Vite/browser  | Supported through bundler | Package dependency, then import normally from app code                                            |
+| Edge runtimes | Supported through bundler | Package dependency, bundled by the platform deployer                                              |
+| Deno          | Not first-class yet       | Blocked by distribution channel, not the runtime: `npm:` specifiers need an npm-registry artifact |
+| Browser/CDN   | Not first-class yet       | Blocked by distribution channel: esm.sh/jsdelivr/unpkg resolve npm packages                       |
+
+Because `memsdk` is primarily a TypeScript contract plus Zod schemas, browser
+and edge use should go through a bundler today. Direct `<script>`/CDN usage is
+not a supported distribution path yet. Publishing to the npm registry would
+unblock Deno `npm:` specifiers, browser CDNs, and edge registries from a single
+artifact.
+
+Adapters such as `memsdk-letta` depend on backend SDKs and should run
 server-side unless browser bundling has been validated for your app.
 
 ## Usage
@@ -136,7 +145,36 @@ function buildApp(client: SupermemoryInterface) {
 `search.documents`, `search.execute`, and `search.memories` variants are
 deprecated; use `client.search()` for v4 memory search.
 
-Then wire in a backend adapter. For Letta:
+### Raw API to typed results
+
+Before: a raw HTTP call against a memory backend, with an untyped response shape
+you must match by hand:
+
+```typescript
+const response = await fetch(`${baseUrl}/memories/search`, {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ q: "project notes" }),
+});
+const data = await response.json(); // untyped: shape depends on the backend
+```
+
+After: the same call through the MemSDK contract, with request validation and
+typed results:
+
+```typescript
+import { LettaMemoryClient } from "memsdk-letta";
+
+const client = new LettaMemoryClient({
+  baseUrl: "http://localhost:8283",
+  apiKey: "sk-your-api-key",
+});
+
+const results = await client.search({ q: "project notes" });
+// results: typed SearchResults from the contract
+```
+
+### Wire in an adapter
 
 ```typescript
 import { LettaMemoryClient } from "memsdk-letta";
