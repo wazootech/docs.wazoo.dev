@@ -191,7 +191,6 @@
       {
         "group": "Open source",
         "pages": [
-          "contribute/architecture",
           "contribute/style",
           "contribute/security",
           "contribute/self-host"
