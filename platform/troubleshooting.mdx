@@ -5,7 +5,7 @@ description: "Common errors and solutions for the Wazoo Platform."
 
 ## Allowlist errors
 
-"You are not on the allowlist"
+### Not on the allowlist
 
 Your email has not been added to the private beta allowlist. This can happen if:
 
@@ -16,17 +16,17 @@ Contact the team if you believe you should have access.
 
 ## Token issues
 
-"Invalid token"
+### Invalid token
 
 Your token is malformed or has been revoked. Generate a new token from the
 [tokens page](/console/tokens) in the console.
 
-"Token expired"
+### Token expired
 
 World tokens do not expire by default but can be revoked. Platform tokens may
 have a limited lifespan depending on how they were created.
 
-"Unauthorized"
+### Unauthorized
 
 The token does not have access to the resource. Check that:
 
@@ -35,34 +35,34 @@ The token does not have access to the resource. Check that:
 
 ## Connection issues
 
-"Cannot reach the console"
+### Cannot reach the console
 
 Check that `console.wazoo.dev` is accessible from your network. If you are
 behind a corporate VPN, you may need to allowlist the domain.
 
-"API returns 502 or 503"
+### API returns 502 or 503
 
 The service is temporarily unavailable. Wait a few minutes and retry.
 
 ## Import errors
 
-"Format not supported"
+### Format not supported
 
 The file format is not one of the supported RDF serializations. Convert your
 data to Turtle, JSON-LD, N-Triples, N-Quads, or Trig.
 
-"File too large"
+### File too large
 
 Imports are limited to 50 MB per file. Split large imports into multiple files.
 
 ## Search issues
 
-"Search returns no results"
+### Search returns no results
 
 The search index may need to be rebuilt. Go to the Reindex page for your world
 and trigger a reindex. See [Search](/worlds/search) for how the index is built.
 
-"Search results are stale"
+### Search results are stale
 
 The index is rebuilt asynchronously. If you recently imported data and search
 results do not reflect it, trigger a [reindex](/console/reindex).
