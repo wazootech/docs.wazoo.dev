@@ -202,9 +202,9 @@ user:person a schema:Person ;
 
 ## Verification
 
-To verify a fact, Worlds uses the SPARQL ASK query. This returns a deterministic
-boolean answer and does not rely on probabilistic guessing. See
-[Query](/worlds/query) for how SPARQL works with Worlds.
+To verify a fact, Worlds runs a graph pattern query (SPARQL ASK). This returns a
+deterministic boolean answer and does not rely on probabilistic guessing. See
+[Query](/worlds/query) for how graph pattern queries work with Worlds.
 
 For example, to verify if "Ethan knows about Worlds", use:
 
