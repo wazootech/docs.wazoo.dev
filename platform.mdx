@@ -4,7 +4,7 @@ description:
   "Management surfaces for Worlds, tokens, usage, and platform status"
 ---
 
-Wazoo has two API layers:
+Worlds has two API layers:
 
 - **Wazoo Platform API**: manages users, world metadata, platform tokens, world
   tokens, usage records, limits, and billing state.
@@ -16,7 +16,7 @@ Use the Platform API when you are provisioning or managing resources. Use the
 Worlds Data API when an application or agent needs to query or update graph
 state.
 
-Usage and limits use transparent resource accounting: Wazoo records the
+Usage and limits use transparent resource accounting: Worlds records the
 underlying resources consumed by Worlds operations, such as database operations,
 import bytes, query duration, and storage bytes. Stripe is the billing source of
 truth, but private beta access does not require live payment enforcement.
