@@ -3,8 +3,10 @@ title: "Worlds"
 description: "The neuro-symbolic components of verifiable context."
 ---
 
-A [world](/glossary#world) is a stateful knowledge graph engine that acts as an
-agent's verifiable context.
+A [world](/glossary#world) is a stateful, synchronizable dataset that acts as an
+agent's verifiable context. Worlds' default engine models worlds as knowledge
+graphs, but the world contract is data-model agnostic: a world can also be
+backed by a relational database or another syncable store.
 
 Worlds works best when memory is curated, not accumulated. Store durable facts
 in a world and discard the rest.

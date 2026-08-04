@@ -33,10 +33,14 @@ graphs against specified shapes and constraints.
 
 ### world
 
-A stateful knowledge graph instance: an RDF store whose facts stay synced with a
-hybrid search index that combines FTS5/BM25 keyword matching and vector
-embeddings, fused via
-[reciprocal rank fusion (RRF)](#reciprocal-rank-fusion-rrf).
+A stateful dataset that acts as an agent's verifiable, AI-native context. A
+world records changes chronologically and stays synchronized with retrieval
+indexes. Worlds' default data model is an RDF knowledge graph with a hybrid
+search index combining FTS5/BM25 keyword matching, vector embeddings, and RDF
+structural filters, fused via
+[reciprocal rank fusion (RRF)](#reciprocal-rank-fusion-rrf). The world contract
+is data-model agnostic: a world can also be backed by a relational database or
+another syncable store.
 
 ## Neuro-symbolic AI & memory
 
