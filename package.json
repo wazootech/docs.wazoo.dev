@@ -9,7 +9,8 @@
     "broken-links": "mintlify broken-links",
     "format": "prettier \"**/*.{md,mdx,json}\" --write",
     "format:check": "prettier \"**/*.{md,mdx,json}\" --check",
-    "precommit": "npm run format:check --silent && npm run check --silent"
+    "precommit": "npm run format:check --silent && npm run check --silent",
+    "check:api-titles": "node scripts/check-api-reference-titles.mjs"
   },
   "keywords": [],
   "author": "Wazoo",
