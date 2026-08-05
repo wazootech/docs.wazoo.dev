@@ -8,13 +8,17 @@
  * or local spec), then walks the docs sitemap and for each /api-reference
  * page:
  *
- *   1. extracts the rendered <h1> title,
- *   2. matches the page to a spec operation (by URL slug patterns first,
- *      falling back to operationIds embedded in the page HTML),
- *   3. compares the rendered title to the operation's expected title
+ *   1. fetches the page's Markdown variant (<page>.md), which Mintlify
+ *      generates with the authoritative source line
+ *      `...yaml <spec-url> <method> <path>`,
+ *   2. extracts the rendered <h1> title from the HTML page,
+ *   3. matches the page to the exact spec operation by (spec, method, path)
+ *      — no slug heuristics, so colliding operationIds across specs can't
+ *      cause false positives,
+ *   4. compares the rendered title to the operation's expected title
  *      (x-mint.metadata.title -> summary -> operationId-derived fallback).
  *
- * Findings (one per page, the strongest match wins):
+ * Findings (one per page):
  *
  *   OK        rendered title equals a declared spec title
  *   LOWERCASE rendered title contains words the declared title capitalizes
@@ -22,7 +26,7 @@
  *   MISMATCH  rendered title differs from the spec's declared title
  *   DERIVED   operation has no summary/x-mint override, so the title is at
  *             Mintlify's mercy (derived from operationId or method+path)
- *   UNMATCHED page matched no operation in either spec
+ *   UNMATCHED page's .md source matched no operation in either spec
  *
  * Exits non-zero when any finding is reported, so it can be wired into CI.
  *
@@ -43,12 +47,7 @@ const STOPWORDS = new Set([
   "or", "the", "to", "with", "without",
 ]);
 
-const kebab = (s) =>
-  s
-    .replace(/([a-z0-9])([A-Z])/g, "$1-$2")
-    .replace(/[^a-zA-Z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .toLowerCase();
+const METHODS = new Set(["get", "post", "put", "patch", "delete"]);
 
 /** Split an operationId or title into words. */
 const words = (s) => s.split(/[\s_-]+/).filter(Boolean);
@@ -66,12 +65,13 @@ async function fetchText(url) {
   return res.text();
 }
 
-/** Load both specs and flatten to a list of operations. */
+/** Load both specs and index operations by (specUrl, method, path). */
 async function loadOperations() {
   const specs = [
     { name: "wazoo-api", url: WAZOO_SPEC },
     { name: "worlds-api", url: WORLDS_SPEC },
   ];
+  const byKey = new Map();
   const ops = [];
   for (const { name, url } of specs) {
     let spec;
@@ -83,22 +83,11 @@ async function loadOperations() {
     }
     for (const [path, item] of Object.entries(spec.paths ?? {})) {
       for (const [method, op] of Object.entries(item ?? {})) {
-        if (!["get", "post", "put", "patch", "delete"].includes(method)) continue;
+        if (!METHODS.has(method)) continue;
         const xmint = op["x-mint"]?.metadata?.title;
         const summary = op.summary ?? "";
         const operationId = op.operationId ?? "";
-        // Candidate URL slugs Mintlify may generate for this operation.
-        const pathWords = path
-          .replace(/^\/v\d+/, "")
-          .split("/")
-          .filter((p) => p && !p.startsWith("{"));
-        const candidates = new Set([
-          `${method}-${pathWords.join("-")}`,
-          operationId ? kebab(operationId) : "",
-          summary ? kebab(summary) : "",
-        ]);
-        candidates.delete("");
-        ops.push({
+        const entry = {
           spec: name,
           method,
           path,
@@ -107,12 +96,13 @@ async function loadOperations() {
           xmint,
           expected: xmint || summary || titleFromOperationId(operationId),
           declared: xmint || summary || null,
-          candidates: [...candidates],
-        });
+        };
+        ops.push(entry);
+        byKey.set(`${url}|${method}|${path}`, entry);
       }
     }
   }
-  return ops;
+  return { ops, byKey };
 }
 
 /** Extract the rendered page title from <h1> or the ld+json WebPage name. */
@@ -129,20 +119,18 @@ function extractRenderedTitle(html) {
   return null;
 }
 
-/** Find operations whose generated slug candidates match the page URL tail. */
-function matchBySlug(ops, slugTail) {
-  return ops.filter((op) => op.candidates.includes(slugTail));
-}
-
-/** Fallback: operationIds embedded anywhere in the page HTML. */
-function matchByEmbeddedOpId(ops, html) {
-  return ops.filter((op) => op.operationId && html.includes(op.operationId));
-}
-
 /**
- * Lowercase words in the rendered title that the declared title capitalizes.
- * Handles title-case (World) and ALL-CAPS (API, ID, SPARQL) forms.
+ * Parse the authoritative source line from a page's Markdown variant:
+ *   ```yaml https://worlds-api.wazoo.dev/openapi.json get /worlds/{id}
+ * Returns { specUrl, method, path } or null.
  */
+function parsePageSource(md) {
+  const m = md.match(/```yaml\s+(https?:\/\/\S+?\.json)\s+(get|post|put|patch|delete)\s+(\/\S+)/);
+  if (!m) return null;
+  return { specUrl: m[1], method: m[2], path: m[3] };
+}
+
+/** Lowercase words in the rendered title that the declared title capitalizes. */
 function findLowercaseWords(rendered, expected) {
   if (!expected || !rendered) return [];
   const expectedWords = new Set(words(expected));
@@ -152,21 +140,10 @@ function findLowercaseWords(rendered, expected) {
     if (w.length < 3 || STOPWORDS.has(lower)) continue;
     const title = w[0].toUpperCase() + w.slice(1);
     const upper = w.toUpperCase();
-    const matchesDeclared = expectedWords.has(w) || expectedWords.has(title) || expectedWords.has(upper);
     const declaredHasOtherCase = expectedWords.has(title) || expectedWords.has(upper);
-    if (w === lower && matchesDeclared && declaredHasOtherCase) bad.add(w);
+    if (w === lower && declaredHasOtherCase) bad.add(w);
   }
   return [...bad];
-}
-
-/** Word-overlap score between rendered title and an operation's expected title. */
-function overlapScore(rendered, expected) {
-  if (!rendered || !expected) return 0;
-  const a = new Set(words(rendered).map((w) => w.toLowerCase()));
-  const b = new Set(words(expected).map((w) => w.toLowerCase()));
-  let inter = 0;
-  for (const w of a) if (b.has(w)) inter++;
-  return inter / Math.max(a.size, b.size);
 }
 
 /** Normalized equality (case + whitespace insensitive). */
@@ -176,7 +153,7 @@ function titleEquals(a, b) {
 }
 
 async function main() {
-  const ops = await loadOperations();
+  const { ops, byKey } = await loadOperations();
   if (!ops.length) {
     console.error("!! no operations loaded — both specs unreachable");
     process.exit(2);
@@ -190,6 +167,31 @@ async function main() {
   const perSpec = new Map();
 
   for (const url of pageUrls) {
+    const mdUrl = `${url}.md`;
+    let md;
+    try {
+      md = await fetchText(mdUrl);
+    } catch (err) {
+      findings.push({ url, kind: "FETCH_ERROR", detail: `cannot fetch ${mdUrl}: ${err.message}` });
+      continue;
+    }
+
+    const source = parsePageSource(md);
+    if (!source) {
+      findings.push({ url, kind: "UNMATCHED", detail: "no source line in .md variant" });
+      continue;
+    }
+
+    const op = byKey.get(`${source.specUrl}|${source.method}|${source.path}`);
+    if (!op) {
+      findings.push({
+        url,
+        kind: "UNMATCHED",
+        detail: `no operation for ${source.specUrl} ${source.method.toUpperCase()} ${source.path} in the loaded specs`,
+      });
+      continue;
+    }
+
     let html;
     try {
       html = await fetchText(url);
@@ -199,54 +201,51 @@ async function main() {
     }
 
     const rendered = extractRenderedTitle(html);
-    const slugTail = url.split("/api-reference/")[1] ?? "";
-    let matched = matchBySlug(ops, slugTail);
-    if (!matched.length) matched = matchByEmbeddedOpId(ops, html);
+    perSpec.set(op.spec, (perSpec.get(op.spec) ?? 0) + 1);
 
-    if (!matched.length) {
-      findings.push({ url, kind: "UNMATCHED", rendered, detail: "no operation matched the page" });
-      continue;
-    }
-
-    // Prefer the operation that renders this title (exact match); otherwise
-    // the one whose expected title is closest to the rendered title.
-    const exact = matched.find((op) => titleEquals(rendered, op.expected));
-    const best = exact ?? matched.sort((a, b) => overlapScore(rendered, b.expected) - overlapScore(rendered, a.expected))[0];
-
-    perSpec.set(best.spec, (perSpec.get(best.spec) ?? 0) + 1);
-
-    if (titleEquals(rendered, best.expected)) {
+    if (titleEquals(rendered, op.expected)) {
       if (!QUIET) console.log(`OK   ${url.split(DOCS_BASE)[1] ?? url}`);
       continue;
     }
 
-    if (best.declared) {
-      const lower = findLowercaseWords(rendered, best.declared);
+    if (op.declared) {
+      const lower = findLowercaseWords(rendered, op.declared);
       findings.push({
         url,
         kind: lower.length ? "LOWERCASE" : "MISMATCH",
-        operationId: best.operationId,
-        spec: best.spec,
-        method: best.method,
-        path: best.path,
+        operationId: op.operationId,
+        spec: op.spec,
+        method: op.method,
+        path: op.path,
         rendered,
-        expected: best.declared,
+        expected: op.declared,
         detail: lower.length ? `lowercase words: ${lower.join(", ")}` : "rendered title differs from declared title",
       });
     } else {
       findings.push({
         url,
         kind: "DERIVED",
-        operationId: best.operationId,
-        spec: best.spec,
-        method: best.method,
-        path: best.path,
+        operationId: op.operationId,
+        spec: op.spec,
+        method: op.method,
+        path: op.path,
         rendered,
-        expected: best.expected,
+        expected: op.expected,
         detail: "no summary/x-mint override — title derived by Mintlify (add x-mint.metadata.title to lock it)",
       });
     }
   }
+
+  // Report operations present in the specs but missing from the docs sitemap.
+  const covered = new Set();
+  for (const url of pageUrls) {
+    const md = await fetchText(`${url}.md`);
+    const source = parsePageSource(md);
+    if (source) covered.add(`${source.specUrl}|${source.method}|${source.path}`);
+  }
+  const missing = ops.filter((op) => !covered.has(`${op.spec === "wazoo-api" ? WAZOO_SPEC : WORLDS_SPEC}|${op.method}|${op.path}`));
+  const missingBySpec = {};
+  for (const op of missing) missingBySpec[op.spec] = (missingBySpec[op.spec] ?? 0) + 1;
 
   const counts = {};
   for (const f of findings) counts[f.kind] = (counts[f.kind] ?? 0) + 1;
@@ -258,10 +257,11 @@ async function main() {
   console.log(`operations loaded: ${ops.length}`);
   console.log(`matched pages (per spec): ${[...perSpec.entries()].map(([s, n]) => `${s}=${n}`).join(", ") || "none"}`);
   console.log(`findings: ${Object.entries(counts).map(([k, v]) => `${k}=${v}`).join(", ") || "none"}`);
+  console.log(`operations missing from docs: ${Object.entries(missingBySpec).map(([s, n]) => `${s}=${n}`).join(", ") || "none"}`);
   console.log("");
 
-  if (!findings.length) {
-    console.log("✅ All api-reference page titles match the specs.");
+  if (!findings.length && !missing.length) {
+    console.log("✅ All api-reference page titles match the specs, and every operation has a page.");
     process.exit(0);
   }
 
@@ -278,6 +278,14 @@ async function main() {
         break;
       default:
         console.log(`${head}  ${f.detail}`);
+    }
+    console.log("");
+  }
+
+  if (missing.length) {
+    console.log("----- operations in the specs with no docs page -----");
+    for (const op of missing) {
+      console.log(`  ${op.spec.padEnd(10)} ${op.method.toUpperCase().padEnd(6)} ${op.path}`);
     }
     console.log("");
   }
