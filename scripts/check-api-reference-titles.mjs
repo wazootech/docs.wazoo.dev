@@ -105,10 +105,15 @@ async function loadOperations() {
   return { ops, byKey };
 }
 
+/** Decode the common HTML entities Mintlify renders inside titles. */
+function unescapeHtml(text) {
+  return text.replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, String.fromCharCode(34)).replace(/&#39;/g, "'");
+}
+
 /** Extract the rendered page title from <h1> or the ld+json WebPage name. */
 function extractRenderedTitle(html) {
   const h1 = html.match(/<h1[^>]*>([^<]+)<\/h1>/);
-  if (h1) return h1[1].replace(/\s+/g, " ").trim();
+  if (h1) return unescapeHtml(h1[1].replace(/\s+/g, " ").trim());
   const blobs = html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g) ?? [];
   for (const blob of blobs) {
     if (blob.includes('"WebPage"')) {
@@ -160,7 +165,8 @@ async function main() {
   }
 
   const sitemap = await fetchText(`${DOCS_BASE}/sitemap.xml`);
-  const pageUrls = [...sitemap.matchAll(/<loc>([^<]*\/(?:api-reference|worlds-api)\/[^<]*)<\/loc>/g)].map((m) => m[1]);
+  const pageUrls = [...sitemap.matchAll(/<loc>([^<]*\/(?:api-reference|worlds-api)\/[^<]*)<\/loc>/g)]
+    .map((m) => m[1].replace(/&amp;/g, "&"));
   pageUrls.sort();
 
   const findings = [];
