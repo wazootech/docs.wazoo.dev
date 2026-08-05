@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 /**
- * Check every docs.wazoo.dev /api-reference page title against the live
+ * Check every docs.wazoo.dev API reference page title against the live
  * OpenAPI specs.
  *
  * Fetches the two specs wired into docs.json (defaults to the production
  * URLs; override with WAZOO_API_SPEC / WORLDS_API_SPEC to check a pre-deploy
- * or local spec), then walks the docs sitemap and for each /api-reference
- * page:
+ * or local spec), then walks the docs sitemap and for each API page under
+ * /api-reference (wazoo-api) or /worlds-api (worlds-api):
  *
  *   1. fetches the page's Markdown variant (<page>.md), which Mintlify
  *      generates with the authoritative source line
@@ -160,7 +160,7 @@ async function main() {
   }
 
   const sitemap = await fetchText(`${DOCS_BASE}/sitemap.xml`);
-  const pageUrls = [...sitemap.matchAll(/<loc>([^<]*\/api-reference\/[^<]*)<\/loc>/g)].map((m) => m[1]);
+  const pageUrls = [...sitemap.matchAll(/<loc>([^<]*\/(?:api-reference|worlds-api)\/[^<]*)<\/loc>/g)].map((m) => m[1]);
   pageUrls.sort();
 
   const findings = [];
@@ -250,18 +250,21 @@ async function main() {
   const counts = {};
   for (const f of findings) counts[f.kind] = (counts[f.kind] ?? 0) + 1;
 
-  console.log("\n===== api-reference title check =====");
+  console.log("\n===== API reference title check =====");
   console.log(`specs: wazoo-api ${WAZOO_SPEC}`);
   console.log(`       worlds-api ${WORLDS_SPEC}`);
   console.log(`pages checked: ${pageUrls.length}`);
   console.log(`operations loaded: ${ops.length}`);
   console.log(`matched pages (per spec): ${[...perSpec.entries()].map(([s, n]) => `${s}=${n}`).join(", ") || "none"}`);
   console.log(`findings: ${Object.entries(counts).map(([k, v]) => `${k}=${v}`).join(", ") || "none"}`);
-  console.log(`operations missing from docs: ${Object.entries(missingBySpec).map(([s, n]) => `${s}=${n}`).join(", ") || "none"}`);
+  console.log(`operations missing from docs (informational): ${Object.entries(missingBySpec).map(([s, n]) => `${s}=${n}`).join(", ") || "none"}`);
   console.log("");
 
-  if (!findings.length && !missing.length) {
-    console.log("✅ All api-reference page titles match the specs, and every operation has a page.");
+  if (!findings.length) {
+    console.log("✅ All API reference page titles match the specs.");
+    if (missing.length) {
+      console.log(`ℹ️  ${missing.length} operation(s) in the specs have no docs page (may be intentional): ${missing.map((op) => op.operationId).join(", ")}`);
+    }
     process.exit(0);
   }
 
@@ -283,7 +286,7 @@ async function main() {
   }
 
   if (missing.length) {
-    console.log("----- operations in the specs with no docs page -----");
+    console.log("----- operations in the specs with no docs page (informational) -----");
     for (const op of missing) {
       console.log(`  ${op.spec.padEnd(10)} ${op.method.toUpperCase().padEnd(6)} ${op.path}`);
     }

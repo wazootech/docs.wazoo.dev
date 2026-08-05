@@ -218,19 +218,27 @@
       },
       {
         "group": "Worlds API",
-        "openapi": "https://worlds-api.wazoo.dev/openapi.json",
+        "openapi": {
+          "source": "https://worlds-api.wazoo.dev/openapi.json",
+          "directory": "worlds-api"
+        },
         "pages": [
           "GET /worlds",
           "POST /worlds",
           "GET /worlds/{id}",
           "PATCH /worlds/{id}",
           "DELETE /worlds/{id}",
+          "POST /worlds/{id}/undelete",
           "GET /worlds/{id}/export",
           "POST /worlds/{id}/import",
           "POST /worlds/{id}/search",
           "POST /worlds/{id}/sparql",
+          "POST /worlds/sparql",
+          "POST /worlds/{id}/reindex",
           "GET /api-keys",
-          "POST /api-keys"
+          "POST /api-keys",
+          "DELETE /api-keys/{keyId}",
+          "GET /health"
         ]
       }
     ]
@@ -351,6 +359,30 @@
     {
       "source": "/projects/wiki/templates",
       "destination": "/projects/wiki"
+    },
+    {
+      "source": "/api-reference/apikeys/list-api-keys",
+      "destination": "/worlds-api/apikeys/list-api-keys"
+    },
+    {
+      "source": "/api-reference/apikeys/create-api-key",
+      "destination": "/worlds-api/apikeys/create-api-key"
+    },
+    {
+      "source": "/api-reference/importexport/export-graph-data",
+      "destination": "/worlds-api/importexport/export-graph-data"
+    },
+    {
+      "source": "/api-reference/importexport/import-graph-data",
+      "destination": "/worlds-api/importexport/import-graph-data"
+    },
+    {
+      "source": "/api-reference/search/search-world",
+      "destination": "/worlds-api/search/search-world"
+    },
+    {
+      "source": "/api-reference/sparql/execute-sparql-query",
+      "destination": "/worlds-api/sparql/execute-sparql-query"
     }
   ],
   "icons": {
