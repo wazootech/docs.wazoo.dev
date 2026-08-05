@@ -1,0 +1,276 @@
+---
+title: "Entity resolution with Worlds"
+description:
+  "Keep one person, many names from fragmenting into disconnected histories by
+  composing Worlds' RDF primitives into an entity-resolution pipeline."
+---
+
+Worlds does not ship a write-path entity resolver. Identity in a world is an
+IRI: two mentions of the same person are the same entity only when they carry
+the same IRI, and facts enter deliberately through import and patches rather
+than being inferred from transcripts. That is a design decision, not a missing
+capability. RDF is the substrate. Worlds provides the primitive building blocks
+— items, facts, the append-only ledger, hybrid search, SPARQL, provenance, and
+SHACL — and this guide composes those primitives into entity resolution:
+deciding when "Sarah", "Sarah Chen", and "S. Chen" refer to the same real-world
+person.
+
+Two patterns are covered. **Pattern A resolves at retrieval time**, which Worlds
+supports natively. **Pattern B resolves at write time**, the conservative
+three-signal approach popularized by extraction-based memory layers, rebuilt
+here from Worlds primitives so every decision is auditable.
+
+## Prerequisites
+
+- A Wazoo private beta account. Sign up at
+  [wazoo.dev/beta](https://wazoo.dev/beta).
+- A platform token (`wzp_`) and a world token (`wzw_`), generated on the
+  [Console tokens page](/console/tokens).
+- A world containing person entities, modeled as
+  [items and facts](/worlds/index).
+- Familiarity with [hybrid search](/worlds/search) and [SPARQL](/worlds/query).
+
+## The primitives
+
+Entity resolution needs five things. Worlds provides all five as RDF primitives
+— you compose them rather than building storage:
+
+| Resolution need               | Worlds primitive                                                                        |
+| :---------------------------- | :-------------------------------------------------------------------------------------- |
+| Entity identity               | A unique IRI per item                                                                   |
+| One person, many names        | Label literals (`rdfs:label`, `schema:name`, `schema:alternateName`) indexed as aliases |
+| "Who does it appear next to?" | Co-occurrence, expressed as a SPARQL pattern over shared neighbors                      |
+| "How recently seen?"          | A timestamp predicate you assert — time is just another fact                            |
+| Merge decisions               | `wazoo:resolvesTo` assertions written as ledger patches                                 |
+
+The last two are the point of this guide: recency and resolution are not
+built-in features, but every fact you need to compute them is a triple you can
+assert and query.
+
+## Pattern A: resolve at retrieval time (native)
+
+The default Worlds answer keeps all aliases on one IRI and lets hybrid search
+collapse mentions at query time.
+
+### Model aliases as labels on one entity
+
+Give the person entity every name it answers to:
+
+```turtle
+@prefix user: <https://etok.me/#> .
+@prefix schema: <https://schema.org/> .
+
+user:sarah-chen a schema:Person ;
+  schema:givenName "Sarah" ;
+  schema:familyName "Chen" ;
+  schema:name "Sarah Chen" ;
+  schema:alternateName "the new PM" .
+```
+
+Worlds indexes label literals as search aliases (a built-in set of label
+predicates, extendable via the `labelPredicates` option), so a search for "Sarah
+Chen" or "new PM" resolves to `user:sarah-chen` — the same subject IRI.
+
+### Disambiguate same-name people with co-occurrence
+
+Name similarity cannot tell two people named Sarah apart. The graph can: find
+which candidate shares relationships with your current context.
+
+```sparql
+PREFIX schema: <https://schema.org/>
+
+SELECT ?candidate (COUNT(DISTINCT ?shared) AS ?overlap) WHERE {
+  ?candidate a schema:Person ;
+             ?p ?shared .
+  <https://etok.me/#sarah-chen> ?p ?shared .
+  FILTER(?candidate != <https://etok.me/#sarah-chen>)
+} GROUP BY ?candidate ORDER BY DESC(?overlap)
+```
+
+The candidate that shares a `schema:knows` or `schema:worksFor` neighbor with
+Sarah Chen is the Sarah your context means. This is the graph-context signal of
+[hybrid search](/worlds/search), applied deliberately.
+
+### Ground intent in the ontology
+
+Before an agent queries, retrieve the world's ontology with the
+[`discoverSchema`](/integrations/ai-sdk) tool and map the mention to a concrete
+class and predicate. Exact terms beat fuzzy matches.
+
+## Pattern B: resolve at write time (Hindsight-style)
+
+When mentions arrive as an extraction stream, resolve them before they reach the
+ledger. Worlds does not do this for you — the guide shows the pipeline.
+
+### 1. Extract and assert mentions with provenance
+
+Extract entities from the source with an LLM tool call, then assert each mention
+as a temporary node tied to its source and timestamp:
+
+```turtle
+@prefix user: <https://etok.me/#> .
+@prefix wazoo: <https://wazoo.dev/#> .
+
+urn:mention:42 a schema:Person ;
+  schema:name "Sarah Chen" ;
+  wazoo:source <urn:doc:7> ;
+  wazoo:assertedAt "2026-08-04T16:30:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+```
+
+The timestamp predicate is your choice — asserting it as a fact is itself a use
+of the substrate. Import these quads through the normal
+[import path](/worlds/update).
+
+### 2. Retrieve candidates with hybrid search
+
+Search the world for the mention's name and take the top candidates:
+
+```bash
+curl -s -X POST "https://worlds-api.wazoo.dev/worlds/my-world-id/search" \
+  -H "Authorization: Bearer $WORLDS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{ "query": "Sarah Chen", "topK": 5 }'
+```
+
+FTS5 covers keyword and prefix token matches. Candidate retrieval is Worlds'
+problem; scoring is yours.
+
+### 3. Score with three signals
+
+For each candidate compute a weighted score. Name similarity runs in the
+application layer — SPARQL 1.1 offers no built-in fuzzy string metric, and a
+string-ratio function over the retrieved label literals is the honest equivalent
+of a trigram index:
+
+```ts
+const SCORE = { name: 0.5, cooccurrence: 0.3, recency: 0.2 };
+const THRESHOLD = 0.6;
+
+type Candidate = {
+  iri: string;
+  label: string;
+  overlap: number;
+  lastSeen: string;
+};
+
+function resolve(mention: string, candidates: Candidate[]) {
+  let best = { iri: null as string | null, score: 0 };
+  for (const c of candidates) {
+    const score =
+      stringRatio(mention, c.label) * SCORE.name +
+      c.overlap * SCORE.cooccurrence +
+      recencyScore(c.lastSeen) * SCORE.recency; // 1.0 inside a 7-day window, decaying after
+    if (score > best.score) best = { iri: c.iri, score };
+  }
+  return best.score > THRESHOLD ? best.iri : null; // null means: mint a new entity
+}
+```
+
+`overlap` and `lastSeen` come from two SPARQL queries:
+
+```sparql
+PREFIX schema: <https://schema.org/>
+PREFIX wazoo: <https://wazoo.dev/#>
+
+-- Co-occurrence: shared sources between the mention and each candidate
+SELECT ?candidate (COUNT(DISTINCT ?shared) AS ?overlap) WHERE {
+  ?candidate a schema:Person ; wazoo:source ?shared .
+  <urn:mention:42> wazoo:source ?shared .
+  FILTER(?candidate != <urn:mention:42>)
+} GROUP BY ?candidate
+```
+
+```sparql
+PREFIX schema: <https://schema.org/>
+PREFIX wazoo: <https://wazoo.dev/#>
+
+-- Recency: when each candidate was last seen
+SELECT ?candidate (MAX(?t) AS ?lastSeen) WHERE {
+  ?candidate a schema:Person ; wazoo:assertedAt ?t .
+} GROUP BY ?candidate
+```
+
+### 4. Decide conservatively
+
+A wrong merge is worse than a missed one: a duplicate record is recoverable, a
+corrupted one is not. When the score clears the threshold, link the mention to
+the existing entity. When it does not, mint a fresh IRI — do not guess.
+
+```turtle
+@prefix user: <https://etok.me/#> .
+@prefix wazoo: <https://wazoo.dev/#> .
+
+urn:mention:42 wazoo:resolvesTo user:sarah-chen .
+```
+
+Unlike a silent record collapse, this resolution is a ledger patch. If it was
+wrong, retract it with a patch and re-resolve — both states remain in the
+chronological ledger, and the provenance of every decision is queryable.
+
+### 5. Audit every decision
+
+Ask the ledger why a mention resolved the way it did:
+
+```sparql
+PREFIX wazoo: <https://wazoo.dev/#>
+
+SELECT ?mention ?entity ?t WHERE {
+  ?mention wazoo:resolvesTo ?entity ;
+           wazoo:assertedAt ?t .
+  ?mention wazoo:source ?source .
+}
+```
+
+Every resolution is a fact with a source and a timestamp. That is the property
+extraction-based memory layers have to build by hand.
+
+## What you build vs what Worlds gives you
+
+| Layer            | You build                                                     | Worlds provides                                           |
+| :--------------- | :------------------------------------------------------------ | :-------------------------------------------------------- |
+| Extraction       | LLM prompt that pulls mentions from a source                  | Import path for the asserted quads                        |
+| Candidate lookup | Search call                                                   | Hybrid search with label-alias indexing                   |
+| Similarity       | String-ratio function over labels (SPARQL has no fuzzy match) | FTS5 keyword retrieval                                    |
+| Co-occurrence    | —                                                             | The graph itself; one SPARQL pattern                      |
+| Recency          | A timestamp predicate you choose                              | Chronological, append-only ledger                         |
+| Decision         | Weighted score and threshold policy                           | `wazoo:resolvesTo` patches, SHACL shapes to validate them |
+
+## Check for success
+
+Search the world for both names and confirm they resolve to one subject:
+
+```bash
+curl -s -X POST "https://worlds-api.wazoo.dev/worlds/my-world-id/search" \
+  -H "Authorization: Bearer $WORLDS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{ "query": "Sarah" }'
+```
+
+Then verify the resolution exists in the graph:
+
+```bash
+curl -s -X POST "https://worlds-api.wazoo.dev/worlds/my-world-id/sparql" \
+  -H "Authorization: Bearer $WORLDS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "PREFIX wazoo: <https://wazoo.dev/#> ASK WHERE { <urn:mention:42> wazoo:resolvesTo <https://etok.me/#sarah-chen> }"
+  }'
+```
+
+## Use cases
+
+- **Coherent agent memory**: transcript mentions accumulate into one person
+  history instead of fragmented records.
+- **Customer identity**: support agents resolve "the customer on the Acme
+  account" to the correct contact without merging accounts.
+- **Auditable AI pipelines**: every resolution is a provenance-carrying fact a
+  reviewer can replay.
+
+## Next steps
+
+- [Worlds concepts](/worlds/index): items, facts, and the ledger
+- [Hybrid search](/worlds/search): tune the retrieval signal
+- [Graph queries](/worlds/query): write the patterns behind the score
+- [Update](/worlds/update): patch state with provenance
+- [Build a company brain](/guides/company-brain): a sibling guide for shared
+  team knowledge
