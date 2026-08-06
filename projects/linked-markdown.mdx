@@ -175,11 +175,13 @@ graph = rdflib.Graph()
 graph.parse(data=json.dumps(result.attrs), format="json-ld")
 ```
 
-```typescript TypeScript (JSON-LD)
+```typescript TypeScript (jsonld)
+import jsonld from "jsonld";
 import { extract } from "@wazoo/linked-markdown";
 
 const result = extract(markdown);
-// result.attrs is valid JSON-LD, directly loadable into RDF quad stores
+const quads = await jsonld.toRDF(result.attrs);
+// quads is an Array of RDF/JS quads, directly loadable into RDF quad stores
 ```
 
 </CodeGroup>
