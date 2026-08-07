@@ -208,7 +208,6 @@
           "PATCH /v1/worlds/{worldId}",
           "DELETE /v1/worlds/{worldId}",
           "POST /v1/worlds/{worldId}/undelete",
-          "POST /v1/worlds/{worldId}/sync",
           "GET /v1/worlds/{worldId}/auth/tokens",
           "POST /v1/worlds/{worldId}/auth/tokens",
           "GET /v1/auth/api-tokens",
