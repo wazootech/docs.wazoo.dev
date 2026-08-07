@@ -107,7 +107,7 @@
       },
       {
         "group": "Guides",
-        "pages": ["guides/company-brain"]
+        "pages": ["guides/company-brain", "guides/entity-resolution"]
       },
       {
         "group": "Console",
