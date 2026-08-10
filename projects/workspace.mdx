@@ -1,0 +1,208 @@
+---
+title: "Workspace"
+description:
+  "wspace is a Git-native CLI that manages multi-repository workspaces without
+  Git submodules."
+---
+
+`wspace` (published as [`@wazoo/workspace`](https://jsr.io/@wazoo/workspace)) is
+a lightweight, Git-native CLI that manages multi-repository Wazoo workspaces
+without Git submodules. It consolidates workspace conventions into a single
+manifest (`repos.json`) and makes parallel feature development with Git
+worktrees safe and consistent.
+
+## Overview
+
+Modern agentic infrastructure and complex web applications often span multiple
+independent Git repositories. `wspace` treats repository families as a
+synchronized ecosystem rather than a rigid monorepo:
+
+- **No Submodules**: Preserves independent Git history, remotes, package
+  managers, and release surfaces for every repository.
+- **Git Worktree First**: Isolates feature development into linked worktrees
+  (`worktrees/<repo>/<feature>`), preventing dirty state in base checkouts.
+- **Conservative Operations**: Mutating commands (`update`, `worktree`,
+  `env sync`) refuse to rewrite user history, touch dirty repositories, or alter
+  unmanaged checkouts.
+- **Project-Agnostic**: Configured entirely via JSON manifest files
+  (`repos.json` or custom `--manifest <path>`), supporting any team or
+  repository layout.
+
+## Repositories & Packages
+
+| Package / Repository                                        | Purpose                                   | Distribution                                              |
+| ----------------------------------------------------------- | ----------------------------------------- | --------------------------------------------------------- |
+| [workspace-cli](https://github.com/wazootech/workspace-cli) | Workspace CLI implementation (`wspace`)   | [JSR `@wazoo/workspace`](https://jsr.io/@wazoo/workspace) |
+| [workspace](https://github.com/wazootech/workspace)         | Canonical Wazoo multi-repo workspace root | GitHub                                                    |
+
+## Installation
+
+Install the `wspace` binary globally using Deno (v2+):
+
+<CodeGroup>
+```sh Deno JSR
+deno install -g --name wspace jsr:@wazoo/workspace
+```
+
+```sh From Source
+git clone https://github.com/wazootech/workspace-cli.git
+cd workspace-cli
+deno task build
+```
+
+</CodeGroup>
+
+## Command Reference
+
+### `wspace check`
+
+Performs a read-only health check across all manifest-managed repositories and
+linked feature worktrees.
+
+```sh
+wspace check [--json]
+```
+
+- Reports status for each repository: `CLEAN`, `DIRTY`, `FEATURE_CLEAN`,
+  `DIVERGED`, `UNKNOWN`, `MISSING`, `INVALID`, `PATH_BLOCKED`, or `ERROR`.
+- Inspects linked feature worktrees and flags uncommitted work as
+  `WORKTREE_DIRTY`.
+- Filters directory scans to eliminate false `(unmanaged)` flags for managed
+  repositories.
+- Exits `0` when clean and `1` when any repository or worktree requires
+  attention.
+
+### `wspace init` / `wspace sync`
+
+Clones any missing repositories specified in the manifest into the workspace.
+
+```sh
+wspace init [--json]
+```
+
+- Fails closed: exiting non-zero (`1`) if any remote clone fails or collides
+  with a non-Git path (`PATH_BLOCKED`).
+- Does not reset, overwrite, or clean up existing user checkouts.
+
+### `wspace update`
+
+Safely fetches remotes and fast-forwards clean default branches.
+
+```sh
+wspace update [--json]
+```
+
+- Skips repositories checked out on feature branches (`SKIP_FEATURE`) or
+  containing uncommitted changes (`SKIP_DIRTY`).
+- Fast-forwards only clean default branches tracking remote branches without
+  divergence.
+
+### `wspace worktree add`
+
+Creates a linked Git worktree under `worktrees/<repo>/<feature>` on branch
+`<feature>`.
+
+```sh
+wspace worktree add <repo> <feature> [<commit-ish>]
+```
+
+- Start-point defaults to `origin/<default>` (resolved via `origin/HEAD`),
+  ensuring features branch from the remote baseline.
+- Validates repository and feature names against path traversal (`..`) and
+  directory escape.
+- Automatically attaches existing local branches when present.
+
+### `wspace worktree list`
+
+Lists active worktrees across all manifest repositories.
+
+```sh
+wspace worktree list [--stale] [--json]
+```
+
+- With `--stale`, filters to worktrees whose branch is fully merged into the
+  default branch (or missing), identifying safe removal candidates.
+
+### `wspace worktree remove`
+
+Removes a feature worktree and prunes stale Git references.
+
+```sh
+wspace worktree remove <repo> <feature>
+```
+
+### `wspace env sync`
+
+Synchronizes local environment files (`.env`, `.env.*`, `.dev.vars`, etc.) from
+a centralized `secrets/` vault into checkouts and linked worktrees.
+
+```sh
+wspace env sync [--dry-run] [--json]
+```
+
+- With `--dry-run`, previews file creation and overwrites without modifying the
+  filesystem.
+- Enforces owner-only permissions (`0600`) on copied credential files.
+- Rejects destination symlinks for security.
+
+### `wspace validate`
+
+Validates the manifest schema and repository definitions without touching the
+filesystem or invoking Git.
+
+```sh
+wspace validate [--manifest <path>]
+```
+
+## Beginner Worktree Lifecycle
+
+When developing features in a multi-repo workspace, execute all commands from
+the workspace root (the directory containing `repos.json`):
+
+1. **Check status**: `wspace check`
+2. **Refresh baselines**: `wspace update`
+3. **Create worktree**:
+   ```sh
+   git -C repos/<repo> worktree add "$PWD/worktrees/<repo>/<feature>" -b <feature>
+   ```
+   _(Or using `wspace`: `wspace worktree add <repo> <feature>`)_
+4. **Develop**:
+   ```sh
+   cd worktrees/<repo>/<feature>
+   # make changes, run tests, commit
+   ```
+5. **Sync local secrets**: `wspace env sync --dry-run` then `wspace env sync`
+6. **Push & PR**:
+   ```sh
+   git push -u origin <feature>
+   gh pr create
+   ```
+7. **Find merged worktrees**: `wspace worktree list --stale`
+8. **Clean up**: `wspace worktree remove <repo> <feature>`
+
+## Manifest Schema (`repos.json`)
+
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/wazootech/workspace-cli/main/schema/workspace-manifest.schema.json",
+  "workspaceRoot": ".",
+  "repositoriesDirectory": "repos",
+  "worktreesDirectory": "worktrees",
+  "vaultDirectory": "secrets",
+  "repositories": [
+    {
+      "name": "wazoo-api",
+      "url": "https://github.com/wazootech/wazoo-api.git"
+    },
+    {
+      "name": "wazoo-console",
+      "url": "https://github.com/wazootech/wazoo-console.git"
+    }
+  ]
+}
+```
+
+Path resolution anchors all relative directories (`workspaceRoot`,
+`repositoriesDirectory`, `worktreesDirectory`, `vaultDirectory`) to the folder
+containing the manifest file, making `wspace` commands consistent regardless of
+where they are invoked.
