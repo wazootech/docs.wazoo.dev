@@ -93,7 +93,8 @@
           "projects/worlds",
           "projects/wiki",
           "projects/linked-markdown",
-          "projects/memsdk"
+          "projects/memsdk",
+          "projects/workspace"
         ]
       },
       {
@@ -262,6 +263,10 @@
           {
             "label": "MemSDK",
             "href": "/projects/memsdk"
+          },
+          {
+            "label": "Workspace",
+            "href": "/projects/workspace"
           }
         ]
       },
@@ -334,6 +339,10 @@
     {
       "source": "/",
       "destination": "/introduction"
+    },
+    {
+      "source": "/workspace",
+      "destination": "/projects/workspace"
     },
     {
       "source": "/wiki/:slug*",
