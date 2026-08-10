@@ -6,29 +6,27 @@ description:
 ---
 
 `wspace` (published as [`@wazoo/workspace`](https://jsr.io/@wazoo/workspace)) is
-a lightweight, Git-native CLI that manages multi-repository Wazoo workspaces
-without Git submodules. It consolidates workspace conventions into a single
-manifest (`repos.json`) and makes parallel feature development with Git
-worktrees safe and consistent.
+a Git-native CLI that manages multi-repository Wazoo workspaces without Git
+submodules. It consolidates workspace conventions into a manifest (`repos.json`)
+and standardizes feature development with Git worktrees.
 
 ## Overview
 
-Modern agentic infrastructure and complex web applications often span multiple
-independent Git repositories. `wspace` treats repository families as a
-synchronized ecosystem rather than a rigid monorepo:
+Complex applications and agent infrastructure often span multiple independent
+Git repositories. `wspace` treats repository families as a synchronized
+ecosystem without submodules:
 
-- **No Submodules**: Preserves independent Git history, remotes, package
-  managers, and release surfaces for every repository.
-- **Git Worktree First**: Isolates feature development into linked worktrees
+- **Submodules**: Preserves independent Git history, remotes, package managers,
+  and release surfaces for every repository.
+- **Git worktree isolation**: Isolates feature development into linked worktrees
   (`worktrees/<repo>/<feature>`), preventing dirty state in base checkouts.
-- **Conservative Operations**: Mutating commands (`update`, `worktree`,
+- **Conservative operations**: Mutating commands (`update`, `worktree`,
   `env sync`) refuse to rewrite user history, touch dirty repositories, or alter
   unmanaged checkouts.
-- **Project-Agnostic**: Configured entirely via JSON manifest files
-  (`repos.json` or custom `--manifest <path>`), supporting any team or
-  repository layout.
+- **Project agnostic**: Configured via JSON manifest files (`repos.json` or
+  custom `--manifest <path>`).
 
-## Repositories & Packages
+## Repositories and packages
 
 | Package / Repository                                        | Purpose                                   | Distribution                                              |
 | ----------------------------------------------------------- | ----------------------------------------- | --------------------------------------------------------- |
@@ -37,7 +35,7 @@ synchronized ecosystem rather than a rigid monorepo:
 
 ## Installation
 
-Install the `wspace` binary globally using Deno (v2+):
+Install the `wspace` binary using Deno:
 
 <CodeGroup>
 ```sh Deno JSR
@@ -52,7 +50,7 @@ deno task build
 
 </CodeGroup>
 
-## Command Reference
+## Command reference
 
 ### `wspace check`
 
@@ -67,26 +65,25 @@ wspace check [--json]
   `DIVERGED`, `UNKNOWN`, `MISSING`, `INVALID`, `PATH_BLOCKED`, or `ERROR`.
 - Inspects linked feature worktrees and flags uncommitted work as
   `WORKTREE_DIRTY`.
-- Filters directory scans to eliminate false `(unmanaged)` flags for managed
-  repositories.
+- Filters directory scans to exclude managed repositories from unmanaged output.
 - Exits `0` when clean and `1` when any repository or worktree requires
   attention.
 
 ### `wspace init` / `wspace sync`
 
-Clones any missing repositories specified in the manifest into the workspace.
+Clones missing repositories specified in the manifest into the workspace.
 
 ```sh
 wspace init [--json]
 ```
 
-- Fails closed: exiting non-zero (`1`) if any remote clone fails or collides
-  with a non-Git path (`PATH_BLOCKED`).
-- Does not reset, overwrite, or clean up existing user checkouts.
+- Exits non-zero (`1`) if any remote clone fails or collides with a non-Git path
+  (`PATH_BLOCKED`).
+- Does not reset, overwrite, or clean up existing checkouts.
 
 ### `wspace update`
 
-Safely fetches remotes and fast-forwards clean default branches.
+Fetches remotes and fast-forwards clean default branches.
 
 ```sh
 wspace update [--json]
@@ -106,11 +103,9 @@ Creates a linked Git worktree under `worktrees/<repo>/<feature>` on branch
 wspace worktree add <repo> <feature> [<commit-ish>]
 ```
 
-- Start-point defaults to `origin/<default>` (resolved via `origin/HEAD`),
-  ensuring features branch from the remote baseline.
-- Validates repository and feature names against path traversal (`..`) and
-  directory escape.
-- Automatically attaches existing local branches when present.
+- Start point defaults to `origin/<default>` (resolved via `origin/HEAD`).
+- Validates repository and feature names against path traversal (`..`).
+- Attaches existing local branches when present.
 
 ### `wspace worktree list`
 
@@ -121,7 +116,7 @@ wspace worktree list [--stale] [--json]
 ```
 
 - With `--stale`, filters to worktrees whose branch is fully merged into the
-  default branch (or missing), identifying safe removal candidates.
+  default branch (or missing).
 
 ### `wspace worktree remove`
 
@@ -133,31 +128,30 @@ wspace worktree remove <repo> <feature>
 
 ### `wspace env sync`
 
-Synchronizes local environment files (`.env`, `.env.*`, `.dev.vars`, etc.) from
-a centralized `secrets/` vault into checkouts and linked worktrees.
+Synchronizes local environment files (`.env`, `.env.*`, `.dev.vars`) from a
+`secrets/` vault into checkouts and linked worktrees.
 
 ```sh
 wspace env sync [--dry-run] [--json]
 ```
 
-- With `--dry-run`, previews file creation and overwrites without modifying the
-  filesystem.
-- Enforces owner-only permissions (`0600`) on copied credential files.
-- Rejects destination symlinks for security.
+- With `--dry-run`, previews file creation and overwrites without modifying
+  files.
+- Applies owner-only permissions (`0600`) on copied files.
+- Rejects destination symlinks.
 
 ### `wspace validate`
 
-Validates the manifest schema and repository definitions without touching the
-filesystem or invoking Git.
+Validates the manifest schema without touching the filesystem or invoking Git.
 
 ```sh
 wspace validate [--manifest <path>]
 ```
 
-## Beginner Worktree Lifecycle
+## Beginner worktree lifecycle
 
-When developing features in a multi-repo workspace, execute all commands from
-the workspace root (the directory containing `repos.json`):
+Execute all commands from the workspace root (the directory containing
+`repos.json`):
 
 1. **Check status**: `wspace check`
 2. **Refresh baselines**: `wspace update`
@@ -165,14 +159,14 @@ the workspace root (the directory containing `repos.json`):
    ```sh
    git -C repos/<repo> worktree add "$PWD/worktrees/<repo>/<feature>" -b <feature>
    ```
-   _(Or using `wspace`: `wspace worktree add <repo> <feature>`)_
+   Or use `wspace`: `wspace worktree add <repo> <feature>`
 4. **Develop**:
    ```sh
    cd worktrees/<repo>/<feature>
    # make changes, run tests, commit
    ```
 5. **Sync local secrets**: `wspace env sync --dry-run` then `wspace env sync`
-6. **Push & PR**:
+6. **Push and create pull request**:
    ```sh
    git push -u origin <feature>
    gh pr create
@@ -180,7 +174,7 @@ the workspace root (the directory containing `repos.json`):
 7. **Find merged worktrees**: `wspace worktree list --stale`
 8. **Clean up**: `wspace worktree remove <repo> <feature>`
 
-## Manifest Schema (`repos.json`)
+## Manifest schema
 
 ```json
 {
@@ -204,5 +198,4 @@ the workspace root (the directory containing `repos.json`):
 
 Path resolution anchors all relative directories (`workspaceRoot`,
 `repositoriesDirectory`, `worktreesDirectory`, `vaultDirectory`) to the folder
-containing the manifest file, making `wspace` commands consistent regardless of
-where they are invoked.
+containing the manifest file.
