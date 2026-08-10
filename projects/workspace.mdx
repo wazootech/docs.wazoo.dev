@@ -174,6 +174,22 @@ Execute all commands from the workspace root (the directory containing
 7. **Find merged worktrees**: `wspace worktree list --stale`
 8. **Clean up**: `wspace worktree remove <repo> <feature>`
 
+### Worktree dependency management
+
+Each Git worktree maintains an independent working directory, while package
+managers optimize dependency caching across worktrees:
+
+- **`pnpm`**: Uses a central content-addressable store
+  (`~/.local/share/pnpm/store`). Running `pnpm install` in a new worktree
+  hard-links dependencies from the central store without duplicating files or
+  re-downloading packages.
+- **Deno**: Uses the global `DENO_DIR` module cache (`~/.cache/deno` or
+  `%LOCALAPPDATA%\deno`), sharing cached dependencies across all worktrees
+  zero-copy.
+- **npm / yarn**: Running `npm install` or `yarn install` inside a worktree
+  installs dependencies for that worktree, fetching packages from the shared
+  user HTTP cache.
+
 ## Manifest schema
 
 ```json
