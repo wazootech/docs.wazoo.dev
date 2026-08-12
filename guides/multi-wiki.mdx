@@ -5,16 +5,16 @@ description:
   those repositories as one multi-repo workspace with wspace."
 ---
 
-A single wiki is right for one team or one domain. As teams and domains move
-independently, splitting into separate wikis keeps ownership boundaries intact —
-but a house of isolated wikis loses the ability to query them as one corpus.
-This guide composes an umbrella wiki from independent sub-wiki repositories, and
-manages those repositories as one multi-repo workspace with `wspace`.
+A single wiki suits one team or one domain. When teams move independently,
+separate wikis keep their history and release cadence separate. The trade-off is
+that isolated wikis stop answering queries as one corpus. This guide shows how
+to compose an umbrella wiki from independent sub-wiki repositories, and how to
+manage those repositories as one multi-repo workspace with `wspace`.
 
-The umbrella wiki declares each sub-wiki as an external `sources:` entry in its
-`wiki.yml`, pins exact commits in `wiki.lock`, and keeps each sub-wiki as a
-named RDF graph so you can query the whole corpus or trace any result to its
-source. `wspace` keeps the repositories in sync with `check`, `update`, and
+The umbrella wiki lists each sub-wiki under `sources:` in its `wiki.yml`, pins
+exact commits in `wiki.lock`, and keeps each sub-wiki as a named RDF graph. You
+can query the whole corpus at once, or trace a result back to its source
+repository. `wspace` keeps the repositories in sync with `check`, `update`, and
 worktree workflows.
 
 ## Prerequisites
@@ -29,22 +29,21 @@ worktree workflows.
 
 Split when you want independent ownership, versioning, or release surfaces:
 
-- **Team autonomy**: each team owns its wiki history and merges its own changes.
-- **Reusable corpora**: a reference library (product docs, regulations, shared
-  domain models) reused across multiple umbrellas.
-- **Independent cadence**: sub-wikis that publish or evolve on their own
-  schedule.
+- Each team owns its wiki history and merges its own changes.
+- A reference library (product docs, regulations, shared domain models) can be
+  reused across multiple umbrellas.
+- Sub-wikis can publish or evolve on their own schedule.
 
 Keep one wiki when the corpus is small or static, or when every page changes at
-the same pace. Splitting adds a composition layer; a single wiki is still the
-right default.
+the same pace. Splitting adds a composition layer; a single wiki is still
+simpler.
 
 ## Layout
 
 The umbrella repository owns `wiki.yml` with a `sources:` block that points at
 each sub-wiki repository. Each sub-wiki is its own Git repository. All
-repositories — umbrella and sub-wikis — are listed in one `repos.json` manifest
-so `wspace` manages them as a workspace:
+repositories, umbrella and sub-wikis, are listed in one `repos.json` manifest so
+`wspace` manages them as a workspace:
 
 ```text
 workspace-root/
@@ -107,8 +106,8 @@ workspace-root/
   <Step title="Compose the sub-wikis in wiki.yml">
 
     In the umbrella repository, declare each sub-wiki as an external source.
-    Use a git URL with a `#ref` pin — branch, tag, or commit — so the
-    composition is reproducible:
+    Use a git URL with a `#ref` pin (branch, tag, or commit) so the composition
+    is reproducible:
 
     ```yaml
     sources:
@@ -141,7 +140,7 @@ workspace-root/
     }
     ```
 
-    Check `wiki.lock` into version control — it is the source of truth for
+    Check `wiki.lock` into version control; it is the source of truth for
     which commit of each sub-wiki builds the corpus. If a source declares its
     own `sources:` block, `wiki install` fetches those transitive dependencies
     recursively; circular dependency chains raise an error.
