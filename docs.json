@@ -108,7 +108,11 @@
       },
       {
         "group": "Guides",
-        "pages": ["guides/company-brain", "guides/entity-resolution"]
+        "pages": [
+          "guides/company-brain",
+          "guides/entity-resolution",
+          "guides/multi-wiki"
+        ]
       },
       {
         "group": "Console",
