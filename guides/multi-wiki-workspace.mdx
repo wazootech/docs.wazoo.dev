@@ -1,0 +1,259 @@
+---
+title: "Manage multiple wikis as a workspace"
+description:
+  "Compose an umbrella wiki from independent sub-wiki repositories, and manage
+  those repositories as one multi-repo workspace with wspace."
+---
+
+A single wiki is right for one team or one domain. As teams and domains move
+independently, splitting into separate wikis keeps ownership boundaries intact —
+but a house of isolated wikis loses the ability to query them as one corpus.
+This guide composes an umbrella wiki from independent sub-wiki repositories, and
+manages those repositories as one multi-repo workspace with `wspace`.
+
+The umbrella wiki declares each sub-wiki as an external `sources:` entry in its
+`wiki.yml`, pins exact commits in `wiki.lock`, and keeps each sub-wiki as a
+named RDF graph so you can query the whole corpus or trace any result to its
+source. `wspace` keeps the repositories in sync with `check`, `update`, and
+worktree workflows.
+
+## Prerequisites
+
+- The `wiki` CLI, installed per the
+  [Wiki install guide](/projects/wiki#install).
+- The `wspace` CLI, installed per the
+  [Workspace install guide](/projects/workspace#installation).
+- A repository for each sub-wiki, and one repository for the umbrella wiki.
+
+## Reasons to split
+
+Split when you want independent ownership, versioning, or release surfaces:
+
+- **Team autonomy**: each team owns its wiki history and merges its own changes.
+- **Reusable corpora**: a reference library (product docs, regulations, shared
+  domain models) reused across multiple umbrellas.
+- **Independent cadence**: sub-wikis that publish or evolve on their own
+  schedule.
+
+Keep one wiki when the corpus is small or static, or when every page changes at
+the same pace. Splitting adds a composition layer; a single wiki is still the
+right default.
+
+## Layout
+
+The umbrella repository owns `wiki.yml` with a `sources:` block that points at
+each sub-wiki repository. Each sub-wiki is its own Git repository. All
+repositories — umbrella and sub-wikis — are listed in one `repos.json` manifest
+so `wspace` manages them as a workspace:
+
+```text
+workspace-root/
+  wiki.yml          # umbrella: inputs + sources
+  repos.json        # wspace manifest
+  repos/
+    umbra-wiki/     # umbrella repository
+    product-docs/   # sub-wiki repository
+    team-brain/     # sub-wiki repository
+```
+
+## Steps
+
+<Steps>
+  <Step title="Declare the repositories in the manifest">
+
+    List the umbrella and each sub-wiki repository in `repos.json`, following
+    the [manifest schema](/projects/workspace#manifest-schema):
+
+    ```json
+    {
+      "$schema": "https://raw.githubusercontent.com/wazootech/workspace-cli/main/schema/workspace-manifest.schema.json",
+      "workspaceRoot": ".",
+      "repositoriesDirectory": "repos",
+      "repositories": [
+        {
+          "name": "umbra-wiki",
+          "url": "https://github.com/acme/umbra-wiki.git"
+        },
+        {
+          "name": "product-docs",
+          "url": "https://github.com/acme/product-docs.git"
+        },
+        {
+          "name": "team-brain",
+          "url": "https://github.com/acme/team-brain.git"
+        }
+      ]
+    }
+    ```
+
+    Clone the missing repositories and confirm the workspace is healthy:
+
+    ```sh
+    wspace init
+    wspace check
+    ```
+
+    `wspace check` confirms every repository is present and clean. Keep the
+    default branch current with the remote so later updates fast-forward
+    cleanly:
+
+    ```sh
+    wspace update
+    ```
+
+    See [Workspace](/projects/workspace) for the full command reference.
+
+  </Step>
+  <Step title="Compose the sub-wikis in wiki.yml">
+
+    In the umbrella repository, declare each sub-wiki as an external source.
+    Use a git URL with a `#ref` pin — branch, tag, or commit — so the
+    composition is reproducible:
+
+    ```yaml
+    sources:
+      - name: product-docs
+        type: git
+        url: https://github.com/acme/product-docs.git
+        ref: v2.4.0
+      - name: team-brain
+        type: git
+        url: https://github.com/acme/team-brain.git
+        ref: main
+    ```
+
+    If a sub-wiki keeps its pages in a subdirectory, add `path: <dir>` to point
+    at it. Each source name must be unique across the umbrella.
+
+    Fetch the sources and pin the resolved commits:
+
+    ```sh
+    wiki install
+    ```
+
+    This clones each repository into `.wiki/sources/<name>/repo/`, resolves the
+    requested refs to commit SHAs, and writes `wiki.lock`:
+
+    ```text
+    wiki.lock: {
+      "product-docs": "9f2a1c4",
+      "team-brain": "3be7d90"
+    }
+    ```
+
+    Check `wiki.lock` into version control — it is the source of truth for
+    which commit of each sub-wiki builds the corpus. If a source declares its
+    own `sources:` block, `wiki install` fetches those transitive dependencies
+    recursively; circular dependency chains raise an error.
+
+    <Note>
+      For the full contract, see
+      [wiki install](https://github.com/wazootech/wiki/blob/main/docs/wiki/wiki_install.md)
+      and
+      [External data sources (`sources:`)](https://github.com/wazootech/wiki/blob/main/docs/wiki/Wiki_Configuration.md#external-data-sources-sources).
+      For the product framing, see
+      [Recursive Semantic Datasets](https://github.com/wazootech/wiki/blob/main/docs/wiki/Recursive_Semantic_Datasets.md).
+    </Note>
+
+  </Step>
+  <Step title="Query the composed corpus with per-source provenance">
+
+    Each sub-wiki stays a named RDF graph. List the graph boundaries:
+
+    ```bash
+    wiki graph list
+    ```
+
+    This prints the root graph plus one graph per installed source, with the
+    named graph URI, resolved commit, and dependency owner. Query the whole
+    umbrella as one corpus:
+
+    ```sparql
+    SELECT ?s ?name WHERE {
+      ?s schema:name ?name .
+    }
+    ```
+
+    Scope a query to one sub-wiki with a `GRAPH` clause:
+
+    ```sparql
+    SELECT ?s ?name WHERE {
+      GRAPH <https://example.org/wiki/graphs/source/product-docs> {
+        ?s schema:name ?name .
+      }
+    }
+    ```
+
+    Return the source graph with each result to trace provenance:
+
+    ```sparql
+    SELECT ?g ?s ?name WHERE {
+      GRAPH ?g {
+        ?s schema:name ?name .
+      }
+    }
+    ```
+
+    <Note>
+      For the read-only boundary and graph URI derivation, see
+      [wiki graph](https://github.com/wazootech/wiki/blob/main/docs/wiki/wiki_graph.md).
+    </Note>
+
+  </Step>
+  <Step title="Keep repositories and content in sync">
+
+    Refresh repository baselines, then refresh installed sources:
+
+    ```sh
+    wspace update
+    wiki update
+    ```
+
+    `wspace update` fast-forwards clean default branches and skips dirty or
+    feature-branch checkouts. `wiki update` re-fetches the installed sources,
+    installs newly declared transitive sources, and reports orphaned ones.
+    Remove sources you no longer want from the corpus (and their now-unused
+    transitive dependencies):
+
+    ```sh
+    wiki remove team-brain
+    ```
+
+  </Step>
+  <Step title="Publish the umbrella">
+
+    Sub-wiki edits happen in the sub-wiki repository, not in the umbrella's
+    `.wiki/sources/` cache. Make changes there with the normal worktree
+    workflow, then publish the umbrella:
+
+    ```sh
+    wiki build
+    ```
+
+  </Step>
+</Steps>
+
+## Check for success
+
+Run the integrity checks in the umbrella repository:
+
+```sh
+wiki check --strict
+wiki lint --strict
+```
+
+Then confirm each source resolves and its graph exists:
+
+```sh
+wiki graph list
+```
+
+## Next steps
+
+- [Wiki](/projects/wiki): validate, query, and publish semantic Markdown wikis
+- [Workspace](/projects/workspace): manage multi-repository workspaces with
+  `wspace`
+- [External data sources (`sources:`)](https://github.com/wazootech/wiki/blob/main/docs/wiki/Wiki_Configuration.md#external-data-sources-sources):
+  the composition reference
+- [Recursive Semantic Datasets](https://github.com/wazootech/wiki/blob/main/docs/wiki/Recursive_Semantic_Datasets.md):
+  the design behind named-graph provenance
