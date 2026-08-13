@@ -170,6 +170,10 @@ const response = await client.sparql({
 });
 ```
 
+The `sparqlEngine` option accepts any implementation of `SparqlEngineInterface`.
+The native [WazooSparqlEngine](https://github.com/wazootech/sparql-engine)
+implements the same interface, so you can swap it in without client changes.
+
 Durable embedded backends are published as separate packages, including
 `@worlds/libsql` (LibSQL/Turso) and `@worlds/postgres`.
 
