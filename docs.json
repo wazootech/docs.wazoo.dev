@@ -202,6 +202,10 @@
         ]
       },
       {
+        "group": "Legal",
+        "pages": ["terms"]
+      },
+      {
         "group": "Platform API",
         "openapi": "https://api.wazoo.dev/openapi.json",
         "pages": [
