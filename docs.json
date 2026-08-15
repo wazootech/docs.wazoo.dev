@@ -203,7 +203,7 @@
       },
       {
         "group": "Legal",
-        "pages": ["privacy-policy"]
+        "pages": ["privacy-policy", "terms"]
       },
       {
         "group": "Platform API",
