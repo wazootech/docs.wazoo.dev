@@ -16,20 +16,16 @@ items ranked by relevance.
 
 ## Filter results
 
-Use the type filter to narrow results to specific RDF types:
+Use the filter controls to tune the search:
 
-- Filter by type (e.g., `schema:Person`, `schema:Organization`)
-- Filter by item label
-- Filter by property value
+- **Limit (Top K)**: the maximum number of results returned.
+- **Min Similarity Score**: the minimum vector-similarity threshold for semantic
+  results.
 
-## View item details
+## View results
 
-Click an item to expand its full set of [facts](/worlds/index#facts). The detail
-panel shows:
-
-- All triples where the item is the subject
-- All triples where the item is the object
-- The item's IRI and type
+Search results are listed in a table with the subject, predicate, content or
+object, similarity score, and graph for each hit.
 
 See the [Worlds search docs](/worlds/search) for how hybrid search works under
 the hood.

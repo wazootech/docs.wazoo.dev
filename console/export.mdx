@@ -8,13 +8,13 @@ The export page lets you download all triples from a world in your choice of
 
 ## Supported formats
 
-| Format    | Extension |
-| :-------- | :-------- |
-| Turtle    | `.ttl`    |
-| JSON-LD   | `.json`   |
-| N-Triples | `.nt`     |
-| N-Quads   | `.nq`     |
-| Trig      | `.trig`   |
+| Format     | Extension |
+| :--------- | :-------- |
+| JSON quads | `.json`   |
+| Turtle     | `.ttl`    |
+| N-Triples  | `.nt`     |
+| N-Quads    | `.nq`     |
+| Plain text | `.txt`    |
 
 ## Export a world
 
@@ -31,17 +31,18 @@ The console downloads the full graph as a file.
 You can also export programmatically:
 
 ```bash
-curl -X GET "https://worlds-api.wazoo.dev/worlds/{worldId}/export" \
-  -H "Authorization: Bearer $WORLDS_TOKEN" \
-  -H "Accept: text/turtle"
+curl -X GET "https://worlds-api.wazoo.dev/worlds/{worldId}/export?format=text%2Fturtle" \
+  -H "Authorization: Bearer $WORLDS_TOKEN"
 ```
 
-Change the `Accept` header for other formats:
+Change the `format` query parameter for other formats:
 
-| Format    | Accept header         |
-| :-------- | :-------------------- |
-| Turtle    | `text/turtle`         |
-| JSON-LD   | `application/ld+json` |
-| N-Triples | `text/plain`          |
-| N-Quads   | `text/n-quads`        |
-| Trig      | `application/trig`    |
+| Format     | `format` value          |
+| :--------- | :---------------------- |
+| JSON quads | `application/json`      |
+| Turtle     | `text/turtle`           |
+| N-Triples  | `application/n-triples` |
+| N-Quads    | `application/n-quads`   |
+| Trig       | `application/trig`      |
+| JSON-LD    | `application/ld+json`   |
+| Plain text | `text/plain`            |

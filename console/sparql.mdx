@@ -28,7 +28,8 @@ SELECT ?subject ?object WHERE {
 
 ## Run an update
 
-Use `INSERT` or `DELETE` to modify graph state.
+Use `INSERT DATA` or `DELETE DATA` to modify graph state. The console shows a
+success message when the update completes.
 
 ```sparql
 PREFIX schema: <https://schema.org/>
@@ -39,16 +40,9 @@ INSERT DATA {
 }
 ```
 
-## Keyboard shortcuts
+## Save queries
 
-| Shortcut       | Action       |
-| :------------- | :----------- |
-| `Ctrl+Enter`   | Run query    |
-| `Ctrl+Shift+F` | Format query |
-
-## Limitations
-
-- Queries time out after 30 seconds.
-- The editor returns the first 1000 results.
+Click **Save Current Query** to keep a query for later, then reopen it from the
+Saved Queries list.
 
 See the [Worlds query docs](/worlds/query) for more on SPARQL with Worlds.

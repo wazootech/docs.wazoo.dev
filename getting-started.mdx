@@ -34,20 +34,39 @@ World IDs are public and used in API requests. Choose something descriptive like
 
 ## 3. Import data
 
-Click **Import** in the sidebar. Upload an RDF file or paste Turtle data
-directly. Worlds supports Turtle, JSON-LD, N-Triples, N-Quads, and Trig.
+Click **Import** in the sidebar. Upload a file with graph data. The console
+accepts:
 
-If you do not have data yet, paste this:
+- JSON quads: an array of objects with `subject`, `predicate`, and `object`
+  fields.
+- Plain text: one chunk of text per line, indexed for full-text and vector
+  search.
 
-```turtle
-@prefix schema: <https://schema.org/> .
+If you do not have data yet, upload a JSON file with this content:
 
-<https://example.org/user/alice> a schema:Person ;
-  schema:givenName "Alice" ;
-  schema:knows <https://example.org/user/bob> .
-
-<https://example.org/user/bob> a schema:Person ;
-  schema:givenName "Bob" .
+```json
+[
+  {
+    "subject": "https://example.org/user/alice",
+    "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+    "object": "https://schema.org/Person"
+  },
+  {
+    "subject": "https://example.org/user/alice",
+    "predicate": "https://schema.org/givenName",
+    "object": "Alice"
+  },
+  {
+    "subject": "https://example.org/user/bob",
+    "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+    "object": "https://schema.org/Person"
+  },
+  {
+    "subject": "https://example.org/user/bob",
+    "predicate": "https://schema.org/givenName",
+    "object": "Bob"
+  }
+]
 ```
 
 ## 4. Run your first graph query (SPARQL)
