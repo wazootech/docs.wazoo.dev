@@ -313,6 +313,14 @@
           {
             "label": "Brand",
             "href": "https://wazoo.dev/brand"
+          },
+          {
+            "label": "Privacy policy",
+            "href": "/privacy-policy"
+          },
+          {
+            "label": "Terms of service",
+            "href": "/terms"
           }
         ]
       },
