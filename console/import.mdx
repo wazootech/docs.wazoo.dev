@@ -3,43 +3,35 @@ title: "Import"
 description: "Load RDF data into your worlds using the Console."
 ---
 
-The import page lets you upload RDF data files into a world.
+The import page lets you upload graph data into a world.
 
 ## Supported formats
 
-| Format    | Content type          |
-| :-------- | :-------------------- |
-| Turtle    | `text/turtle`         |
-| JSON-LD   | `application/ld+json` |
-| N-Triples | `text/plain`          |
-| N-Quads   | `text/n-quads`        |
-| Trig      | `application/trig`    |
+| Format           | Content type       |
+| :--------------- | :----------------- |
+| JSON quads       | `application/json` |
+| Plain text / CSV | `text/plain`       |
 
-## Import from file
+- JSON quads: an array of objects with `subject`, `predicate`, and `object`
+  fields, and an optional `graph` field.
+- Plain text: one chunk of text per line. Each line becomes a text chunk indexed
+  for full-text and vector search.
+
+## Import a file
 
 1. Open the [Wazoo Console](https://console.wazoo.dev).
 2. Select a world.
 3. Click **Import** in the sidebar.
-4. Select your RDF file.
-5. Click **Import**.
+4. Select a `.json`, `.txt`, or `.csv` file.
+5. Click **Execute Import**.
 
-The console shows a preview before importing. After the import completes, the
-console reports the number of triples added. If search results look stale after
-a large import, [reindex](/console/reindex) the world.
-
-## Import from text
-
-Paste RDF data directly into the text area and click **Import**.
+The console parses the file and shows a preview before importing. After the
+import completes, the console reports the number of quads or text chunks added.
+If search results look stale after a large import, [reindex](/console/reindex)
+the world.
 
 ## Merge behavior
 
 Import appends data to the existing graph. It does not replace existing triples.
 To replace data, delete the world and create a new one. For how imports fit into
 the wider mutation model, see [Update](/worlds/update).
-
-## Size limits
-
-| Limit     | Value   |
-| :-------- | :------ |
-| File size | 50 MB   |
-| Triples   | 100,000 |
