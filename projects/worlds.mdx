@@ -23,24 +23,28 @@ discard the rest, instead of keeping every message.
 
 ## Repositories
 
-| Repository                                                              | Purpose                           |
-| ----------------------------------------------------------------------- | --------------------------------- |
-| [worlds-client-ts](https://github.com/wazootech/worlds-client-ts)       | Core client and in-memory backend |
-| [worlds-libsql](https://github.com/wazootech/worlds-libsql)             | LibSQL/Turso adapter              |
-| [worlds-api](https://github.com/wazootech/worlds-api)                   | Hosted Worlds Data API            |
-| [worlds-client-evals](https://github.com/wazootech/worlds-client-evals) | Agent evaluation harness          |
+| Repository                                                              | Purpose                            |
+| ----------------------------------------------------------------------- | ---------------------------------- |
+| [worlds-sdk-ts](https://github.com/wazootech/worlds-sdk-ts)             | Core SDK and in-memory backend     |
+| [worlds-client-ts](https://github.com/wazootech/worlds-client-ts)       | Generated data-plane HTTP client   |
+| [worlds-libsql](https://github.com/wazootech/worlds-libsql)             | LibSQL/Turso adapter               |
+| [worlds-api](https://github.com/wazootech/worlds-api)                   | Hosted Worlds Data API             |
+| [worlds-client-evals](https://github.com/wazootech/worlds-client-evals) | Agent evaluation harness           |
+| [sparql-engine](https://github.com/wazootech/sparql-engine)             | Native SPARQL engine and SqliteStore |
 
 ## Quickstart
 
 Start with the hosted API when you want managed storage, or use the embedded
-`@worlds/client` when you want in-memory graph memory during development.
+`@worlds/sdk` when you want in-memory graph memory during development.
 
 Hosted Worlds has two surfaces:
 
 - The Wazoo Platform API (`@wazoo/client`) manages platform resources such as
   user-owned Worlds and tokens.
 - The Worlds Data API, hosted at `worlds-api.wazoo.dev`, handles graph data
-  through import, export, search, and SPARQL operations.
+  through import, export, search, and SPARQL operations. Its generated
+  TypeScript client is `@worlds/client`; the embedded `@worlds/sdk` exposes the
+  same operations in-process.
 
 ### Prerequisites
 
@@ -112,36 +116,36 @@ To provision hosted resources programmatically, use the
 ### Embedded client
 
 For in-memory graph memory during development, wire the core adapters into a
-`Client` from `@worlds/client`:
+`Client` from `@worlds/sdk`:
 
 <CodeGroup>
 
 ```bash npm
-npx jsr add @worlds/client
+npx jsr add @worlds/sdk
 ```
 
 ```bash deno
-deno add jsr:@worlds/client
+deno add jsr:@worlds/sdk
 ```
 
 ```bash pnpm
-pnpm dlx jsr add @worlds/client
+pnpm dlx jsr add @worlds/sdk
 ```
 
 ```bash yarn
-yarn dlx jsr add @worlds/client
+yarn dlx jsr add @worlds/sdk
 ```
 
 ```bash bun
-bunx jsr add @worlds/client
+bunx jsr add @worlds/sdk
 ```
 
 </CodeGroup>
 
 ```typescript index.ts
-import { Client } from "@worlds/client";
-import { ComunicaSparqlEngine } from "@worlds/client/comunica";
-import { RdfjsQuadStore, RdfjsSearchIndex } from "@worlds/client/rdfjs";
+import { Client } from "@worlds/sdk";
+import { ComunicaSparqlEngine } from "@worlds/sdk/comunica";
+import { RdfjsQuadStore, RdfjsSearchIndex } from "@worlds/sdk/rdfjs";
 import { QueryEngine } from "@comunica/query-sparql-rdfjs-lite";
 import { Store } from "n3";
 

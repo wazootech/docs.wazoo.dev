@@ -12,8 +12,12 @@ how hosted Worlds work, see [Worlds](/worlds/index).
 Self-hosting is not part of the private beta. The supported path depends on
 which Worlds components you run:
 
-- [`worlds-client-ts`](https://github.com/wazootech/worlds-client-ts): local and
-  embedded Worlds client usage.
+- [`worlds-api`](https://github.com/wazootech/worlds-api): the self-hostable
+  Worlds data-plane service (search, SPARQL, import, export).
+- [`worlds-sdk-ts`](https://github.com/wazootech/worlds-sdk-ts): local and
+  embedded Worlds SDK usage.
+- [`worlds-client-ts`](https://github.com/wazootech/worlds-client-ts): generated
+  data-plane HTTP client for the hosted or self-hosted Worlds API.
 - [`worlds-libsql`](https://github.com/wazootech/worlds-libsql): durable
   SQLite-compatible storage through LibSQL/Turso-style backends.
 - [`worlds-postgres`](https://github.com/wazootech/worlds-postgres): durable
