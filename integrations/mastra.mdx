@@ -43,9 +43,9 @@ You can pass `@wazoo/tools` directly to a Mastra `Agent`.
 ```typescript
 import { Agent } from "@mastra/core/agent";
 import { openai } from "@ai-sdk/openai";
-import { Client } from "@worlds/client";
-import { ComunicaSparqlEngine } from "@worlds/client/comunica";
-import { RdfjsQuadStore, RdfjsSearchIndex } from "@worlds/client/rdfjs";
+import { Client } from "@worlds/sdk";
+import { ComunicaSparqlEngine } from "@worlds/sdk/comunica";
+import { RdfjsQuadStore, RdfjsSearchIndex } from "@worlds/sdk/rdfjs";
 import { QueryEngine } from "@comunica/query-sparql-rdfjs-lite";
 import { Store } from "n3";
 import { createTools } from "@wazoo/tools";
@@ -90,7 +90,7 @@ import { Agent } from "@mastra/core/agent";
 import { openai } from "@ai-sdk/openai";
 import { createSearchEntitiesTool } from "@wazoo/tools";
 
-// client is the @worlds/client instance from the usage example above.
+// client is the @worlds/sdk instance from the usage example above.
 const agent = new Agent({
   name: "SearchAgent",
   model: openai("gpt-4o"),

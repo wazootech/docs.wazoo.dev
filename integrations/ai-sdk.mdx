@@ -7,7 +7,7 @@ description: "Connect Worlds knowledge graphs to Vercel AI SDK"
 The [Vercel AI SDK](https://sdk.vercel.ai/) is the TypeScript toolkit for
 building AI applications with React, Svelte, and Vue. The Wazoo AI tools package
 (`@wazoo/tools`) exposes tools that let LLMs [search](/worlds/search) and
-[query](/worlds/query) `@worlds/client` knowledge graphs.
+[query](/worlds/query) `@worlds/sdk` knowledge graphs.
 
 ## Installation
 
@@ -45,9 +45,9 @@ The tools are designed to work with the
 ```typescript
 import { generateText } from "ai";
 import { openai } from "@ai-sdk/openai";
-import { Client } from "@worlds/client";
-import { ComunicaSparqlEngine } from "@worlds/client/comunica";
-import { RdfjsQuadStore, RdfjsSearchIndex } from "@worlds/client/rdfjs";
+import { Client } from "@worlds/sdk";
+import { ComunicaSparqlEngine } from "@worlds/sdk/comunica";
+import { RdfjsQuadStore, RdfjsSearchIndex } from "@worlds/sdk/rdfjs";
 import { QueryEngine } from "@comunica/query-sparql-rdfjs-lite";
 import { Store } from "n3";
 import { createTools } from "@wazoo/tools";
@@ -92,7 +92,7 @@ import {
   createExportRdfTool,
 } from "@wazoo/tools";
 
-// client is the @worlds/client instance from the usage example above.
+// client is the @worlds/sdk instance from the usage example above.
 const discoverSchema = createDiscoverSchemaTool(client, {
   sources: ["my-world"],
 });

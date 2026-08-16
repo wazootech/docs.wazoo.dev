@@ -137,8 +137,7 @@ flavor (such as the memory metaphor) is essential for intuition.
 
 ### Imports
 
-- **Import grouping**: Group by module source path (e.g., `ai`,
-  `@worlds/client`).
+- **Import grouping**: Group by module source path (e.g., `ai`, `@worlds/sdk`).
 - **Import separation**: Mandate separate `import type` and `import`
   declarations per source.
 - **Import ordering**: When importing from the same path, the `import type`
@@ -147,12 +146,12 @@ flavor (such as the memory metaphor) is essential for intuition.
     ```typescript
     import type { Tool } from "ai";
     import { tool } from "ai";
-    import type { ClientInterface } from "@worlds/client";
-    import { Client } from "@worlds/client";
+    import type { ClientInterface } from "@worlds/sdk";
+    import { Client } from "@worlds/sdk";
     ```
   - _Bad:_
     ```typescript
-    import { type ClientInterface, Client } from "@worlds/client";
+    import { type ClientInterface, Client } from "@worlds/sdk";
     ```
 - **Tree-shaking optimization**: Use the most specific module entry points
   (e.g., `import { ulid } from "@std/ulid/ulid"`).
