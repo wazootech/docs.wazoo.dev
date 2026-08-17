@@ -103,7 +103,8 @@
           "worlds/index",
           "worlds/search",
           "worlds/query",
-          "worlds/update"
+          "worlds/update",
+          "worlds/client"
         ]
       },
       {
