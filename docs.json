@@ -111,6 +111,7 @@
         "group": "Guides",
         "pages": [
           "guides/company-brain",
+          "guides/custom-sparql-engine",
           "guides/entity-resolution",
           "guides/multi-wiki"
         ]
