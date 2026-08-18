@@ -6,9 +6,9 @@ description:
   you into the built-in Wazoo engine."
 ---
 
-The `Sdk` facade does not care which engine answers SPARQL. The
-`sparqlEngine` option accepts any implementation of `SparqlEngineInterface`, and
-the SDK ships one opinionated default: the zero-dependency
+The `Sdk` facade does not care which engine answers SPARQL. The `sparqlEngine`
+option accepts any implementation of `SparqlEngineInterface`, and the SDK ships
+one opinionated default: the zero-dependency
 [WazooSparqlEngine](https://github.com/wazootech/sparql-engine) (SPARQL 1.1 &
 1.2 over any RDF/JS store, with built-in timeout and abort handling).
 

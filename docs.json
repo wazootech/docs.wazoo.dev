@@ -297,7 +297,7 @@
           },
           {
             "label": "TypeScript reference",
-            "href": "https://jsr.io/@worlds/client"
+            "href": "https://jsr.io/@worlds/sdk"
           }
         ]
       },
