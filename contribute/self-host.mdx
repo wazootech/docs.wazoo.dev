@@ -22,10 +22,84 @@ which Worlds components you run:
   SQLite-compatible storage through LibSQL/Turso-style backends.
 - [`worlds-postgres`](https://github.com/wazootech/worlds-postgres): durable
   PostgreSQL-backed storage.
+- [`worlds-vps`](https://github.com/wazootech/worlds-vps): full-stack VPS
+  deployment composition with Terraform and Docker Compose.
 
 Private networking patterns such as Docker Compose, Tailscale, or Cloudflare
 Tunnel depend on your deployment environment and should be configured alongside
 the repository-specific setup.
+
+## Storage backends
+
+Worlds storage drivers ship as standalone JSR packages. Pick the backend that
+matches your persistence needs.
+
+### LibSQL / Turso
+
+[`@worlds/libsql`](https://jsr.io/@worlds/libsql) provides durable LibSQL
+storage with hybrid full-text and vector search. `createLibsqlSdk` assembles a
+quad store, search index, and SPARQL engine over a LibSQL connection:
+
+```typescript
+import { createClient } from "@libsql/client";
+import { createLibsqlSdk } from "@worlds/libsql";
+
+const databaseClient = createClient({ url: ":memory:" });
+const client = await createLibsqlSdk({ client: databaseClient });
+```
+
+Point the client at an embedded file or a remote Turso URL. The embedded `file:`
+backend stores worlds locally; the remote URL keeps them in a managed LibSQL
+database.
+
+### PostgreSQL
+
+[`@worlds/postgres`](https://jsr.io/@worlds/postgres) provides a PostgreSQL quad
+store and hybrid search index. It builds on the `pgvector` extension for vector
+search, with tables created from `buildPostgresSchemaSql`:
+
+```typescript
+import postgres from "postgres";
+import { buildPostgresSchemaSql } from "@worlds/postgres";
+import { PostgresQuadStore } from "@worlds/postgres/quad-store";
+import { PostgresSearchIndex } from "@worlds/postgres/search-index";
+
+const sql = postgres("postgres://user:password@localhost/worlds");
+await sql.unsafe(buildPostgresSchemaSql());
+
+const quadStore = new PostgresQuadStore({ sql });
+const searchIndex = new PostgresSearchIndex({ sql });
+```
+
+## VPS deployment
+
+[`worlds-vps`](https://github.com/wazootech/worlds-vps) owns full-stack
+orchestration for running Wazoo services on a VPS: DigitalOcean droplet and
+firewall Terraform, cloud-init bootstrap, Caddy routing, and Docker Compose
+wiring for the service images.
+
+Copy `.env.example` to `.env`, set the values used by `docker-compose.yml`, then
+start the stack:
+
+```sh
+cp .env.example .env
+docker compose config
+docker compose up -d
+```
+
+The compose file wires the `ghcr.io/wazootech` service images: `wazoo-api`,
+`worlds-api`, and `wazoo-console`, fronted by Caddy for HTTPS routing. The
+`worlds-api` service runs on a file-backed LibSQL database mounted as a Docker
+volume.
+
+For the DigitalOcean droplet, create `do.auto.tfvars` with the variables listed
+in the repository README, then apply the Terraform composition:
+
+```sh
+terraform init
+terraform plan -out=tfplan
+terraform apply "tfplan"
+```
 
 ## Deployment responsibilities
 
