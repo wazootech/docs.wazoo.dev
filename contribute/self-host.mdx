@@ -32,9 +32,8 @@ the repository-specific setup.
 ## Storage backends
 
 Worlds storage drivers ship as standalone JSR packages. Pick the backend that
-matches your persistence needs. Of the durable backend packages, only
-`@worlds/libsql` ships a full SDK factory today; the other drivers
-(worlds-sqlite, worlds-postgres, worlds-cloudflare) are parked post-beta.
+matches your persistence needs. All five durable backends now ship full SDK
+factories with hybrid search and parity-green CI suites.
 
 ### LibSQL / Turso
 
@@ -56,23 +55,54 @@ database.
 
 ### PostgreSQL
 
-[`@worlds/postgres`](https://jsr.io/@worlds/postgres) provides a PostgreSQL quad
-store and hybrid search index. It builds on the `pgvector` extension for vector
-search, with tables created from `buildPostgresSchemaSql`. The package is parked
-post-beta and ships raw stores only; there is no `createPostgresSdk` factory
-yet, so you assemble the stores yourself:
+[`@worlds/postgres`](https://jsr.io/@worlds/postgres) provides durable PostgreSQL
+storage with hybrid tsvector + pgvector search. `createPostgresSdk` assembles a
+quad store, search index, and SPARQL engine over a PostgreSQL connection:
 
 ```typescript
 import postgres from "postgres";
-import { buildPostgresSchemaSql } from "@worlds/postgres";
-import { PostgresQuadStore } from "@worlds/postgres/quad-store";
-import { PostgresSearchIndex } from "@worlds/postgres/search-index";
+import { createPostgresSdk } from "@worlds/postgres";
 
 const sql = postgres("postgres://user:password@localhost/worlds");
-await sql.unsafe(buildPostgresSchemaSql());
+const client = await createPostgresSdk({ sql });
+```
 
-const quadStore = new PostgresQuadStore({ sql });
-const searchIndex = new PostgresSearchIndex({ sql });
+### SQLite (local file)
+
+[`@worlds/sqlite`](https://jsr.io/@worlds/sqlite) provides durable SQLite
+storage via `node:sqlite` with hybrid FTS5 + sqlite-vec search.
+`createSqliteSdk` assembles a quad store, search index, and SPARQL engine:
+
+```typescript
+import { createSqliteSdk } from "@worlds/sqlite";
+
+const client = await createSqliteSdk({ path: ":memory:" });
+```
+
+### Cloudflare D1
+
+[`@worlds/cloudflare`](https://jsr.io/@worlds/cloudflare) provides durable D1
+storage with FTS5 keyword search. `createCloudflareSdk` assembles a quad store,
+search index, and SPARQL engine over a D1 binding:
+
+```typescript
+import { createCloudflareSdk } from "@worlds/cloudflare";
+
+// Inside a Cloudflare Worker with a D1 binding:
+const client = await createCloudflareSdk({ d1: env.DB });
+```
+
+### IndexedDB (browser)
+
+[`@worlds/indexeddb`](https://jsr.io/@worlds/indexeddb) provides durable
+browser-native storage via IndexedDB with JS-side hybrid TF-IDF + cosine
+search. `createIndexeddbSdk` assembles a quad store, search index, and SPARQL
+engine:
+
+```typescript
+import { createIndexeddbSdk } from "@worlds/indexeddb";
+
+const client = await createIndexeddbSdk({ dbName: "wazoo" });
 ```
 
 ## VPS deployment
