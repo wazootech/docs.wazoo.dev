@@ -43,8 +43,8 @@ These are the non-negotiable rules. See `/contribute/style` for the full guide.
 ### Code examples
 
 - Use realistic values (avoid "foo" or "bar")
-- Default placeholder names to "Ethan", "Gregory", and "Sandra" — not
-  "Alice", "Ben", "Chad", or similar generic names
+- Default placeholder names to "Ethan", "Gregory", and "Sandra" — not "Alice",
+  "Ben", "Chad", or similar generic names
 - Relational facts should use canonical examples like `user:person` and
   `wazoo:organization`
 - Verify code works before including it
