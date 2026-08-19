@@ -55,9 +55,10 @@ database.
 
 ### PostgreSQL
 
-[`@worlds/postgres`](https://jsr.io/@worlds/postgres) provides durable PostgreSQL
-storage with hybrid tsvector + pgvector search. `createPostgresSdk` assembles a
-quad store, search index, and SPARQL engine over a PostgreSQL connection:
+[`@worlds/postgres`](https://jsr.io/@worlds/postgres) provides durable
+PostgreSQL storage with hybrid tsvector + pgvector search. `createPostgresSdk`
+assembles a quad store, search index, and SPARQL engine over a PostgreSQL
+connection:
 
 ```typescript
 import postgres from "postgres";
@@ -95,9 +96,8 @@ const client = await createCloudflareSdk({ d1: env.DB });
 ### IndexedDB (browser)
 
 [`@worlds/indexeddb`](https://jsr.io/@worlds/indexeddb) provides durable
-browser-native storage via IndexedDB with JS-side hybrid TF-IDF + cosine
-search. `createIndexeddbSdk` assembles a quad store, search index, and SPARQL
-engine:
+browser-native storage via IndexedDB with JS-side hybrid TF-IDF + cosine search.
+`createIndexeddbSdk` assembles a quad store, search index, and SPARQL engine:
 
 ```typescript
 import { createIndexeddbSdk } from "@worlds/indexeddb";
