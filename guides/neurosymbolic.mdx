@@ -199,17 +199,17 @@ conceptually related information.
 
 ```typescript
 import { createSqliteSdk } from "@worlds/sqlite";
-import { FakeEmbeddingService } from "@worlds/sdk/search-index/embedding-service";
-// For production: use AiSdkEmbeddingService with a real embedding model
+import { UniversalSentenceEncoderEmbeddingService } from "@worlds/sdk/tfjs-use";
+// For cloud embeddings: use AiSdkEmbeddingService with a real embedding model
 // import { AiSdkEmbeddingService } from "@worlds/sdk/ai-sdk";
 // import { createGoogleGenerativeAI } from "@ai-sdk/google";
 
-// Testing: use FakeEmbeddingService (no API key needed)
-// Production: swap to AiSdkEmbeddingService for real embeddings
+// TF.js Universal Sentence Encoder: local embeddings, no API key needed
+// Produces 512-dimensional vectors for semantic similarity search
 const client = await createSqliteSdk({
   path: ":memory:",
-  embeddingService: new FakeEmbeddingService(),
-  vectorDimensions: 32,  // FakeEmbeddingService uses 32 dimensions
+  embeddingService: new UniversalSentenceEncoderEmbeddingService(),
+  vectorDimensions: 512,  // USE produces 512-dimensional vectors
   loadVectorExtension: true,
 });
 
@@ -262,10 +262,9 @@ client.close();
 The neural network finds the starting point through semantic similarity.
 SPARQL retrieves the exact facts. No guessing.
 
-Note: The example above uses `FakeEmbeddingService` for testing without an API
-key. With a real embedding service (like `AiSdkEmbeddingService`), the vector
-branch contributes semantic similarity scores, and the RRF fusion combines both
-keyword and vector signals for better ranking.
+Note: The example above uses TF.js Universal Sentence Encoder for local
+embeddings (no API key needed). For cloud embeddings, swap to
+`AiSdkEmbeddingService` with a model like `text-embedding-004`.
 
 ### AI agent tools: neural network using rules
 
