@@ -110,6 +110,7 @@
       {
         "group": "Guides",
         "pages": [
+          "guides/neurosymbolic",
           "guides/company-brain",
           "guides/custom-sparql-engine",
           "guides/entity-resolution",
