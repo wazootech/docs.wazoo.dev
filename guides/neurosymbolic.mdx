@@ -24,6 +24,17 @@ The neural network does two things:
 The neural network does not decide what entities exist. It does not create new
 entity types. It does not resolve duplicates.
 
+### Search implementations
+
+Worlds ships two search index implementations:
+
+- `RdfjsSearchIndex` (in-memory): Keyword-only substring matching. Useful for
+  testing and development. Does not support vector embeddings.
+
+- `SqliteSearchIndex` (durable): Full hybrid search with FTS5 keyword search
+  and sqlite-vec vector search. Supports Reciprocal Rank Fusion (RRF) to
+  combine both signals. Requires `@worlds/sqlite` and an `EmbeddingService`.
+
 ## How rules are set
 
 Rules are set through ontology and schema:
@@ -117,11 +128,12 @@ ex:hasName a rdf:Property ;
 The schema enforces that names are strings on Person entities. The neural
 network extracts the names, but the ontology defines what a Person is.
 
-### Hybrid search: neural + SPARQL
+### Hybrid search: keyword + SPARQL (in-memory)
 
-Search uses two steps:
+The in-memory `RdfjsSearchIndex` does keyword-only substring matching. Search
+uses two steps:
 
-- Neural fuzzy search discovers the starting point
+- Keyword search discovers the starting point (substring match on literals)
 - SPARQL deterministic retrieval gets exact facts
 
 ```typescript
@@ -154,9 +166,10 @@ await client.import({
   },
 });
 
-// Step 1: Neural fuzzy search (discovery)
+// Step 1: Keyword search (discovery)
+// Note: RdfjsSearchIndex does substring matching, not semantic search
 const searchResults = await client.search({
-  query: "Who does Ethan work for?",
+  query: "Ethan",  // Use keywords, not natural language questions
 });
 
 // Step 2: SPARQL deterministic retrieval (facts)
@@ -164,6 +177,7 @@ const subject = searchResults.results[0]?.subject;
 if (subject) {
   const sparqlResult = await client.sparql({
     query: `
+      PREFIX ex: <http://example.com/>
       SELECT ?role ?company WHERE {
         <${subject}> ex:role ?role .
         <${subject}> ex:worksFor ?company .
@@ -174,8 +188,84 @@ if (subject) {
 }
 ```
 
-The neural network finds the starting point. SPARQL retrieves the exact facts.
+The keyword search finds the starting point. SPARQL retrieves the exact facts.
 No guessing.
+
+### Hybrid search: neural + SPARQL (SQLite with vector embeddings)
+
+The `SqliteSearchIndex` supports full hybrid search with vector embeddings.
+This enables semantic similarity search where natural language queries find
+conceptually related information.
+
+```typescript
+import { createSqliteSdk } from "@worlds/sqlite";
+import { FakeEmbeddingService } from "@worlds/sdk/search-index/embedding-service";
+// For production: use AiSdkEmbeddingService with a real embedding model
+// import { AiSdkEmbeddingService } from "@worlds/sdk/ai-sdk";
+// import { createGoogleGenerativeAI } from "@ai-sdk/google";
+
+// Testing: use FakeEmbeddingService (no API key needed)
+// Production: swap to AiSdkEmbeddingService for real embeddings
+const client = await createSqliteSdk({
+  path: ":memory:",
+  embeddingService: new FakeEmbeddingService(),
+  vectorDimensions: 32,  // FakeEmbeddingService uses 32 dimensions
+  loadVectorExtension: true,
+});
+
+await client.import({
+  source: {
+    kind: "serialized",
+    data: `
+      @prefix ex: <http://example.com/> .
+      @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+      ex:Ethan a ex:Person ;
+        rdfs:label "Ethan" ;
+        ex:worksFor ex:Wazoo ;
+        ex:role "Lead Engineer" .
+
+      ex:Gregory a ex:Person ;
+        rdfs:label "Gregory" ;
+        ex:worksFor ex:Wazoo ;
+        ex:role "Staff Engineer" .
+    `,
+    contentType: "text/turtle",
+  },
+});
+
+// Step 1: Neural fuzzy search (semantic similarity)
+// The embedding service converts the query to a vector and finds
+// conceptually related information, even without exact keyword matches
+const searchResults = await client.search({
+  query: "Who does Ethan work for?",  // Natural language works here
+});
+
+// Step 2: SPARQL deterministic retrieval (facts)
+const subject = searchResults.results[0]?.subject;
+if (subject) {
+  const sparqlResult = await client.sparql({
+    query: `
+      PREFIX ex: <http://example.com/>
+      SELECT ?role ?company WHERE {
+        <${subject}> ex:role ?role .
+        <${subject}> ex:worksFor ?company .
+      }
+    `,
+  });
+  // Returns exact facts from the graph
+}
+
+client.close();
+```
+
+The neural network finds the starting point through semantic similarity.
+SPARQL retrieves the exact facts. No guessing.
+
+Note: The example above uses `FakeEmbeddingService` for testing without an API
+key. With a real embedding service (like `AiSdkEmbeddingService`), the vector
+branch contributes semantic similarity scores, and the RRF fusion combines both
+keyword and vector signals for better ranking.
 
 ### AI agent tools: neural network using rules
 
