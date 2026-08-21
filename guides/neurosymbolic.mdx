@@ -31,9 +31,9 @@ Worlds ships two search index implementations:
 - `RdfjsSearchIndex` (in-memory): Keyword-only substring matching. Useful for
   testing and development. Does not support vector embeddings.
 
-- `SqliteSearchIndex` (durable): Full hybrid search with FTS5 keyword search
-  and sqlite-vec vector search. Supports Reciprocal Rank Fusion (RRF) to
-  combine both signals. Requires `@worlds/sqlite` and an `EmbeddingService`.
+- `SqliteSearchIndex` (durable): Full hybrid search with FTS5 keyword search and
+  sqlite-vec vector search. Supports Reciprocal Rank Fusion (RRF) to combine
+  both signals. Requires `@worlds/sqlite` and an `EmbeddingService`.
 
 ## How rules are set
 
@@ -114,8 +114,10 @@ aliases:
 
 ```turtle
 @prefix ex: <http://example.com/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix schema: <https://schema.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 ex:Person a rdfs:Class ;
   rdfs:label "Person" .
@@ -169,7 +171,7 @@ await client.import({
 // Step 1: Keyword search (discovery)
 // Note: RdfjsSearchIndex does substring matching, not semantic search
 const searchResults = await client.search({
-  query: "Ethan",  // Use keywords, not natural language questions
+  query: "Ethan", // Use keywords, not natural language questions
 });
 
 // Step 2: SPARQL deterministic retrieval (facts)
@@ -193,23 +195,23 @@ No guessing.
 
 ### Hybrid search: neural + SPARQL (SQLite with vector embeddings)
 
-The `SqliteSearchIndex` supports full hybrid search with vector embeddings.
-This enables semantic similarity search where natural language queries find
+The `SqliteSearchIndex` supports full hybrid search with vector embeddings. This
+enables semantic similarity search where natural language queries find
 conceptually related information.
 
 ```typescript
 import { createSqliteSdk } from "@worlds/sqlite";
-import { UniversalSentenceEncoderEmbeddingService } from "@worlds/sdk/tfjs-use";
-// For cloud embeddings: use AiSdkEmbeddingService with a real embedding model
-// import { AiSdkEmbeddingService } from "@worlds/sdk/ai-sdk";
-// import { createGoogleGenerativeAI } from "@ai-sdk/google";
+import { AiSdkEmbeddingService } from "@worlds/sdk/ai-sdk";
+import { createGoogleGenerativeAI } from "@ai-sdk/google";
 
-// TF.js Universal Sentence Encoder: local embeddings, no API key needed
-// Produces 512-dimensional vectors for semantic similarity search
+const google = createGoogleGenerativeAI();
+
 const client = await createSqliteSdk({
   path: ":memory:",
-  embeddingService: new UniversalSentenceEncoderEmbeddingService(),
-  vectorDimensions: 512,  // USE produces 512-dimensional vectors
+  embeddingService: new AiSdkEmbeddingService({
+    model: google.textEmbeddingModel("text-embedding-004"),
+  }),
+  vectorDimensions: 768, // text-embedding-004 produces 768-dimensional vectors
   loadVectorExtension: true,
 });
 
@@ -238,7 +240,7 @@ await client.import({
 // The embedding service converts the query to a vector and finds
 // conceptually related information, even without exact keyword matches
 const searchResults = await client.search({
-  query: "Who does Ethan work for?",  // Natural language works here
+  query: "Who does Ethan work for?", // Natural language works here
 });
 
 // Step 2: SPARQL deterministic retrieval (facts)
@@ -259,12 +261,13 @@ if (subject) {
 client.close();
 ```
 
-The neural network finds the starting point through semantic similarity.
-SPARQL retrieves the exact facts. No guessing.
+The neural network finds the starting point through semantic similarity. SPARQL
+retrieves the exact facts. No guessing.
 
-Note: The example above uses TF.js Universal Sentence Encoder for local
-embeddings (no API key needed). For cloud embeddings, swap to
-`AiSdkEmbeddingService` with a model like `text-embedding-004`.
+Note: The example above uses Google's `text-embedding-004` through the AI SDK.
+For fully local embeddings without an API key, the `@worlds/sdk` repository
+vendors a TF.js Universal Sentence Encoder service you can copy from
+`examples/tfjs-universal-sentence-encoder/`.
 
 ### AI agent tools: neural network using rules
 
@@ -275,7 +278,7 @@ import type { SdkInterface } from "@worlds/sdk";
 import { Sdk } from "@worlds/sdk";
 import { RdfjsQuadStore, RdfjsSearchIndex } from "@worlds/sdk/rdfjs";
 import { MemoryStore, WazooSparqlEngine } from "@wazoo/sparql-engine";
-import { createTools } from "@worlds/sdk/ai-sdk";
+import { createTools } from "@wazoo/tools";
 import type { GenerateTextResult } from "ai";
 import { generateText } from "ai";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
@@ -289,8 +292,9 @@ const client: SdkInterface = new Sdk({
   sparqlEngine: new WazooSparqlEngine({ store }),
 });
 
-const tools = createTools(client, {
-  sparql: { allowUpdates: false },
+const tools = createTools({
+  client,
+  sparqlOptions: { allowUpdates: false },
 });
 
 // LLM decides what to ask, graph provides facts
@@ -332,8 +336,10 @@ the queries in the right panel.
 
 ```turtle
 @prefix ex: <http://example.com/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix schema: <https://schema.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 # Ontology defines what a Person is
 ex:Person a rdfs:Class ;
