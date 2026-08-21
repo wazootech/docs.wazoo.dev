@@ -108,6 +108,10 @@ export class ComunicaSparqlEngine implements SparqlEngineInterface {
   constructor(private readonly store: rdfjs.Store) {}
 
   async execute(request: SparqlRequest): Promise<SparqlResponse> {
+    return await this.#run(request);
+  }
+
+  async #run(request: SparqlRequest): Promise<SparqlResponse> {
     const result = (await this.#engine.query(request.query, {
       sources: [this.store],
       baseIRI: request.baseIri,
@@ -163,6 +167,9 @@ export class ComunicaSparqlEngine implements SparqlEngineInterface {
 
 That is the complete adapter — about 50 lines. The key pieces:
 
+- **`execute` / `#run`** — `execute` is the interface entry point; `#run` holds
+  the Comunica call plus result mapping so the timeout/abort wiring below can
+  wrap it.
 - **`rdfTermToSparqlValue`** (imported, not reimplemented) converts each RDF/JS
   binding term into the `SparqlValue` wire format the interface expects.
 - **`#select`** reads Comunica's variable metadata to get the column names, then
@@ -172,8 +179,11 @@ That is the complete adapter — about 50 lines. The key pieces:
 
 ## Adding timeout and abort support
 
-The `SparqlRequest` carries `timeoutMs` and an `AbortSignal`. If you want to
-honour them, compose an `AbortController` that fires on whichever comes first:
+The `SparqlRequest` carries `timeoutMs` and an `AbortSignal`. To honour them,
+compose one `AbortController` that fires on whichever comes first, then race the
+engine work against a promise that rejects when that controller aborts. The race
+is what hands control back to your caller; without it, a fired timer or caller
+abort would change nothing and queries would run to completion:
 
 ```typescript
 async execute(request: SparqlRequest): Promise<SparqlResponse> {
@@ -192,8 +202,19 @@ async execute(request: SparqlRequest): Promise<SparqlResponse> {
   if (request.signal?.aborted) onCallerAbort();
   else request.signal?.addEventListener("abort", onCallerAbort, { once: true });
 
+  const signal = controller.signal;
+  const abortPromise = new Promise<never>((_, reject) => {
+    if (signal.aborted) {
+      reject(signal.reason);
+      return;
+    }
+    signal.addEventListener("abort", () => reject(signal.reason), {
+      once: true,
+    });
+  });
+
   try {
-    return await this.#run(request, controller.signal);
+    return await Promise.race([this.#run(request), abortPromise]);
   } finally {
     clearTimeout(timer);
     request.signal?.removeEventListener("abort", onCallerAbort);
@@ -202,7 +223,8 @@ async execute(request: SparqlRequest): Promise<SparqlResponse> {
 ```
 
 This is generic wiring, not Comunica-specific — the same pattern applies to any
-custom engine. The built-in `WazooSparqlEngine` includes this out of the box.
+custom engine, and the built-in `WazooSparqlEngine` implements exactly this
+compose-and-race shape out of the box.
 
 ## Wire it into a client
 
