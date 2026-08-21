@@ -7,22 +7,50 @@ description:
 ---
 
 The `Sdk` facade does not care which engine answers SPARQL. The `sparqlEngine`
-option accepts any implementation of `SparqlEngineInterface`, and the SDK ships
-one opinionated default: the zero-dependency
-[WazooSparqlEngine](https://github.com/wazootech/sparql-engine) (SPARQL 1.1 &
-1.2 over any RDF/JS store, with built-in timeout and abort handling).
+option accepts any implementation of `SparqlEngineInterface`.
 
-If you need a different engine — Comunica's federation, actors, or
-query-planning features, for example — implement the interface yourself. It is a
-single method. Nobody is locked in.
+## Which path?
 
-This guide builds a complete Comunica-backed engine, wire by wire, using
-[`@comunica/query-sparql-rdfjs-lite`](https://github.com/comunica/comunica)
-directly. It does not rely on any Worlds-provided Comunica adapter.
+| I need…                                     | Use                              | Install                             |
+| ------------------------------------------- | -------------------------------- | ----------------------------------- |
+| SPARQL over an in-memory or RDF/JS store    | `WazooSparqlEngine` (built-in)   | `@wazoo/sparql-engine`              |
+| Federation across multiple SPARQL endpoints | Comunica engine (this guide)     | `@comunica/query-sparql-rdfjs-lite` |
+| A custom backend (libSQL, Postgres, etc.)   | Implement the interface yourself | `@wazoo/sparql-engine` for types    |
+
+### Built-in engine (zero config)
+
+If you have an RDF/JS `Store`, the built-in engine covers SPARQL 1.1 & 1.2 with
+timeout and abort handling — no adapter needed:
+
+```typescript
+import { Sdk } from "@worlds/sdk";
+import { RdfjsQuadStore, RdfjsSearchIndex } from "@worlds/sdk/rdfjs";
+import { WazooSparqlEngine, MemoryStore } from "@wazoo/sparql-engine";
+
+const store = new MemoryStore();
+const client = new Sdk({
+  quadStore: new RdfjsQuadStore({ store }),
+  sparqlEngine: new WazooSparqlEngine({ store }),
+  searchIndex: new RdfjsSearchIndex(store),
+});
+```
+
+`MemoryStore` is the engine's built-in RDF/JS store with full SPARQL Update
+support (addQuad/removeQuad). If you use a different store (e.g. N3's `Store`),
+it must also support `addQuad`/`removeQuad` for UPDATE queries, or you can pass
+a `createTransaction` factory for atomic writes.
+
+Skip the rest of this guide unless you need a different engine.
+
+### Custom engine (this guide)
+
+If you need Comunica's federation, actor system, or query-planning features,
+implement the interface yourself. It is a single method.
 
 ## The contract
 
-`SparqlEngineInterface` has one method:
+`SparqlEngineInterface` (defined in
+[`@wazoo/sparql-engine`](https://jsr.io/@wazoo/sparql-engine)) has one method:
 
 ```typescript
 execute(request: SparqlRequest): Promise<SparqlResponse>;
@@ -33,47 +61,46 @@ execute(request: SparqlRequest): Promise<SparqlResponse>;
 - `SparqlResponse` is one of four shapes: `{ kind: "select", data }`,
   `{ kind: "ask", data }`, `{ kind: "construct", data }`, or `{ kind: "void" }`.
 
+The types (`SparqlEngineInterface`, `SparqlRequest`, `SparqlResponse`,
+`SparqlValue`, etc.) are defined in `@wazoo/sparql-engine` and re-exported
+through `@worlds/sdk/sparql-engine` for SDK consumers. If you are implementing
+an engine, import from `@wazoo/sparql-engine` directly.
+
 ## Install
 
-Comunica and its RDF/JS types are npm packages:
+Comunica and its RDF/JS types are npm packages. The types and term converter
+come from the Wazoo SPARQL engine:
 
 ```bash
-deno add npm:@comunica/query-sparql-rdfjs-lite @rdfjs/types
+deno add npm:@comunica/query-sparql-rdfjs-lite npm:@rdfjs/types jsr:@wazoo/sparql-engine
 ```
 
 ## Implement the interface
 
-The engine runs Comunica over the same RDF/JS store the quad facade uses, so
+The adapter runs Comunica over the same RDF/JS store the quad facade uses, so
 imports and SPARQL queries see one consistent dataset.
+
+Comunica returns raw RDF/JS terms in async streams. The `SparqlEngineInterface`
+expects SPARQL JSON results format. The `rdfTermToSparqlValue` function from
+`@wazoo/sparql-engine` handles the conversion (including RDF 1.2 directional
+language-tagged literals).
 
 ```typescript comunica-sparql-engine.ts
 import { QueryEngine } from "@comunica/query-sparql-rdfjs-lite";
 import type * as rdfjs from "@rdfjs/types";
 import type {
-  SparqlAskResults,
-  SparqlBinding,
-  SparqlConstructResults,
   SparqlEngineInterface,
   SparqlRequest,
   SparqlResponse,
-  SparqlSelectResults,
-  SparqlValue,
-} from "@worlds/sdk/sparql-engine";
+} from "@wazoo/sparql-engine";
+import { rdfTermToSparqlValue } from "@wazoo/sparql-engine";
 
-/** The minimal Comunica result shape this adapter consumes. */
-interface ComunicaQueryResult {
+/** Minimal shape of a Comunica query result. */
+interface ComunicaResult {
   resultType: string;
   execute(): Promise<unknown>;
   metadata?(): Promise<{ variables: rdfjs.Variable[] }>;
 }
-
-/** A single row from a Comunica bindings stream. */
-interface ComunicaBinding {
-  get(variable: string): rdfjs.Term | undefined;
-}
-
-/** Default SPARQL query timeout in milliseconds (matches the Wazoo engine). */
-const DEFAULT_TIMEOUT_MS = 30_000;
 
 export class ComunicaSparqlEngine implements SparqlEngineInterface {
   readonly #engine = new QueryEngine();
@@ -81,50 +108,25 @@ export class ComunicaSparqlEngine implements SparqlEngineInterface {
   constructor(private readonly store: rdfjs.Store) {}
 
   async execute(request: SparqlRequest): Promise<SparqlResponse> {
-    // One controller composes the caller's signal with the timeout, so
-    // whichever fires first cancels the whole request.
-    const controller = new AbortController();
-    const timer = setTimeout(
-      () => controller.abort(new Error("SPARQL query timed out")),
-      request.timeoutMs ?? DEFAULT_TIMEOUT_MS,
-    );
-    const onCallerAbort = () =>
-      controller.abort(
-        request.signal?.reason instanceof Error
-          ? request.signal?.reason
-          : new Error("SPARQL query aborted"),
-      );
-    if (request.signal?.aborted) onCallerAbort();
-    else
-      request.signal?.addEventListener("abort", onCallerAbort, { once: true });
-
-    try {
-      return await Promise.race([
-        this.#run(request, controller.signal),
-        abortOn(controller.signal),
-      ]);
-    } finally {
-      clearTimeout(timer);
-      request.signal?.removeEventListener("abort", onCallerAbort);
-    }
-  }
-
-  async #run(
-    request: SparqlRequest,
-    signal: AbortSignal,
-  ): Promise<SparqlResponse> {
     const result = (await this.#engine.query(request.query, {
       sources: [this.store],
       baseIRI: request.baseIri,
-    })) as ComunicaQueryResult;
+    })) as ComunicaResult;
 
     switch (result.resultType) {
       case "bindings":
-        return { kind: "select", data: await this.#bindings(result) };
+        return { kind: "select", data: await this.#select(result) };
       case "boolean":
-        return { kind: "ask", data: await this.#boolean(result) };
-      case "quads":
-        return { kind: "construct", data: await this.#quads(result) };
+        return {
+          kind: "ask",
+          data: { head: {}, boolean: (await result.execute()) as boolean },
+        };
+      case "quads": {
+        const quads: rdfjs.Quad[] = [];
+        for await (const q of (await result.execute()) as AsyncIterable<rdfjs.Quad>)
+          quads.push(q);
+        return { kind: "construct", data: { quads } };
+      }
       case "void":
         await result.execute();
         return { kind: "void" };
@@ -135,96 +137,72 @@ export class ComunicaSparqlEngine implements SparqlEngineInterface {
     }
   }
 
-  async #bindings(result: ComunicaQueryResult): Promise<SparqlSelectResults> {
-    if (!result.metadata) {
-      throw new Error("SPARQL bindings result is missing metadata.");
-    }
-    const metadata = await result.metadata();
-    const vars = metadata.variables.map((variable) => variable.value);
-    const stream = (await result.execute()) as AsyncIterable<ComunicaBinding>;
+  async #select(result: ComunicaResult): Promise<{
+    head: { vars: string[] };
+    results: { bindings: Record<string, unknown>[] };
+  }> {
+    const meta = await result.metadata!();
+    const vars = meta.variables.map((v) => v.value);
+    const bindings: Record<string, unknown>[] = [];
 
-    const bindings: SparqlBinding[] = [];
-    for await (const binding of stream) {
-      const row: SparqlBinding = {};
-      for (const variable of vars) {
-        const term = binding.get(variable);
-        if (term) row[variable] = termToSparqlValue(term);
+    for await (const b of (await result.execute()) as AsyncIterable<{
+      get(v: string): rdfjs.Term | undefined;
+    }>) {
+      const row: Record<string, unknown> = {};
+      for (const v of vars) {
+        const term = b.get(v);
+        if (term) row[v] = rdfTermToSparqlValue(term);
       }
       bindings.push(row);
     }
+
     return { head: { vars }, results: { bindings } };
   }
-
-  async #boolean(result: ComunicaQueryResult): Promise<SparqlAskResults> {
-    const value = await result.execute();
-    if (typeof value !== "boolean") {
-      throw new Error("Comunica returned a non-boolean ASK result.");
-    }
-    return { head: {}, boolean: value };
-  }
-
-  async #quads(result: ComunicaQueryResult): Promise<SparqlConstructResults> {
-    const quads: rdfjs.Quad[] = [];
-    for await (const quad of (await result.execute()) as AsyncIterable<rdfjs.Quad>) {
-      quads.push(quad);
-    }
-    return { quads };
-  }
-}
-
-/** Maps an RDF/JS term to the SPARQL results JSON value shape. */
-function termToSparqlValue(term: rdfjs.Term): SparqlValue {
-  switch (term.termType) {
-    case "NamedNode":
-      return { type: "uri", value: term.value };
-    case "BlankNode":
-      return { type: "bnode", value: term.value };
-    case "Literal": {
-      const value: SparqlValue = { type: "literal", value: term.value };
-      if (term.language) value["xml:lang"] = term.language;
-      if (term.datatype.value !== "http://www.w3.org/2001/XMLSchema#string") {
-        value.datatype = term.datatype.value;
-      }
-      return value;
-    }
-    case "Quad":
-      return {
-        type: "triple",
-        value: {
-          subject: termToSparqlValue(term.subject),
-          predicate: termToSparqlValue(term.predicate),
-          object: termToSparqlValue(term.object),
-        },
-      };
-    default:
-      throw new Error(`Unsupported RDF term type: ${term.termType}`);
-  }
-}
-
-/** Rejects with the controller's reason when the signal fires. */
-function abortOn(signal: AbortSignal): Promise<never> {
-  return new Promise((_, reject) => {
-    if (signal.aborted) {
-      reject(
-        signal.reason instanceof Error
-          ? signal.reason
-          : new Error("SPARQL query aborted"),
-      );
-      return;
-    }
-    signal.addEventListener(
-      "abort",
-      () =>
-        reject(
-          signal.reason instanceof Error
-            ? signal.reason
-            : new Error("SPARQL query aborted"),
-        ),
-      { once: true },
-    );
-  });
 }
 ```
+
+That is the complete adapter — about 50 lines. The key pieces:
+
+- **`rdfTermToSparqlValue`** (imported, not reimplemented) converts each RDF/JS
+  binding term into the `SparqlValue` wire format the interface expects.
+- **`#select`** reads Comunica's variable metadata to get the column names, then
+  iterates the async bindings stream and builds `SparqlBinding[]`.
+- **`#boolean`**, **`#quads`**, and **`void`** are one-liners that delegate to
+  Comunica's `execute()`.
+
+## Adding timeout and abort support
+
+The `SparqlRequest` carries `timeoutMs` and an `AbortSignal`. If you want to
+honour them, compose an `AbortController` that fires on whichever comes first:
+
+```typescript
+async execute(request: SparqlRequest): Promise<SparqlResponse> {
+  const controller = new AbortController();
+  const timer = setTimeout(
+    () => controller.abort(new Error("SPARQL query timed out")),
+    request.timeoutMs ?? 30_000,
+  );
+
+  const onCallerAbort = () =>
+    controller.abort(
+      request.signal?.reason instanceof Error
+        ? request.signal.reason
+        : new Error("SPARQL query aborted"),
+    );
+  if (request.signal?.aborted) onCallerAbort();
+  else request.signal?.addEventListener("abort", onCallerAbort, { once: true });
+
+  try {
+    return await this.#run(request, controller.signal);
+  } finally {
+    clearTimeout(timer);
+    request.signal?.removeEventListener("abort", onCallerAbort);
+  }
+}
+```
+
+This is generic wiring, not Comunica-specific — the same pattern applies to any
+custom engine. The built-in `WazooSparqlEngine` includes this out of the box.
 
 ## Wire it into a client
 
@@ -234,10 +212,10 @@ Swap the engine in the same way you would configure any other
 ```typescript index.ts
 import { Sdk } from "@worlds/sdk";
 import { RdfjsQuadStore, RdfjsSearchIndex } from "@worlds/sdk/rdfjs";
-import { Store } from "n3";
+import { MemoryStore } from "@wazoo/sparql-engine";
 import { ComunicaSparqlEngine } from "./comunica-sparql-engine.ts";
 
-const store = new Store();
+const store = new MemoryStore();
 const client = new Sdk({
   quadStore: new RdfjsQuadStore({ store }),
   searchIndex: new RdfjsSearchIndex(store),
@@ -246,11 +224,17 @@ const client = new Sdk({
 ```
 
 The engine handles SELECT, ASK, CONSTRUCT/DESCRIBE, and SPARQL UPDATE, maps
-binding terms into the standard SPARQL results JSON shape, and honors
-`timeoutMs` and `signal` exactly as the interface documents.
+binding terms into the standard SPARQL results JSON shape, and (with the
+timeout/abort section above) honours `timeoutMs` and `signal` exactly as the
+interface documents.
 
 ## Notes
 
+- **Import from `@wazoo/sparql-engine`, not `@worlds/sdk`.** The SDK re-exports
+  the types for convenience (`@worlds/sdk/sparql-engine`), but
+  `@wazoo/sparql-engine` is where they are defined. Engine implementors should
+  depend on `@wazoo/sparql-engine` directly — it gives you the interface, the
+  types, and `rdfTermToSparqlValue` in one import.
 - **Transactional updates.** Comunica writes directly to the store. If your
   backend needs atomic writes through its own transaction (like the built-in
   engine's `createTransaction`), wrap the read store in a
