@@ -45,14 +45,14 @@ The tools are designed to work with the
 ```typescript
 import { generateText } from "ai";
 import { openai } from "@ai-sdk/openai";
-import { Sdk } from "@worlds/sdk";
+import { WorldsSdk } from "@worlds/sdk";
 import { RdfjsQuadStore, RdfjsSearchIndex } from "@worlds/sdk/rdfjs";
 import { WazooSparqlEngine } from "@wazoo/sparql-engine";
 import { Store } from "n3";
 import { createTools } from "@wazoo/tools";
 
 const store = new Store();
-const client = new Sdk({
+const client = new WorldsSdk({
   quadStore: new RdfjsQuadStore(store),
   searchIndex: new RdfjsSearchIndex(store),
   sparqlEngine: new WazooSparqlEngine({ store }),

@@ -116,7 +116,7 @@ To provision hosted resources programmatically, use the
 ### Embedded client
 
 For in-memory graph memory during development, wire the core adapters into a
-`Sdk` from `@worlds/sdk`:
+`WorldsSdk` from `@worlds/sdk`:
 
 <CodeGroup>
 
@@ -143,13 +143,13 @@ bunx jsr add @worlds/sdk
 </CodeGroup>
 
 ```typescript index.ts
-import { Sdk } from "@worlds/sdk";
+import { WorldsSdk } from "@worlds/sdk";
 import { RdfjsQuadStore, RdfjsSearchIndex } from "@worlds/sdk/rdfjs";
 import { WazooSparqlEngine } from "@wazoo/sparql-engine";
 import { Store } from "n3";
 
 const store = new Store();
-const client = new Sdk({
+const client = new WorldsSdk({
   quadStore: new RdfjsQuadStore({ store }),
   searchIndex: new RdfjsSearchIndex(store),
   sparqlEngine: new WazooSparqlEngine({ store }),

@@ -6,8 +6,8 @@ description:
   you into the built-in Wazoo engine."
 ---
 
-The `Sdk` facade does not care which engine answers SPARQL. The `sparqlEngine`
-option accepts any implementation of `SparqlEngineInterface`.
+The `WorldsSdk` facade does not care which engine answers SPARQL. The
+`sparqlEngine` option accepts any implementation of `SparqlEngineInterface`.
 
 ## Which path?
 
@@ -23,12 +23,12 @@ If you have an RDF/JS `Store`, the built-in engine covers SPARQL 1.1 & 1.2 with
 timeout and abort handling — no adapter needed:
 
 ```typescript
-import { Sdk } from "@worlds/sdk";
+import { WorldsSdk } from "@worlds/sdk";
 import { RdfjsQuadStore, RdfjsSearchIndex } from "@worlds/sdk/rdfjs";
 import { WazooSparqlEngine, MemoryStore } from "@wazoo/sparql-engine";
 
 const store = new MemoryStore();
-const client = new Sdk({
+const client = new WorldsSdk({
   quadStore: new RdfjsQuadStore({ store }),
   sparqlEngine: new WazooSparqlEngine({ store }),
   searchIndex: new RdfjsSearchIndex(store),
@@ -232,13 +232,13 @@ Swap the engine in the same way you would configure any other
 `SparqlEngineInterface`:
 
 ```typescript index.ts
-import { Sdk } from "@worlds/sdk";
+import { WorldsSdk } from "@worlds/sdk";
 import { RdfjsQuadStore, RdfjsSearchIndex } from "@worlds/sdk/rdfjs";
 import { MemoryStore } from "@wazoo/sparql-engine";
 import { ComunicaSparqlEngine } from "./comunica-sparql-engine.ts";
 
 const store = new MemoryStore();
-const client = new Sdk({
+const client = new WorldsSdk({
   quadStore: new RdfjsQuadStore({ store }),
   searchIndex: new RdfjsSearchIndex(store),
   sparqlEngine: new ComunicaSparqlEngine(store),
