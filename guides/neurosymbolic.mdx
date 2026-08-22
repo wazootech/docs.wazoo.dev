@@ -1,0 +1,429 @@
+---
+title: "Neurosymbolic approach"
+description: "How Worlds balances neural flexibility with structured rules."
+---
+
+AI memory systems fail when they let neural networks create entities without
+validation. The result: duplicates everywhere. "Dave", "David", and "Dave Smith"
+become three different people.
+
+Worlds solves this with a clear boundary: neural networks extract and discover,
+rules define and enforce.
+
+## The neural network role
+
+The neural network does two things:
+
+- Extract information from unstructured data: It reads meetings, documents, and
+  conversations. It identifies entities, relationships, and facts.
+
+- Provide fuzzy search: It converts text to vector embeddings. This allows
+  semantic similarity search, finding conceptually related information even when
+  keywords don't match.
+
+The neural network does not decide what entities exist. It does not create new
+entity types. It does not resolve duplicates.
+
+### Search implementations
+
+Worlds ships two search index implementations:
+
+- `RdfjsSearchIndex` (in-memory): Keyword-only substring matching. Useful for
+  testing and development. Does not support vector embeddings.
+
+- `SqliteSearchIndex` (durable): Full hybrid search with FTS5 keyword search and
+  sqlite-vec vector search. Supports Reciprocal Rank Fusion (RRF) to combine
+  both signals. Requires `@worlds/sqlite` and an `EmbeddingService`.
+
+## How rules are set
+
+Rules are set through ontology and schema:
+
+- You define the columns: The ontology specifies what entity types exist
+  (Person, Meeting, Decision) and what predicates connect them (attends,
+  decided, followsUp).
+
+- The schema enforces consistency: Before any information is written to the
+  graph, the system validates it against the ontology. If the neural network
+  extracts "Dave" and "David" and "Dave Smith", the system checks the schema for
+  entity resolution rules.
+
+- SPARQL enforces deterministic retrieval: Once information is in the graph,
+  retrieval is rule-based. The SPARQL engine executes exact graph traversal with
+  no fuzzy matching and no guessing.
+
+- Write policy governs updates: The model cannot autonomously create arbitrary
+  entities. Writes follow predefined rules. The system validates before
+  committing.
+
+## The boundary
+
+Neural networks propose. Rules dispose.
+
+The neural network extracts "Dave" from a meeting transcript. The ontology
+defines that "Dave" is a Person with a givenName. The schema validates that the
+name follows the expected format. SPARQL retrieves the exact facts about Dave
+from the graph.
+
+If the neural network tries to create a new entity type not in the ontology, the
+system rejects it. If it tries to write without validation, the system blocks
+it. The boundary is explicit.
+
+## Case study: entity resolution
+
+The [entity resolution guide](/guides/entity-resolution) shows this boundary in
+practice. It covers two patterns:
+
+- Pattern A: Resolve at retrieval time. Worlds indexes label literals as search
+  aliases, so "Sarah", "Sarah Chen", and "S. Chen" resolve to the same subject
+  IRI.
+
+- Pattern B: Resolve at write time. The pipeline extracts mentions, retrieves
+  candidates with hybrid search, scores with three signals (name similarity,
+  co-occurrence, recency), and decides conservatively.
+
+Both patterns follow the same boundary: neural networks extract and discover,
+rules validate and enforce.
+
+## Runnable examples
+
+### The problem: duplicates without rules
+
+Without ontology, the neural network creates separate entities for each mention:
+
+```turtle
+@prefix ex: <http://example.com/> .
+@prefix schema: <https://schema.org/> .
+
+ex:dave-1 a schema:Person ;
+  schema:name "Dave" .
+
+ex:dave-2 a schema:Person ;
+  schema:name "David" .
+
+ex:dave-3 a schema:Person ;
+  schema:name "Dave Smith" .
+```
+
+Three entities for one person. The graph fragments.
+
+### The solution: ontology prevents duplicates
+
+With ontology, you define that Person entities have names and that names are
+aliases:
+
+```turtle
+@prefix ex: <http://example.com/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <https://schema.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ex:Person a rdfs:Class ;
+  rdfs:label "Person" .
+
+ex:hasName a rdf:Property ;
+  rdfs:domain ex:Person ;
+  rdfs:range xsd:string .
+```
+
+The schema enforces that names are strings on Person entities. The neural
+network extracts the names, but the ontology defines what a Person is.
+
+### Hybrid search: keyword + SPARQL (in-memory)
+
+The in-memory `RdfjsSearchIndex` does keyword-only substring matching. Search
+uses two steps:
+
+- Keyword search discovers the starting point (substring match on literals)
+- SPARQL deterministic retrieval gets exact facts
+
+```typescript
+import type { SdkInterface } from "@worlds/sdk";
+import { Sdk } from "@worlds/sdk";
+import type { RdfjsQuadStore } from "@worlds/sdk/rdfjs";
+import { RdfjsQuadStore, RdfjsSearchIndex } from "@worlds/sdk/rdfjs";
+import { MemoryStore, WazooSparqlEngine } from "@wazoo/sparql-engine";
+
+const store = new MemoryStore();
+const client: SdkInterface = new Sdk({
+  quadStore: new RdfjsQuadStore({ store }),
+  searchIndex: new RdfjsSearchIndex(store),
+  sparqlEngine: new WazooSparqlEngine({ store }),
+});
+
+await client.import({
+  source: {
+    kind: "serialized",
+    data: `
+      @prefix ex: <http://example.com/> .
+      @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+      ex:Ethan a ex:Person ;
+        rdfs:label "Ethan" ;
+        ex:worksFor ex:Wazoo ;
+        ex:role "Lead Engineer" .
+    `,
+    contentType: "text/turtle",
+  },
+});
+
+// Step 1: Keyword search (discovery)
+// Note: RdfjsSearchIndex does substring matching, not semantic search
+const searchResults = await client.search({
+  query: "Ethan", // Use keywords, not natural language questions
+});
+
+// Step 2: SPARQL deterministic retrieval (facts)
+const subject = searchResults.results[0]?.subject;
+if (subject) {
+  const sparqlResult = await client.sparql({
+    query: `
+      PREFIX ex: <http://example.com/>
+      SELECT ?role ?company WHERE {
+        <${subject}> ex:role ?role .
+        <${subject}> ex:worksFor ?company .
+      }
+    `,
+  });
+  // Returns exact facts from the graph
+}
+```
+
+The keyword search finds the starting point. SPARQL retrieves the exact facts.
+No guessing.
+
+### Hybrid search: neural + SPARQL (SQLite with vector embeddings)
+
+The `SqliteSearchIndex` supports full hybrid search with vector embeddings. This
+enables semantic similarity search where natural language queries find
+conceptually related information.
+
+```typescript
+import { createSqliteSdk } from "@worlds/sqlite";
+import { AiSdkEmbeddingService } from "@worlds/sdk/ai-sdk";
+import { createGoogleGenerativeAI } from "@ai-sdk/google";
+
+const google = createGoogleGenerativeAI();
+
+const client = await createSqliteSdk({
+  path: ":memory:",
+  embeddingService: new AiSdkEmbeddingService({
+    model: google.textEmbeddingModel("text-embedding-004"),
+  }),
+  vectorDimensions: 768, // text-embedding-004 produces 768-dimensional vectors
+  loadVectorExtension: true,
+});
+
+await client.import({
+  source: {
+    kind: "serialized",
+    data: `
+      @prefix ex: <http://example.com/> .
+      @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+      ex:Ethan a ex:Person ;
+        rdfs:label "Ethan" ;
+        ex:worksFor ex:Wazoo ;
+        ex:role "Lead Engineer" .
+
+      ex:Gregory a ex:Person ;
+        rdfs:label "Gregory" ;
+        ex:worksFor ex:Wazoo ;
+        ex:role "Staff Engineer" .
+    `,
+    contentType: "text/turtle",
+  },
+});
+
+// Step 1: Neural fuzzy search (semantic similarity)
+// The embedding service converts the query to a vector and finds
+// conceptually related information, even without exact keyword matches
+const searchResults = await client.search({
+  query: "Who does Ethan work for?", // Natural language works here
+});
+
+// Step 2: SPARQL deterministic retrieval (facts)
+const subject = searchResults.results[0]?.subject;
+if (subject) {
+  const sparqlResult = await client.sparql({
+    query: `
+      PREFIX ex: <http://example.com/>
+      SELECT ?role ?company WHERE {
+        <${subject}> ex:role ?role .
+        <${subject}> ex:worksFor ?company .
+      }
+    `,
+  });
+  // Returns exact facts from the graph
+}
+
+client.close();
+```
+
+The neural network finds the starting point through semantic similarity. SPARQL
+retrieves the exact facts. No guessing.
+
+Note: The example above uses Google's `text-embedding-004` through the AI SDK.
+For fully local embeddings without an API key, the `@worlds/sdk` repository
+vendors a TF.js Universal Sentence Encoder service you can copy from
+`examples/tfjs-universal-sentence-encoder/`.
+
+### AI agent tools: neural network using rules
+
+When an AI agent uses Worlds, it calls tools that enforce the boundary:
+
+```typescript
+import type { SdkInterface } from "@worlds/sdk";
+import { Sdk } from "@worlds/sdk";
+import { RdfjsQuadStore, RdfjsSearchIndex } from "@worlds/sdk/rdfjs";
+import { MemoryStore, WazooSparqlEngine } from "@wazoo/sparql-engine";
+import { createTools } from "@wazoo/tools";
+import type { GenerateTextResult } from "ai";
+import { generateText } from "ai";
+import { createGoogleGenerativeAI } from "@ai-sdk/google";
+
+const google = createGoogleGenerativeAI();
+
+const store = new MemoryStore();
+const client: SdkInterface = new Sdk({
+  quadStore: new RdfjsQuadStore({ store }),
+  searchIndex: new RdfjsSearchIndex(store),
+  sparqlEngine: new WazooSparqlEngine({ store }),
+});
+
+const tools = createTools({
+  client,
+  sparqlOptions: { allowUpdates: false },
+});
+
+// LLM decides what to ask, graph provides facts
+const result: GenerateTextResult = await generateText({
+  model: google("gemini-2.5-flash"),
+  tools,
+  prompt: "What is Ethan's role?",
+});
+```
+
+The LLM decides what to query. The tools enforce the boundary. The graph
+provides verified facts.
+
+## What you build vs what Worlds provides
+
+| Layer            | You build                                    | Worlds provides                         |
+| :--------------- | :------------------------------------------- | :-------------------------------------- |
+| Extraction       | LLM prompt that pulls mentions from a source | Import path for asserted quads          |
+| Candidate lookup | Search call                                  | Hybrid search with label-alias indexing |
+| Similarity       | String-ratio function over labels            | FTS5 keyword retrieval                  |
+| Co-occurrence    | The graph itself; one SPARQL pattern         | Chronological, append-only ledger       |
+| Recency          | A timestamp predicate you choose             | `wazoo:resolvesTo` patches              |
+| Decision         | Weighted score and threshold policy          | SHACL shapes to validate them           |
+
+## Next steps
+
+- [Entity resolution](/guides/entity-resolution): deep-dive on the two patterns
+- [Hybrid search](/worlds/search): tune the retrieval signal
+- [Graph queries](/worlds/query): write the patterns behind the score
+- [Update](/worlds/update): patch state with provenance
+
+## Try it in the playground
+
+Paste the dataset below into the
+[SPARQL Playground](https://wazoo.dev/sparql/playground) left panel, then run
+the queries in the right panel.
+
+### Dataset
+
+```turtle
+@prefix ex: <http://example.com/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <https://schema.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# Ontology defines what a Person is
+ex:Person a rdfs:Class ;
+  rdfs:label "Person" .
+
+ex:hasName a rdf:Property ;
+  rdfs:domain ex:Person ;
+  rdfs:range xsd:string .
+
+ex:worksFor a rdf:Property ;
+  rdfs:domain ex:Person ;
+  rdfs:range ex:Organization .
+
+ex:role a rdf:Property ;
+  rdfs:domain ex:Person ;
+  rdfs:range xsd:string .
+
+ex:Organization a rdfs:Class ;
+  rdfs:label "Organization" .
+
+# One person, many names (correct approach)
+ex:ethan a ex:Person ;
+  ex:hasName "Ethan" ;
+  ex:hasName "Ethan Davidson" ;
+  ex:hasName "E. Davidson" ;
+  ex:worksFor ex:Wazoo ;
+  ex:role "Lead Engineer" .
+
+# Another person
+ex:gregory a ex:Person ;
+  ex:hasName "Gregory" ;
+  ex:hasName "Greg" ;
+  ex:worksFor ex:Wazoo ;
+  ex:role "Staff Engineer" .
+
+ex:Wazoo a ex:Organization ;
+  rdfs:label "Wazoo Technologies" .
+```
+
+### Find all names for a person
+
+```sparql
+SELECT ?name WHERE {
+  <http://example.com/ethan> ex:hasName ?name .
+}
+```
+
+### Find people by any name variant
+
+```sparql
+SELECT ?person ?name WHERE {
+  ?person a ex:Person ;
+          ex:hasName ?name .
+}
+ORDER BY ?person ?name
+```
+
+### Find who works where
+
+```sparql
+SELECT ?personName ?companyName ?role WHERE {
+  ?person a ex:Person ;
+          ex:hasName ?personName ;
+          ex:worksFor ?company ;
+          ex:role ?role .
+  ?company rdfs:label ?companyName .
+}
+```
+
+### Verify a fact
+
+```sparql
+ASK WHERE {
+  <http://example.com/ethan> ex:worksFor <http://example.com/Wazoo> .
+}
+```
+
+### Count people by role
+
+```sparql
+SELECT ?role (COUNT(?person) AS ?count) WHERE {
+  ?person a ex:Person ;
+          ex:role ?role .
+}
+GROUP BY ?role
+ORDER BY DESC(?count)
+```
