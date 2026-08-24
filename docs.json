@@ -161,6 +161,7 @@
         "pages": [
           "comparisons/index",
           "comparisons/cocoindex",
+          "comparisons/cognee",
           "comparisons/diy-memory-infra",
           "comparisons/diy-triplestore",
           "comparisons/document-databases",
@@ -168,6 +169,7 @@
           "comparisons/google-dataplex",
           "comparisons/google-okf",
           "comparisons/google-search",
+          "comparisons/graphiti",
           "comparisons/hermes",
           "comparisons/key-value-stores",
           "comparisons/langmem",
