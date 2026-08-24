@@ -200,6 +200,7 @@
         "group": "Open source",
         "pages": [
           "contribute/style",
+          "contribute/comparisons",
           "contribute/security",
           "contribute/self-host"
         ]
