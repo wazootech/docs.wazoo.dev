@@ -1,0 +1,65 @@
+---
+title: "Graphiti"
+description:
+  "Worlds vs Graphiti: curated RDF fact ledger vs auto-extracted temporal
+  knowledge graph."
+hidden: true
+---
+
+## At a glance
+
+|              | Worlds                                                | [Graphiti](https://github.com/getzep/graphiti)                    |
+| :----------- | :---------------------------------------------------- | :---------------------------------------------------------------- |
+| Primary role | Authoritative RDF fact ledger & SPARQL context engine | Temporal knowledge-graph engine for agent memory                  |
+| Data model   | W3C RDF triples in an append-only graph ledger        | Property graph with bi-temporal validity windows on edges         |
+| Retrieval    | SPARQL graph queries, full-text, & vector fusion      | Hybrid semantic, keyword, & graph search with reranking           |
+| Ingestion    | Curated imports and patches                           | LLM-driven episode extraction and conflict resolution             |
+| Deployment   | Edge-ready adapters (LibSQL, Postgres) or Cloud       | Self-hosted against Neo4j, FalkorDB, or Kuzu; Zep Cloud available |
+
+## Overlap and shared capabilities
+
+Both Worlds and [Graphiti](https://github.com/getzep/graphiti) store facts as a
+graph, preserve provenance to source material, and retrieve through more than
+one signal. Both reject the idea that vector similarity alone is enough for
+agent context: structure decides what an agent can verify, not just what looks
+similar.
+
+The difference is in how facts enter the graph and what guarantees they carry:
+
+- Graphiti extracts entities and relationships from raw episodes with LLM calls
+  at write time. Each edge carries a bi-temporal validity window, so the graph
+  answers both "what is true" and "what was true on a date". Conflicting facts
+  are invalidated, not deleted.
+- Worlds treats ingestion as curation. Facts enter a world deliberately, through
+  import and patches, as W3C RDF triples in an append-only ledger. Every quad
+  records where it came from and when it entered.
+
+Graphiti's temporal windows solve fact churn inside one deployment. Worlds'
+append-only ledger plus SPARQL gives you standards-based verification: the same
+graph queries against any backend, auditable provenance per quad, and no
+extraction step that can silently misread a source.
+
+## When Worlds fits
+
+- You need deterministic graph querying (SPARQL) to verify multi-hop
+  relationships before an agent acts.
+- You require quad-level provenance and audit trails for every assertion.
+- You need portable context across backends and providers, without an extraction
+  pipeline tied to specific models.
+
+## When Graphiti fits
+
+- Your facts change constantly and you need point-in-time answers ("what was
+  true last quarter") from automatically ingested conversations and events.
+- You want memory writes driven by LLM extraction rather than manual curation.
+- You already run Neo4j, FalkorDB, or Kuzu and want temporal memory on top of
+  that infrastructure.
+
+## Coexistence
+
+The two address different trust models. Teams that need extracted, time-aware
+memory from high-churn event streams pair Graphiti with a curated verified
+ledger: extraction handles recall breadth, while a [Worlds](/projects/worlds)
+world holds the assertions agents must be able to prove. Because Worlds is
+provider-agnostic, its graph remains queryable regardless of which extraction
+engine feeds other parts of the pipeline.

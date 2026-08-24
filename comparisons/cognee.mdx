@@ -1,0 +1,66 @@
+---
+title: "Cognee"
+description:
+  "Worlds vs Cognee: curated RDF fact ledger vs ECL-extracted graph and vector
+  memory."
+hidden: true
+---
+
+## At a glance
+
+|              | Worlds                                                | [Cognee](https://github.com/topoteretes/cognee)            |
+| :----------- | :---------------------------------------------------- | :--------------------------------------------------------- |
+| Primary role | Authoritative RDF fact ledger & SPARQL context engine | Self-hosted agent-memory platform over graphs plus vectors |
+| Data model   | W3C RDF triples in an append-only graph ledger        | Extracted entity-relation graph with embeddings (ECL)      |
+| Retrieval    | SPARQL graph queries, full-text, & vector fusion      | Graph traversal combined with similarity search            |
+| Ingestion    | Curated imports and patches                           | Automated extract-cognify-load pipeline over many sources  |
+| Deployment   | Edge-ready adapters (LibSQL, Postgres) or Cloud       | Python SDK, Docker, or Cognee Cloud; pluggable backends    |
+
+## Overlap and shared capabilities
+
+Both Worlds and [Cognee](https://cognee.ai) give agents persistent context that
+goes past a single session. Both combine graph structure with vector signals so
+recall can follow relationships between entities instead of returning only
+similar text.
+
+The difference is in what the graph is and who authors it:
+
+- Cognee runs an automated pipeline: ingest data in any format, extract entities
+  and relationships, cognify them into a queryable graph with embeddings, and
+  serve recall through `remember` / `recall` operations. The graph is derived
+  output; its accuracy tracks the extraction models.
+- Worlds keeps the graph authoritative. Facts enter as W3C RDF through import
+  and patches you control, land in an append-only ledger with per-quad
+  provenance, and verify through SPARQL rather than similarity.
+
+Cognee's automation is the feature when volume is high and curation is not an
+option. When assertions must be provable, for example in audit, compliance, or
+multi-team settings, the extraction step becomes the liability: a misread at
+ingest time propagates into every downstream answer.
+
+## When Worlds fits
+
+- You need deterministic SPARQL verification of entities and relationships
+  before an agent acts on them.
+- You require provenance for every fact: where it came from and when it entered
+  the world.
+- You need standards-based portability across LibSQL/Turso and Postgres backends
+  with your own model and embedding providers.
+
+## When Cognee fits
+
+- You want hands-off memory: point the pipeline at documents, chats, or APIs and
+  let extraction build the graph.
+- You need flexible deployment across local runs, self-hosted Docker, air-gapped
+  environments, or managed cloud.
+- Your agents benefit from ontology-guided extraction over heterogeneous sources
+  where manual curation cannot keep up.
+
+## Coexistence
+
+The two occupy different points on the curation spectrum. A common pattern is
+extraction-first ingestion with verified storage downstream: Cognee's pipeline
+processes high-volume raw sources, while a [Worlds](/projects/worlds) world
+holds the curated assertions that agents must verify through SPARQL before
+acting. Worlds' provider-agnostic design keeps the verified layer independent of
+whichever extraction engine feeds it.
