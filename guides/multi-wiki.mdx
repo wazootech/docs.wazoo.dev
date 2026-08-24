@@ -232,6 +232,102 @@ workspace-root/
   </Step>
 </Steps>
 
+## Advanced: nested workspaces
+
+The steps above manage every repository from one flat manifest. When wiki
+repositories form clusters that change on different cadences, you can split them
+into sub-workspaces. Each cluster owns a child manifest, and the root manifest
+delegates those repositories to the cluster. `wspace` still sees every
+repository as one resolved tree, while scoped commands operate on a single
+cluster.
+
+### Declare a sub-workspace
+
+Add a `workspaces:` block to the root `repos.json` and move the cluster's
+repositories out of the root list. Each entry names the sub-workspace and points
+at its child manifest:
+
+```json
+{
+  "$schema": "https://wazootech.github.io/workspace-cli/schema.json",
+  "schemaVersion": 2,
+  "workspaceRoot": ".",
+  "repositoriesDirectory": "repos",
+  "repositories": [
+    {
+      "name": "shared-reference",
+      "url": "https://github.com/acme/shared-reference.git"
+    }
+  ],
+  "workspaces": [
+    {
+      "name": "umbra-suite",
+      "path": "repos/umbra-wiki/workspace.json"
+    }
+  ]
+}
+```
+
+The child manifest is a standard manifest checked into the umbrella repository.
+Its repositories resolve relative to its own location, so the umbrella lists
+itself with `"path": "."` and its sub-wikis with sibling paths:
+
+```json
+{
+  "schemaVersion": 2,
+  "repositories": [
+    {
+      "name": "umbra-wiki",
+      "url": "https://github.com/acme/umbra-wiki.git",
+      "path": "."
+    },
+    {
+      "name": "product-docs",
+      "url": "https://github.com/acme/product-docs.git",
+      "path": "../product-docs"
+    },
+    {
+      "name": "team-brain",
+      "url": "https://github.com/acme/team-brain.git",
+      "path": "../team-brain"
+    }
+  ]
+}
+```
+
+A repository claimed by a sub-workspace must not also appear in the parent's
+`repositories:` list; duplicate claims raise an error during resolution. Child
+manifests can declare their own `workspaces:` entries to nest further. Circular
+references and duplicate sub-workspace names raise errors.
+
+### Scope commands to a sub-workspace
+
+List discovered sub-workspaces with their repository counts. Repositories not
+claimed by any sub-workspace appear under `(root)`:
+
+```sh
+wspace workspaces --json
+```
+
+Pass `--workspace <name>` to `check`, `init`, `update`, or `worktree list` to
+scope the command to one sub-workspace:
+
+```sh
+wspace update --workspace umbra-suite
+wspace check --workspace umbra-suite
+```
+
+Omitting `--workspace` operates on the full resolved tree. Manifests without a
+`workspaces:` block behave exactly as before.
+
+<Note>
+  Workspace nesting and wiki composition solve different problems: the
+  `workspaces:` block organizes Git repositories, while transitive `sources:`
+  blocks compose RDF corpora. One umbrella can install another umbrella's
+  published corpus with no workspace nesting, and a sub-workspace can hold
+  several umbrella wikis whose graphs never merge.
+</Note>
+
 ## Check for success
 
 Run the integrity checks in the umbrella repository:
