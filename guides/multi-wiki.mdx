@@ -2,26 +2,26 @@
 title: "Manage multiple wikis as a workspace"
 description:
   "Compose an umbrella wiki from independent sub-wiki repositories, and manage
-  those repositories as one multi-repo workspace with works."
+  those repositories as one multi-repo workspace with wspace."
 ---
 
 A single wiki suits one team or one domain. When teams move independently,
 separate wikis keep their history and release cadence separate. The trade-off is
 that isolated wikis stop answering queries as one corpus. This guide shows how
 to compose an umbrella wiki from independent sub-wiki repositories, and how to
-manage those repositories as one multi-repo workspace with `works`.
+manage those repositories as one multi-repo workspace with `wspace`.
 
 The umbrella wiki lists each sub-wiki under `sources:` in its `wiki.yml`, pins
 exact commits in `wiki.lock`, and keeps each sub-wiki as a named RDF graph. You
 can query the whole corpus at once, or trace a result back to its source
-repository. `works` keeps the repositories in sync with `check`, `update`, and
+repository. `wspace` keeps the repositories in sync with `check`, `update`, and
 worktree workflows.
 
 ## Prerequisites
 
 - The `wiki` CLI, installed per the
   [Wiki install guide](/projects/wiki#install).
-- The `works` CLI, installed per the
+- The `wspace` CLI, installed per the
   [Workspace install guide](/projects/workspace#installation).
 - A repository for each sub-wiki, and one repository for the umbrella wiki.
 
@@ -43,12 +43,12 @@ simpler.
 The umbrella repository owns `wiki.yml` with a `sources:` block that points at
 each sub-wiki repository. Each sub-wiki is its own Git repository. All
 repositories, umbrella and sub-wikis, are listed in one `workspace.json`
-manifest so `works` manages them as a workspace:
+manifest so `wspace` manages them as a workspace:
 
 ```text
 workspace-root/
   wiki.yml          # umbrella: inputs + sources
-  workspace.json     # works manifest
+  workspace.json     # wspace manifest
   repos/
     umbra-wiki/     # umbrella repository
     product-docs/   # sub-wiki repository
@@ -88,16 +88,16 @@ workspace-root/
     Clone the missing repositories and confirm the workspace is healthy:
 
     ```sh
-    works install
-    works check
+    wspace install
+    wspace check
     ```
 
-    `works check` confirms every repository is present and clean. Keep the
+    `wspace check` confirms every repository is present and clean. Keep the
     default branch current with the remote so later updates fast-forward
     cleanly:
 
     ```sh
-    works update
+    wspace update
     ```
 
     See [Workspace](/projects/workspace) for the full command reference.
@@ -204,11 +204,11 @@ workspace-root/
     Refresh repository baselines, then refresh installed sources:
 
     ```sh
-    works update
+    wspace update
     wiki update
     ```
 
-    `works update` fast-forwards clean default branches and skips dirty or
+    `wspace update` fast-forwards clean default branches and skips dirty or
     feature-branch checkouts. `wiki update` re-fetches the installed sources,
     installs newly declared transitive sources, and reports orphaned ones.
     Remove sources you no longer want from the corpus (and their now-unused
@@ -256,7 +256,7 @@ removed them:
 
 To let a cluster of repositories change on its own cadence, give the cluster its
 own manifest. Any directory that holds a `workspace.json` is a workspace root; a
-checked-out repository can carry one at its root. Run `works` from that
+checked-out repository can carry one at its root. Run `wspace` from that
 directory, or pass `--manifest`, to manage the cluster as its own workspace:
 
 ```json
@@ -271,7 +271,7 @@ directory, or pass `--manifest`, to manage the cluster as its own workspace:
 
 Relative paths always anchor to the directory containing the manifest, so the
 umbrella repository's checkout becomes the root of its sub-workspace. The parent
-workspace and the sub-workspace are independent: `works` commands run in the
+workspace and the sub-workspace are independent: `wspace` commands run in the
 parent see only the parent's `repositories[]`, and commands run inside the
 umbrella checkout see only the sub-workspace's list. A repository claimed by a
 sub-workspace must not also appear in the parent's `repositories[]`.
@@ -302,7 +302,7 @@ wiki graph list
 
 - [Wiki](/projects/wiki): validate, query, and publish semantic Markdown wikis
 - [Workspace](/projects/workspace): manage multi-repository workspaces with
-  `works`
+  `wspace`
 - [External data sources (`sources:`)](https://wiki.wazoo.dev/Wiki_Configuration/#external-data-sources-sources):
   the composition reference
 - [Recursive Semantic Datasets](https://wiki.wazoo.dev/Recursive_Semantic_Datasets/):
