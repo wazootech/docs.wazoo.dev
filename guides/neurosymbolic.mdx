@@ -265,9 +265,7 @@ The neural network finds the starting point through semantic similarity. SPARQL
 retrieves the exact facts. No guessing.
 
 Note: The example above uses Google's `text-embedding-004` through the AI SDK.
-For fully local embeddings without an API key, the `@worlds/sdk` repository
-vendors a TF.js Universal Sentence Encoder service you can copy from
-`examples/tfjs-universal-sentence-encoder/`.
+For fully local embeddings without an API key, import `UniversalSentenceEncoderEmbeddingService` from `@worlds/sdk/tfjs-use` — it bundles the TF.js Universal Sentence Encoder lite model with a vendored tokenizer.
 
 ### AI agent tools: neural network using rules
 
