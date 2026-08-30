@@ -41,10 +41,10 @@ Hosted Worlds has two surfaces:
 
 - The Wazoo Platform API (`@wazoo/client`) manages platform resources such as
   user-owned Worlds and tokens.
-- The Worlds Data API, hosted at `worlds-api.wazoo.dev`, handles graph data
-  through import, export, search, and SPARQL operations. Its generated
-  TypeScript client is `@worlds/client`; the embedded `@worlds/sdk` exposes the
-  same operations in-process.
+- The Worlds Data API, hosted at `data.wazoo.dev`, handles graph data through
+  import, export, search, and SPARQL operations. Its generated TypeScript client
+  is `@worlds/client`; the embedded `@worlds/sdk` exposes the same operations
+  in-process.
 
 ### Prerequisites
 
@@ -82,7 +82,7 @@ Save it as `WORLDS_TOKEN`.
 ### Import, search, and query
 
 ```bash
-curl -s -X POST "https://worlds-api.wazoo.dev/worlds/quickstart-cloud/import" \
+curl -s -X POST "https://data.wazoo.dev/worlds/quickstart-cloud/import" \
   -H "Authorization: Bearer $WORLDS_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -92,7 +92,7 @@ curl -s -X POST "https://worlds-api.wazoo.dev/worlds/quickstart-cloud/import" \
 ```
 
 ```bash
-curl -s -X POST "https://worlds-api.wazoo.dev/worlds/quickstart-cloud/search" \
+curl -s -X POST "https://data.wazoo.dev/worlds/quickstart-cloud/search" \
   -H "Authorization: Bearer $WORLDS_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -102,7 +102,7 @@ curl -s -X POST "https://worlds-api.wazoo.dev/worlds/quickstart-cloud/search" \
 ```
 
 ```bash
-curl -s -X POST "https://worlds-api.wazoo.dev/worlds/quickstart-cloud/sparql" \
+curl -s -X POST "https://data.wazoo.dev/worlds/quickstart-cloud/sparql" \
   -H "Authorization: Bearer $WORLDS_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{

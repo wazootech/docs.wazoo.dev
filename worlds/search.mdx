@@ -42,7 +42,7 @@ Use the data-plane search endpoint to perform hybrid retrieval across a world.
 Data-plane requests authenticate with a `wzw_` world token:
 
 ```bash
-curl -s -X POST "https://worlds-api.wazoo.dev/worlds/my-world-id/search" \
+curl -s -X POST "https://data.wazoo.dev/worlds/my-world-id/search" \
   -H "Authorization: Bearer $WORLDS_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{

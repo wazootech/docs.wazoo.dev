@@ -126,7 +126,7 @@ of the substrate. Import these quads through the normal
 Search the world for the mention's name and take the top candidates:
 
 ```bash
-curl -s -X POST "https://worlds-api.wazoo.dev/worlds/my-world-id/search" \
+curl -s -X POST "https://data.wazoo.dev/worlds/my-world-id/search" \
   -H "Authorization: Bearer $WORLDS_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{ "query": "Sarah Chen", "topK": 5 }'
@@ -240,7 +240,7 @@ extraction-based memory layers have to build by hand.
 Search the world for both names and confirm they resolve to one subject:
 
 ```bash
-curl -s -X POST "https://worlds-api.wazoo.dev/worlds/my-world-id/search" \
+curl -s -X POST "https://data.wazoo.dev/worlds/my-world-id/search" \
   -H "Authorization: Bearer $WORLDS_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{ "query": "Sarah" }'
@@ -249,7 +249,7 @@ curl -s -X POST "https://worlds-api.wazoo.dev/worlds/my-world-id/search" \
 Then verify the resolution exists in the graph:
 
 ```bash
-curl -s -X POST "https://worlds-api.wazoo.dev/worlds/my-world-id/sparql" \
+curl -s -X POST "https://data.wazoo.dev/worlds/my-world-id/sparql" \
   -H "Authorization: Bearer $WORLDS_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
