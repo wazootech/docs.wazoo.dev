@@ -5,12 +5,12 @@ description: "The generated TypeScript client for the Worlds Data API."
 
 The Worlds Data API client (`@worlds/client`) is a typed HTTP client generated
 from the canonical
-[Worlds Data API OpenAPI document](https://worlds-api.wazoo.dev/openapi.json).
-It mirrors the management-plane client pattern: `@wazoo/client` talks to the
+[Worlds Data API OpenAPI document](https://data.wazoo.dev/openapi.json). It
+mirrors the management-plane client pattern: `@wazoo/client` talks to the
 platform API, `@worlds/client` talks to the data plane.
 
 Use it for remote data-plane operations: world lifecycle, import, export,
-search, SPARQL, and reindexing against `worlds-api.wazoo.dev`.
+search, SPARQL, and reindexing against `data.wazoo.dev`.
 
 For an embeddable, provider-swappable interface over the same operations, use
 the [Worlds SDK](/platform/typescript-sdk) instead.
@@ -29,7 +29,7 @@ Data-plane requests authenticate with a `wzw_` world token:
 import { createClient, listWorlds } from "@worlds/client";
 
 const client = createClient({
-  baseUrl: "https://worlds-api.wazoo.dev",
+  baseUrl: "https://data.wazoo.dev",
   auth: process.env.WORLDS_TOKEN,
 });
 ```

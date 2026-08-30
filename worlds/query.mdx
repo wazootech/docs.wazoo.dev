@@ -18,7 +18,7 @@ Given triples such as `user:person wazoo:uses wazoo:worlds`, query for the
 resource:
 
 ```bash
-curl -s -X POST "https://worlds-api.wazoo.dev/worlds/my-world-id/sparql" \
+curl -s -X POST "https://data.wazoo.dev/worlds/my-world-id/sparql" \
   -H "Authorization: Bearer $WORLDS_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{

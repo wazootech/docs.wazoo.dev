@@ -233,7 +233,7 @@
       {
         "group": "Worlds API",
         "openapi": {
-          "source": "https://worlds-api.wazoo.dev/openapi.json",
+          "source": "https://data.wazoo.dev/openapi.json",
           "directory": "worlds-api"
         },
         "pages": [

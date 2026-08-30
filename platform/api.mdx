@@ -15,7 +15,7 @@ graph TD
         ResMgmt["Provision Worlds, API Tokens & Billing"]
     end
 
-    subgraph DataPlane ["Data Plane (worlds-api.wazoo.dev)"]
+    subgraph DataPlane ["Data Plane (data.wazoo.dev)"]
         TokenWzw["World Token (wzw_)"]
         GraphOps["SPARQL, Hybrid Search, Import/Export"]
     end
@@ -66,8 +66,8 @@ IDs.
 ## Data-plane boundary
 
 The Platform API does not execute SPARQL, search triples, import RDF, or export
-RDF. Those operations belong to the Worlds Data API (`worlds-api.wazoo.dev`),
-its generated client `@worlds/client`, or the embedded `@worlds/sdk`.
+RDF. Those operations belong to the Worlds Data API (`data.wazoo.dev`), its
+generated client `@worlds/client`, or the embedded `@worlds/sdk`.
 
 ## Related
 

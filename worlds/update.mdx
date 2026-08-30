@@ -20,7 +20,7 @@ The mutation path on the hosted API is the [import endpoint](/console/import).
 quads to import:
 
 ```bash
-curl -s -X POST "https://worlds-api.wazoo.dev/worlds/my-world-id/import" \
+curl -s -X POST "https://data.wazoo.dev/worlds/my-world-id/import" \
   -H "Authorization: Bearer $WORLDS_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -74,7 +74,7 @@ correction), the API records this as a preference item connected to the original
 fact.
 
 ```bash
-curl -s -X POST "https://worlds-api.wazoo.dev/worlds/my-world-id/import" \
+curl -s -X POST "https://data.wazoo.dev/worlds/my-world-id/import" \
   -H "Authorization: Bearer $WORLDS_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
