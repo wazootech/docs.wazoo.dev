@@ -1,11 +1,11 @@
 ---
 title: "Workspace"
 description:
-  "works is a Git-native CLI that manages multi-repository workspaces without
+  "wspace is a Git-native CLI that manages multi-repository workspaces without
   Git submodules."
 ---
 
-`works` (published as [`@wazoo/workspace`](https://jsr.io/@wazoo/workspace)) is
+`wspace` (published as [`@wazoo/workspace`](https://jsr.io/@wazoo/workspace)) is
 a Git-native CLI that manages multi-repository Wazoo workspaces without Git
 submodules. It consolidates workspace conventions into a manifest
 (`workspace.json`) and standardizes feature development with Git worktrees.
@@ -13,8 +13,8 @@ submodules. It consolidates workspace conventions into a manifest
 ## Overview
 
 Complex applications and agent infrastructure often span multiple independent
-Git repositories. `works` treats repository families as a synchronized ecosystem
-without submodules:
+Git repositories. `wspace` treats repository families as a synchronized
+ecosystem without submodules:
 
 - **Submodules**: Preserves independent Git history, remotes, package managers,
   and release surfaces for every repository.
@@ -28,13 +28,13 @@ without submodules:
 
 ## Repositories and packages
 
-| Package / Repository                                        | Purpose                                | Distribution                                              |
-| ----------------------------------------------------------- | -------------------------------------- | --------------------------------------------------------- |
-| [workspace-cli](https://github.com/wazootech/workspace-cli) | Workspace CLI implementation (`works`) | [JSR `@wazoo/workspace`](https://jsr.io/@wazoo/workspace) |
+| Package / Repository                                        | Purpose                                 | Distribution                                              |
+| ----------------------------------------------------------- | --------------------------------------- | --------------------------------------------------------- |
+| [workspace-cli](https://github.com/wazootech/workspace-cli) | Workspace CLI implementation (`wspace`) | [JSR `@wazoo/workspace`](https://jsr.io/@wazoo/workspace) |
 
 ## Installation
 
-Install the `works` CLI using Deno:
+Install the `wspace` CLI using Deno:
 
 <CodeGroup>
 ```sh Deno JSR
@@ -49,18 +49,18 @@ deno task build
 
 </CodeGroup>
 
-The JSR package installs a binary named `works`. Building from source writes the
-binary to `./works`.
+The JSR package installs a binary named `wspace`. Building from source writes
+the binary to `./wspace`.
 
 ## Command reference
 
-### `works check`
+### `wspace check`
 
 Performs a read-only health check across the manifest-managed repositories and
 linked feature worktrees.
 
 ```sh
-works check [--json]
+wspace check [--json]
 ```
 
 - Reports each repository as `CLEAN`, `DIRTY`, `FEATURE_CLEAN`, `DIVERGED`,
@@ -70,26 +70,26 @@ works check [--json]
 - Exits `0` when clean and `1` when any repository or worktree requires
   attention.
 
-### `works init`
+### `wspace init`
 
 Scaffolds a brand-new workspace in an empty directory: writes a schema v4
 `workspace.json` with optional `host`, `owner`, and seed entries, then creates
 `repos/`, `worktrees/`, and `secrets/`.
 
 ```sh
-works init [--host <host>] [--owner <owner>] [<repo...>]
+wspace init [--host <host>] [--owner <owner>] [<repo...>]
 ```
 
 - Refuses to overwrite an existing manifest.
-- Does not clone repositories; run `works install` after scaffolding.
+- Does not clone repositories; run `wspace install` after scaffolding.
 
-### `works install`
+### `wspace install`
 
 Clones repositories listed in the manifest that are missing from
 `repositoriesDirectory`.
 
 ```sh
-works install [<repo...>] [--json]
+wspace install [<repo...>] [--json]
 ```
 
 - Re-resolves the tree between passes, so newly detected sub-manifests bootstrap
@@ -98,12 +98,12 @@ works install [<repo...>] [--json]
   (`PATH_BLOCKED`).
 - Does not reset, overwrite, or clean up existing checkouts.
 
-### `works update`
+### `wspace update`
 
 Fetches remotes and fast-forwards clean default branches.
 
 ```sh
-works update [--json]
+wspace update [--json]
 ```
 
 - Skips repositories checked out on feature branches (`SKIP_FEATURE`) or
@@ -111,45 +111,45 @@ works update [--json]
 - Fast-forwards only clean default branches tracking remote branches without
   divergence.
 
-### `works worktree add`
+### `wspace worktree add`
 
 Creates a linked Git worktree under `worktrees/<repo>/<feature>` on branch
 `<feature>`.
 
 ```sh
-works worktree add <repo> <feature> [<commit-ish>]
+wspace worktree add <repo> <feature> [<commit-ish>]
 ```
 
 - Start point defaults to `origin/<default>` (resolved via `origin/HEAD`).
 - Validates repository and feature names against path traversal (`..`).
 - Attaches existing local branches when present.
 
-### `works worktree list`
+### `wspace worktree list`
 
 Lists active worktrees across all manifest repositories.
 
 ```sh
-works worktree list [--stale] [--json]
+wspace worktree list [--stale] [--json]
 ```
 
 - With `--stale`, filters to worktrees whose branch is fully merged into the
   default branch (or missing).
 
-### `works worktree remove`
+### `wspace worktree remove`
 
 Removes a feature worktree and prunes stale Git references.
 
 ```sh
-works worktree remove <repo> <feature>
+wspace worktree remove <repo> <feature>
 ```
 
-### `works env sync`
+### `wspace env sync`
 
 Synchronizes local environment files (`.env`, `.env.*`, `.dev.vars`) from a
 `secrets/` vault into checkouts and linked worktrees.
 
 ```sh
-works env sync [--dry-run] [--json]
+wspace env sync [--dry-run] [--json]
 ```
 
 - With `--dry-run`, previews file creation and overwrites without modifying
@@ -157,12 +157,12 @@ works env sync [--dry-run] [--json]
 - Applies owner-only permissions (`0600`) on copied files.
 - Rejects destination symlinks.
 
-### `works validate`
+### `wspace validate`
 
 Validates the manifest schema without touching the filesystem or invoking Git.
 
 ```sh
-works validate [--manifest <path>]
+wspace validate [--manifest <path>]
 ```
 
 ## Beginner worktree lifecycle
@@ -170,32 +170,32 @@ works validate [--manifest <path>]
 Execute all commands from the workspace root (the directory containing
 `workspace.json`):
 
-1. **Scaffold**: `works init` (new workspaces) or `works install` (existing
+1. **Scaffold**: `wspace init` (new workspaces) or `wspace install` (existing
    manifests)
-2. **Check status**: `works check`
-3. **Refresh baselines**: `works update`
+2. **Check status**: `wspace check`
+3. **Refresh baselines**: `wspace update`
 4. **Create worktree**:
    ```sh
    git -C repos/<repo> worktree add "$PWD/worktrees/<repo>/<feature>" -b <feature>
    ```
-   Or use `works`: `works worktree add <repo> <feature>`
+   Or use `wspace`: `wspace worktree add <repo> <feature>`
 5. **Develop**:
    ```sh
    cd worktrees/<repo>/<feature>
    # make changes, run tests, commit
    ```
-6. **Sync local secrets**: `works env sync --dry-run` then `works env sync`
+6. **Sync local secrets**: `wspace env sync --dry-run` then `wspace env sync`
 7. **Push and create pull request**:
    ```sh
    git push -u origin <feature>
    gh pr create
    ```
-8. **Find merged worktrees**: `works worktree list --stale`
-9. **Clean up**: `works worktree remove <repo> <feature>`
+8. **Find merged worktrees**: `wspace worktree list --stale`
+9. **Clean up**: `wspace worktree remove <repo> <feature>`
 
 ### Path resolution and worktree location
 
-- **Manifest discovery**: By default `works` looks for `workspace.json`, then
+- **Manifest discovery**: By default `wspace` looks for `workspace.json`, then
   `workspace.jsonc`, in the current directory. Pass `--manifest <path>` to point
   at a manifest elsewhere. Relative repository and worktree paths resolve
   relative to the directory containing the manifest, regardless of caller
@@ -205,8 +205,8 @@ Execute all commands from the workspace root (the directory containing
   like `worktrees/<repo>/<feature>` would nest the worktree inside
   `repos/<repo>/worktrees/`. Using `"$PWD/worktrees/<repo>/<feature>"` resolves
   `$PWD` from the workspace root before Git runs.
-- **Automatic path resolution with `works`**: Running
-  `works worktree add <repo> <feature>` resolves absolute paths under
+- **Automatic path resolution with `wspace`**: Running
+  `wspace worktree add <repo> <feature>` resolves absolute paths under
   `worktrees/<repo>/<feature>` automatically.
 
 ### Worktree dependency management
