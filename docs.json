@@ -31,10 +31,7 @@
     "eyebrows": "breadcrumbs"
   },
   "contextual": {
-    "options": [
-      "copy",
-      "view"
-    ]
+    "options": ["copy", "view"]
   },
   "seo": {
     "indexing": "all",
@@ -72,12 +69,7 @@
     "groups": [
       {
         "group": "Welcome",
-        "pages": [
-          "introduction",
-          "projects",
-          "manifesto",
-          "glossary"
-        ]
+        "pages": ["introduction", "projects", "manifesto", "glossary"]
       },
       {
         "group": "Platform",
@@ -93,10 +85,7 @@
       },
       {
         "group": "Skills",
-        "pages": [
-          "skills/wazoo",
-          "skills/wspace"
-        ]
+        "pages": ["skills/wazoo", "skills/wspace"]
       },
       {
         "group": "Ecosystem",
@@ -220,10 +209,7 @@
       },
       {
         "group": "Legal",
-        "pages": [
-          "privacy-policy",
-          "terms"
-        ]
+        "pages": ["privacy-policy", "terms"]
       },
       {
         "group": "Platform API",
