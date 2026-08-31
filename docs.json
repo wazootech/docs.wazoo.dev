@@ -85,7 +85,7 @@
       },
       {
         "group": "Skills",
-        "pages": ["skills/wazoo"]
+        "pages": ["skills/wazoo", "skills/wspace"]
       },
       {
         "group": "Ecosystem",

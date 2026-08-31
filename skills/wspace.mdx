@@ -1,0 +1,134 @@
+---
+title: "Wspace Skill"
+description:
+  "Drive multi-repo development with the wspace skill — worktrees, pipelines,
+  goal loops, and agent coordination."
+---
+
+```bash Quickstart
+npx skills add wazootech/workspace-cli --skill=wspace
+```
+
+## Overview
+
+The `wspace` skill encodes the workspace protocol for multi-repo development. It
+covers worktree isolation, pipeline execution, goal-loop automation, and agent
+coordination — the opinionated practices that apply to any multi-repo workspace
+built on `wspace`.
+
+## Prerequisites and installation
+
+Install the `wspace` skill into your agent workspace or global agent
+environment:
+
+<CodeGroup>
+
+```bash npm
+npx skills add wazootech/workspace-cli --skill=wspace
+```
+
+```bash pnpm
+pnpm dlx skills add wazootech/workspace-cli --skill=wspace
+```
+
+```bash yarn
+yarn dlx skills add wazootech/workspace-cli --skill=wspace
+```
+
+```bash bun
+bunx skills add wazootech/workspace-cli --skill=wspace
+```
+
+</CodeGroup>
+
+### Manual placement
+
+Place the `SKILL.md` file directly into your workspace:
+
+```bash
+mkdir -p .agents/skills/wspace
+curl -o .agents/skills/wspace/SKILL.md \
+  https://raw.githubusercontent.com/wazootech/workspace-cli/main/skills/wspace/SKILL.md
+```
+
+### Updating the skill
+
+<CodeGroup>
+
+```bash npm
+npx skills update wspace
+```
+
+```bash pnpm
+pnpm dlx skills update wspace
+```
+
+```bash yarn
+yarn dlx skills update wspace
+```
+
+```bash bun
+bunx skills update wspace
+```
+
+</CodeGroup>
+
+## What it covers
+
+### Pipeline
+
+A single logical change from baseline to PR, with checkable exit conditions at
+each step:
+
+1. **Anchor** — confirm baseline health with `wspace check`
+2. **Isolate** — create a worktree with `wspace worktree add`
+3. **Implement** — make the change inside the worktree
+4. **Validate** — run the repo's native check suite
+5. **Push** — open a PR and watch CI to green
+6. **Clean up** — remove the worktree after merge
+
+### Goal loop
+
+Drive many wayfinder tickets toward a destination:
+
+- **FRAME** — define the goal and success criteria
+- **SCAN** — discover available tickets
+- **CLAIM** — pick the next ticket to execute
+- **EXECUTE** — run the Pipeline for that ticket
+- **REFLECT** — record results, file blockers, loop or stop
+
+Stops only at hard boundaries: deploy/publish and human-in-the-loop tickets.
+
+### Launch hierarchy
+
+Agent startup is a race to the first useful action:
+
+- **Pre-seated cwd** (0 calls) — start in the worktree directly
+- **Handoff metadata** (1 call) — `target_dir` in prompt context
+- **Root discovery** (1 round trip) — `wspace check --json` learns everything
+
+### Token economy
+
+- Batch commands, never per-repo probes
+- Hand off plan artifacts between sessions
+- Leave per-repo syntax in reference files
+
+## When to use
+
+- Agent sessions in multi-repo workspaces
+- Parallel feature development across repos
+- Goal-oriented backlog execution ("clear the backlog", "goal mode")
+- CI-driven validation workflows
+
+## How it relates to the CLI
+
+The skill is not a thin wrapper around `wspace`. It encodes opinionated
+practices — worktree isolation, pipeline steps, goal-loop structure, hard
+boundaries — that apply to any multi-repo workspace. The CLI provides the
+mechanics; the skill provides the protocol.
+
+## Related links
+
+- [Wspace CLI Reference](/projects/workspace)
+- [Agents, Skills, and MCP](/integrations/agents-skills-mcp)
+- [Workspace CLI GitHub](https://github.com/wazootech/workspace-cli)
