@@ -87,11 +87,11 @@ await updateWorld({
 await deleteWorld({ path: { worldId: "support-knowledge" } });
 ```
 
-Creating a platform world provisions a per-World Turso database. Use
-`data.wazoo.dev`, the generated [`@worlds/client`](/projects/worlds), or the
-embedded [`@worlds/sdk`](/projects/worlds) for graph data operations inside that
+Creating a platform world provisions per-World storage inside the shared
+Cloudflare D1 data plane. Use `data.wazoo.dev`, the generated
+[`@worlds/client`](/projects/worlds), or the embedded
+[`@worlds/sdk`](/projects/worlds) for graph data operations inside that
 world.
-
 ## Platform API tokens
 
 ```typescript
