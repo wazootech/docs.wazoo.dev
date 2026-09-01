@@ -69,6 +69,21 @@ The Platform API does not execute SPARQL, search triples, import RDF, or export
 RDF. Those operations belong to the Worlds Data API (`data.wazoo.dev`), its
 generated client `@worlds/client`, or the embedded `@worlds/sdk`.
 
+The Data API runs inside a Cloudflare Worker. Graph data lives in a shared
+Cloudflare D1 database, partitioned by world. Each world gets a cached
+`WorldsSdk` instance backed by:
+
+- **`D1QuadStore`** — RDF triple storage with D1-backed hexastore indexes.
+- **`CloudflareSearchIndex`** — FTS5 keyword search projected into D1.
+- **`WazooSparqlEngine`** — the
+  [sparql-engine](https://github.com/wazootech/sparql-engine) evaluator, wired
+to a `D1RdfjsStore` that streams quads from D1 on each query (no in-memory
+hydration).
+
+SPARQL and search requests run against this per-world SDK instance inside the
+Worker isolate. See [Query](/worlds/query#hosted-engine-architecture) for
+details on the query path.
+
 ## Related
 
 - [TypeScript SDK](/platform/typescript-sdk) — typed client for the Platform

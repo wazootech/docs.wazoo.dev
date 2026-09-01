@@ -148,3 +148,29 @@ probability landscape to prefer the path that has historically yielded
 high-reward results.
 
 Feedback moves the system from deterministic reasoning to intentional agency.
+
+## Hosted engine architecture
+
+The hosted Worlds Data API at `data.wazoo.dev` runs a
+[WazooSparqlEngine](https://github.com/wazootech/sparql-engine) instance over a
+`D1RdfjsStore` — an RDF/JS Store adapter backed by a shared Cloudflare D1
+database.
+
+When a SPARQL request arrives:
+
+1. The Worker resolves the world's metadata from D1.
+2. A `WorldsSdk` is initialized (and cached per world) with:
+   - **`D1QuadStore`** — quad storage with D1-backed hexastore indexes.
+   - **`CloudflareSearchIndex`** — FTS5 keyword search projected into D1.
+   - **`WazooSparqlEngine`** — the SPARQL evaluator, wired to a `D1RdfjsStore`
+     that streams quads from D1 via paginated queries (no in-memory hydration).
+3. The engine evaluates the SPARQL query against quads streamed from D1.
+4. Results are bounded by configurable limits (`SPARQL_MAX_RESULTS`,
+   `SPARQL_TIMEOUT_MS`) and returned as a JSON SPARQL response.
+
+SPARQL UPDATE operations use a `D1Transaction` that buffers insertions and
+deletions, then commits them atomically in a single `db.batch()` call.
+
+This architecture keeps all graph data durable in D1 while running query
+evaluation in the Worker isolate. For self-hosting with other backends (LibSQL,
+PostgreSQL, SQLite), see [Self-host](/contribute/self-host).
