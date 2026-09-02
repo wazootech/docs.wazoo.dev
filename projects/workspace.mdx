@@ -20,9 +20,8 @@ ecosystem without submodules:
   and release surfaces for every repository.
 - **Git worktree isolation**: Isolates feature development into linked worktrees
   (`worktrees/<repo>/<feature>`), preventing dirty state in base checkouts.
-- **Conservative operations**: Mutating commands (`update`, `worktree`,
-  `env sync`) refuse to rewrite user history, touch dirty repositories, or alter
-  unmanaged checkouts.
+- **Conservative operations**: Mutating command (`update`) refuses to rewrite
+  user history, touch dirty repositories, or alter unmanaged checkouts.
 - **Project agnostic**: Configured via a manifest file (`workspace.json`) or
   custom `--manifest <path>`.
 
@@ -74,7 +73,7 @@ wspace check [--json]
 
 Scaffolds a brand-new workspace in an empty directory: writes a schema v4
 `workspace.json` with optional `host`, `owner`, and seed entries, then creates
-`repos/`, `worktrees/`, and `secrets/`.
+`repos/`.
 
 ```sh
 wspace init [--host <host>] [--owner <owner>] [<repo...>]
@@ -111,52 +110,6 @@ wspace update [--json]
 - Fast-forwards only clean default branches tracking remote branches without
   divergence.
 
-### `wspace worktree add`
-
-Creates a linked Git worktree under `worktrees/<repo>/<feature>` on branch
-`<feature>`.
-
-```sh
-wspace worktree add <repo> <feature> [<commit-ish>]
-```
-
-- Start point defaults to `origin/<default>` (resolved via `origin/HEAD`).
-- Validates repository and feature names against path traversal (`..`).
-- Attaches existing local branches when present.
-
-### `wspace worktree list`
-
-Lists active worktrees across all manifest repositories.
-
-```sh
-wspace worktree list [--stale] [--json]
-```
-
-- With `--stale`, filters to worktrees whose branch is fully merged into the
-  default branch (or missing).
-
-### `wspace worktree remove`
-
-Removes a feature worktree and prunes stale Git references.
-
-```sh
-wspace worktree remove <repo> <feature>
-```
-
-### `wspace env sync`
-
-Synchronizes local environment files (`.env`, `.env.*`, `.dev.vars`) from a
-`secrets/` vault into checkouts and linked worktrees.
-
-```sh
-wspace env sync [--dry-run] [--json]
-```
-
-- With `--dry-run`, previews file creation and overwrites without modifying
-  files.
-- Applies owner-only permissions (`0600`) on copied files.
-- Rejects destination symlinks.
-
 ### `wspace validate`
 
 Validates the manifest schema without touching the filesystem or invoking Git.
@@ -178,20 +131,21 @@ Execute all commands from the workspace root (the directory containing
    ```sh
    git -C repos/<repo> worktree add "$PWD/worktrees/<repo>/<feature>" -b <feature>
    ```
-   Or use `wspace`: `wspace worktree add <repo> <feature>`
 5. **Develop**:
    ```sh
    cd worktrees/<repo>/<feature>
    # make changes, run tests, commit
    ```
-6. **Sync local secrets**: `wspace env sync --dry-run` then `wspace env sync`
+6. **Sync local secrets**: copy local credentials (`.env` files, tokens) into
+   the checkout manually; they are never committed or synced by `wspace`
 7. **Push and create pull request**:
    ```sh
    git push -u origin <feature>
    gh pr create
    ```
-8. **Find merged worktrees**: `wspace worktree list --stale`
-9. **Clean up**: `wspace worktree remove <repo> <feature>`
+8. **Find merged worktrees**: `git -C repos/<repo> worktree list --porcelain`
+9. **Clean up**:
+   `git -C repos/<repo> worktree remove "$PWD/worktrees/<repo>/<feature>"`
 
 ### Path resolution and worktree location
 
@@ -205,9 +159,6 @@ Execute all commands from the workspace root (the directory containing
   like `worktrees/<repo>/<feature>` would nest the worktree inside
   `repos/<repo>/worktrees/`. Using `"$PWD/worktrees/<repo>/<feature>"` resolves
   `$PWD` from the workspace root before Git runs.
-- **Automatic path resolution with `wspace`**: Running
-  `wspace worktree add <repo> <feature>` resolves absolute paths under
-  `worktrees/<repo>/<feature>` automatically.
 
 ### Worktree dependency management
 
@@ -236,8 +187,6 @@ for shorthand expansion:
   "schemaVersion": 4,
   "owner": "acme",
   "repositoriesDirectory": "repos",
-  "worktreesDirectory": "worktrees",
-  "secretsDirectory": "secrets",
   "repositories": [
     "workspace-cli",
     "worlds-client-ts",
@@ -254,9 +203,7 @@ for shorthand expansion:
   owner. `host` defaults to `github.com`.
 - **Object entry**: `{ "name", "url" }` (any Git host) or `{ "name", "owner" }`
   (host shorthand). `url` and `owner` are mutually exclusive.
-- **Directories**: `repositoriesDirectory`, `worktreesDirectory`, and
-  `secretsDirectory` (renamed from `vaultDirectory` in schema v4) default to
-  `repos`, `worktrees`, and `secrets`. Relative paths anchor to the folder
-  containing the manifest file.
+- **Directories**: `repositoriesDirectory` defaults to `repos`. Relative paths
+  anchor to the folder containing the manifest file.
 - **Names**: a repository checks out at `<repositoriesDirectory>/<name>`; names
   reject slashes and path traversal, and must be unique across the manifest.
