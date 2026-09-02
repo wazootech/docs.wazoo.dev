@@ -81,7 +81,8 @@ A single logical change from baseline to PR, with checkable exit conditions at
 each step:
 
 1. **Anchor** — confirm baseline health with `wspace check`
-2. **Isolate** — create a worktree with `wspace worktree add`
+2. **Isolate** — create a worktree with `git worktree add` (see the workspace
+   lifecycle in the [CLI reference](/projects/workspace))
 3. **Implement** — make the change inside the worktree
 4. **Validate** — run the repo's native check suite
 5. **Push** — open a PR and watch CI to green
