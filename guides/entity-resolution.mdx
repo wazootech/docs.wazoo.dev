@@ -93,9 +93,10 @@ Sarah Chen is the Sarah your context means. This is the graph-context signal of
 
 ### Ground intent in the ontology
 
-Before an agent queries, retrieve the world's ontology with the
-[`discoverSchema`](/integrations/ai-sdk) tool and map the mention to a concrete
-class and predicate. Exact terms beat fuzzy matches.
+Before an agent queries, discover the world's ontology with bounded
+`executeSparql` queries (see [grounding agents in ontologies](/worlds/query))
+and map the mention to a concrete class and predicate. Exact terms beat fuzzy
+matches.
 
 ## Pattern B: resolve at write time (Hindsight-style)
 

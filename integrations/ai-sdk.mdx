@@ -60,7 +60,6 @@ const client = new WorldsSdk({
 
 const tools = createTools({
   client,
-  sources: ["my-world"],
 });
 
 const { text } = await generateText({
@@ -81,37 +80,35 @@ individually:
 
 ```typescript
 import {
-  createDiscoverSchemaTool,
   createExecuteSparqlTool,
-  createSearchEntitiesTool,
+  createSearchWorldTool,
   createImportRdfTool,
   createExportRdfTool,
+  createReindexWorldTool,
 } from "@wazoo/tools";
 
 // client is the @worlds/sdk instance from the usage example above.
-const discoverSchema = createDiscoverSchemaTool(client, {
-  sources: ["my-world"],
-});
 const executeSparql = createExecuteSparqlTool(client);
-const searchEntities = createSearchEntitiesTool(client);
+const searchWorld = createSearchWorldTool(client);
 const importRdf = createImportRdfTool(client);
 const exportRdf = createExportRdfTool(client);
+const reindexWorld = createReindexWorldTool(client);
 
 const tools = {
-  discoverSchema,
   executeSparql,
-  searchEntities,
+  searchWorld,
   importRdf,
   exportRdf,
+  reindexWorld,
 };
 ```
 
 ### Tool reference
 
-| Tool             | Description                                                |
-| :--------------- | :--------------------------------------------------------- |
-| `executeSparql`  | Direct execution of SPARQL queries (read-only by default). |
-| `searchEntities` | Vector and keyword search for entities within a graph.     |
-| `discoverSchema` | Explore the ontology and schema of a specific world.       |
-| `importRdf`      | Utility for ingesting RDF triples into a world graph.      |
-| `exportRdf`      | Utility for exporting RDF triples from a world graph.      |
+| Tool            | Description                                                     |
+| :-------------- | :-------------------------------------------------------------- |
+| `executeSparql` | Direct execution of SPARQL queries (read-only by default).      |
+| `searchWorld`   | Semantic and keyword search across the knowledge graph.         |
+| `importRdf`     | Utility for ingesting RDF triples into a world graph.           |
+| `exportRdf`     | Utility for exporting RDF triples from a world graph.           |
+| `reindexWorld`  | Rebuild derived search structures (repair, audit, bulk-import). |
