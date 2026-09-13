@@ -56,9 +56,8 @@ const client = new WorldsSdk({
   sparqlEngine: new WazooSparqlEngine({ store }),
 });
 
-const { executeSparql, searchEntities } = createTools({
+const { executeSparql, searchWorld } = createTools({
   client,
-  sources: ["my-world"],
 });
 
 // Create a Mastra agent with Worlds tools
@@ -68,7 +67,7 @@ const agent = new Agent({
   model: openai("gpt-4o"),
   tools: {
     executeSparql,
-    searchEntities,
+    searchWorld,
   },
 });
 
@@ -84,14 +83,14 @@ individually:
 ```typescript
 import { Agent } from "@mastra/core/agent";
 import { openai } from "@ai-sdk/openai";
-import { createSearchEntitiesTool } from "@wazoo/tools";
+import { createSearchWorldTool } from "@wazoo/tools";
 
 // client is the @worlds/sdk instance from the usage example above.
 const agent = new Agent({
   name: "SearchAgent",
   model: openai("gpt-4o"),
   tools: {
-    search: createSearchEntitiesTool(client),
+    searchWorld: createSearchWorldTool(client),
   },
 });
 ```

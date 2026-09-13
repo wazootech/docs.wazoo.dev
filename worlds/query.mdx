@@ -130,10 +130,11 @@ retrieves the current state.
 
 ### Grounding agents in ontologies
 
-By using the `discoverSchema` tool from `@wazoo/tools`, agents retrieve the
-world's ontology before attempting to query it.
+By running bounded SELECT queries with the `executeSparql` tool from
+`@wazoo/tools` (e.g., `SELECT ?class WHERE { ?class a rdfs:Class } LIMIT 50`),
+agents discover the world's ontology before attempting to query it.
 
-1.  Discovery: Agent retrieves the world's ontology.
+1.  Discovery: Agent discovers the world's ontology via SPARQL.
 2.  Mapping: Agent maps intent to specific RDF classes and predicates.
 3.  Querying: Agent executes precise SPARQL queries instead of depending solely
     on vector similarity.
