@@ -9,13 +9,13 @@ required, and billing is not enforced.
 
 ## Private beta pricing
 
-- **Free access**: Access to hosted Worlds, the Wazoo Console, and the Platform
-  API is completely free during private beta.
-- **Tracked, not metered**: Resource accounting tracks database operations,
-  import bytes, query durations, and storage bytes, but usage limits are not
-  enforced and live payment is not required.
-- **No self-service signup**: Private beta access is managed via allowlist. Sign
-  up at [wazoo.dev/beta](https://wazoo.dev/beta).
+- Free access: Access to hosted Worlds, the Wazoo Console, and the Platform API
+  is free during private beta.
+- Tracked, not metered: Resource accounting tracks database operations, import
+  bytes, query durations, and storage bytes, but usage limits are not enforced
+  and live payment is not required.
+- No self-service signup: Private beta access is managed via allowlist. Sign up
+  at [wazoo.dev/beta](https://wazoo.dev/beta).
 
 ## Billing architecture
 
@@ -30,10 +30,10 @@ To maintain parity with [Private Beta status](/platform/private-beta), active
 platform limitations include:
 
 - Data-plane API stability subject to minor updates before general availability.
-- Selective availability of console features.
+- Selective availability of Console features.
 - Account onboarding restricted to allowlisted users via manual invite.
-- Search index updates require triggering a manual [reindex](/console/reindex)
-  after large imports.
+- Hosted imports rebuild the full-text projection. The manual
+  [Reindex](/console/reindex) action is not currently a working repair path.
 
 Commercial pricing tiers and self-service plans will be announced prior to
 general availability.

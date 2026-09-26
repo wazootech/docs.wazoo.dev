@@ -15,20 +15,22 @@ The import page lets you upload graph data into a world.
 - JSON quads: an array of objects with `subject`, `predicate`, and `object`
   fields, and an optional `graph` field.
 - Plain text: one chunk of text per line. Each line becomes a text chunk indexed
-  for full-text and vector search.
+  for full-text search.
 
 ## Import a file
 
 1. Open the [Wazoo Console](https://console.wazoo.dev).
 2. Select a world.
-3. Click **Import** in the sidebar.
+3. Click Import in the sidebar.
 4. Select a `.json`, `.txt`, or `.csv` file.
-5. Click **Execute Import**.
+5. Click Execute Import.
 
 The console parses the file and shows a preview before importing. After the
 import completes, the console reports the number of quads or text chunks added.
-If search results look stale after a large import, [reindex](/console/reindex)
-the world.
+In the hosted Cloudflare data plane, a successful import also rebuilds the
+full-text search projection. You do not normally need a separate reindex after
+an import. The manual [Reindex](/console/reindex) action is not currently a
+working repair path.
 
 ## Merge behavior
 
