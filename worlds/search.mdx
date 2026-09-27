@@ -1,24 +1,22 @@
 ---
 title: "Search"
-description: "Semantic disambiguation and hybrid retrieval."
+description:
+  "How Worlds searches graph data and the current hosted-beta limits."
 ---
 
 Before reasoning about facts, agents must find the correct starting point.
-Hybrid search disambiguates natural language queries and resolves them to the
-correct semantic entity (IRI) before executing symbolic logic.
 
-## Why not only vector search?
+## Hosted private-beta status
 
-Standard vector search retrieves semantically similar text, but agents require
-factual precision. If an agent searches for "Ethan's manager", a pure vector
-query might return "Gregory's manager" because their text embeddings are nearly
-identical in vector space.
+The hosted Worlds Data API currently uses keyword full-text search. It does not
+have an embedding provider configured, so vector ranking and the hybrid flow
+described below are not active in the hosted beta.
 
-## Hybrid retrieval
+## Hybrid retrieval design
 
-Worlds combines three signals for accurate retrieval. Hybrid search layers
-keyword matching and structural graph filters over vector embeddings, so the
-agent resolves the exact item it needs.
+When vector search is configured, Worlds can combine keyword matching, vector
+similarity, and graph filters to resolve a natural-language query to a semantic
+entity (IRI) before executing symbolic logic.
 
 | Signal        | Technique                    | What it captures         |
 | :------------ | :--------------------------- | :----------------------- |
@@ -28,8 +26,8 @@ agent resolves the exact item it needs.
 
 ## Reciprocal rank fusion
 
-Results from each signal are merged using Reciprocal Rank Fusion (RRF), an
-algorithm that produces a single relevance ranking:
+When multiple signals are available, Worlds merges their rankings using
+Reciprocal Rank Fusion (RRF):
 
 $$score = \sum_{d \in D} \frac{1}{60 + rank(d)}$$
 
@@ -38,8 +36,8 @@ noise from any single signal.
 
 ## Execute a search
 
-Use the data-plane search endpoint to perform hybrid retrieval across a world.
-Data-plane requests authenticate with a `wzw_` world token:
+Use the data-plane search endpoint for keyword search in the hosted private
+beta. Data-plane requests authenticate with a `wzw_` world token:
 
 ```bash
 curl -s -X POST "https://data.wazoo.dev/worlds/my-world-id/search" \

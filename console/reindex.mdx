@@ -1,34 +1,23 @@
 ---
 title: "Reindex"
-description: "Rebuild the search index for a world from the Console."
+description: "How search indexing works for a world."
 ---
 
-Reindexing rebuilds the full-text and vector search indexes for a world. Use
-this after bulk [imports](/console/import) or when search results seem stale.
-For how the [search index](/worlds/search) is built, see the Worlds search docs.
+Worlds stores RDF quads as canonical data. The hosted Cloudflare data plane
+derives a full-text search projection from those quads. A successful import
+rebuilds that projection before the import response returns, so you do not
+normally need to reindex after an import.
 
-## When to reindex
+## Current status
 
-- After a large import
-- When search results do not reflect recent changes
-- If the search index state is unknown
+The Console's Reindex World action currently returns `completed` without running
+a rebuild. Do not use it to repair stale search results.
 
-## Reindex a world
+The hosted private-beta data plane does not configure an embedding provider, so
+reindexing does not currently rebuild vector embeddings.
 
-1. Open the [Wazoo Console](https://console.wazoo.dev).
-2. Select a world.
-3. Click **Reindex World** in the world header.
+## If search is stale
 
-Reindexing is asynchronous. The button shows a confirmation when the reindex
-completes. Depending on world size, reindexing can take from seconds to minutes.
-
-## What happens
-
-Reindexing processes every triple in the world and:
-
-1. Updates the full-text search index.
-2. Recomputes vector embeddings for text literals.
-3. Rebuilds the graph structure index.
-
-The world remains available for queries during reindexing. SPARQL queries
-continue to work off the underlying graph store.
+1. Verify that the expected quads exist with a SPARQL query.
+2. If SPARQL returns the quads but search does not, contact the Wazoo team.
+   Retrying the Reindex action will not refresh the search projection.

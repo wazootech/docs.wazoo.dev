@@ -61,13 +61,16 @@ The JSON file must contain an array of objects, each with `subject`,
 
 ### Search returns no results
 
-The search index may need to be rebuilt. Go to the Reindex page for your world
-and trigger a reindex. See [Search](/worlds/search) for how the index is built.
+Run a SPARQL query to verify that the expected quads exist. If they are missing,
+import the data again. See [Search](/worlds/search) for the search behavior
+available in the hosted beta.
 
 ### Search results are stale
 
-The index is rebuilt asynchronously. If you recently imported data and search
-results do not reflect it, trigger a [reindex](/console/reindex).
+A successful hosted import rebuilds the full-text search projection. The manual
+[Reindex](/console/reindex) action currently returns `completed` without
+rebuilding. If SPARQL finds the quads but search does not, contact the Wazoo
+team rather than retrying Reindex.
 
 ## Verify a world is working
 
@@ -75,5 +78,5 @@ results do not reflect it, trigger a [reindex](/console/reindex).
 2. Run `SELECT * WHERE { ?s ?p ?o } LIMIT 10` in the SPARQL editor.
 3. If results appear, the world is online and queryable.
 
-If the query returns results but search does not, trigger a
-[reindex](/console/reindex).
+If the query returns results but search does not, follow the instructions in
+[Search results are stale](#search-results-are-stale).

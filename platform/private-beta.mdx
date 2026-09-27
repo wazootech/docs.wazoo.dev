@@ -20,8 +20,8 @@ passcode (WorkOS).
 - Console: manage Worlds, tokens, usage, and billing at `console.wazoo.dev`.
 - Wazoo Platform API: provision Worlds and manage platform resources
   programmatically. See the [Platform API reference](/platform/api).
-- Hosted Worlds: persistent, queryable knowledge graphs with SPARQL and vector
-  search.
+- Hosted Worlds: persistent, queryable knowledge graphs with SPARQL and
+  full-text search.
 - World Tokens: API keys scoped to individual worlds for data-plane access.
 
 ## Beta status
@@ -41,8 +41,10 @@ These are active limitations during the private beta:
 - No self-service signup: access is managed through a manual allowlist.
 - No billing enforcement: usage is tracked but not metered. Limits may be
   adjusted.
-- Search index staleness: after imports, trigger a [reindex](/console/reindex)
-  to refresh search results.
+- Search: the hosted beta uses full-text search only; an embedding provider is
+  not configured. Successful imports rebuild the full-text projection, but the
+  manual [Reindex](/console/reindex) action currently reports completion without
+  rebuilding.
 - Mobile responsiveness: the console is optimized for desktop browsers.
 
 ## Privacy
