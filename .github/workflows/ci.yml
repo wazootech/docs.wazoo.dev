@@ -20,5 +20,11 @@ jobs:
           cache: npm
       - run: npm install
       - run: npm run format:check
+      - name: Reject legacy platform identity names
+        run: |
+          if grep -R -n -E --include='*.md' --include='*.mdx' --exclude-dir=.git --exclude-dir=node_modules --exclude-dir=.next '\buid\b|world_uid|worldUid|_uid\b' . || grep -n -E '\buid\b|world_uid|worldUid|_uid\b' docs.json openapi/*.json; then
+            echo "Legacy platform identity found."
+            exit 1
+          fi
       - run: npm run check
       - run: npm run broken-links

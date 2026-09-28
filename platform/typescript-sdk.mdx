@@ -64,19 +64,19 @@ console.log(data?.worlds);
 // Create a world
 const created = await createWorld({
   body: {
-    worldId: "support-knowledge",
     world: { displayName: "Support Knowledge", region: "auto" },
   },
 });
+const worldId = created.data!.world.id;
 
 // Get a world by ID
 const world = await getWorld({
-  path: { worldId: "support-knowledge" },
+  path: { worldId },
 });
 
 // Update display name
 await updateWorld({
-  path: { worldId: "support-knowledge" },
+  path: { worldId },
   body: {
     updateMask: "displayName",
     world: { displayName: "Support Knowledge Base" },
@@ -84,8 +84,11 @@ await updateWorld({
 });
 
 // Soft-delete (recoverable for 30 days)
-await deleteWorld({ path: { worldId: "support-knowledge" } });
+await deleteWorld({ path: { worldId } });
 ```
+
+`world.id` is the immutable `w_<UUIDv4>` ID minted by the Worlds API. Reuse it
+unchanged as the `worldId` path value.
 
 Creating a platform world provisions per-World graph storage. Use
 `data.wazoo.dev`, the generated [`@worlds/client`](/projects/worlds), or the
@@ -114,8 +117,10 @@ const created = await createPlatformToken({
 });
 console.log(created.data?.token); // wzp_...
 
-// Revoke a token by name
-await deletePlatformToken({ path: { tokenName: "my-read-token" } });
+// Revoke a token by the id returned when it was created
+const tokenId = created.data?.id;
+if (!tokenId) throw new Error("Token creation failed");
+await deletePlatformToken({ path: { tokenId } });
 ```
 
 ## World auth tokens
@@ -131,16 +136,16 @@ import {
 } from "@wazoo/client";
 
 const { data } = await listWorldTokens({
-  path: { worldId: "support-knowledge" },
+  path: { worldId },
 });
 
 const created = await createWorldToken({
-  path: { worldId: "support-knowledge" },
+  path: { worldId },
 });
 console.log(created.data?.token); // one-time secret
 
 await deleteWorldToken({
-  path: { worldId: "support-knowledge", tokenUid: created.data!.token.uid },
+  path: { worldId, tokenId: created.data!.token.id },
 });
 ```
 
@@ -150,12 +155,12 @@ await deleteWorldToken({
 import { getWorldUsage, getWorldLimits } from "@wazoo/client";
 
 const usage = await getWorldUsage({
-  path: { worldId: "support-knowledge" },
+  path: { worldId },
 });
 console.log(usage.data?.usage.total);
 
 const limits = await getWorldLimits({
-  path: { worldId: "support-knowledge" },
+  path: { worldId },
 });
 ```
 
@@ -165,7 +170,7 @@ const limits = await getWorldLimits({
 import { getWorldBilling } from "@wazoo/client";
 
 const billing = await getWorldBilling({
-  path: { worldId: "support-knowledge" },
+  path: { worldId },
 });
 console.log(billing.data?.billing.state);
 ```

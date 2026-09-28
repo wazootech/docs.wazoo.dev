@@ -1,0 +1,2040 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Worlds API",
+    "version": "0.1.0",
+    "description": "Data-plane API for Wazoo Worlds — search, SPARQL, import, export, and World lifecycle."
+  },
+  "servers": [
+    {
+      "url": "https://data.wazoo.dev",
+      "description": "Worlds API"
+    }
+  ],
+  "security": [
+    {
+      "bearerWorldsToken": []
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerWorldsToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "wzw",
+        "description": "Worlds API data-plane token."
+      }
+    },
+    "schemas": {
+      "WorldResource": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^w_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+            "description": "Immutable ID minted by worlds-api, e.g. w_<uuid>."
+          },
+          "displayName": {
+            "type": "string",
+            "description": "User-facing display name for the world. Set on creation or update."
+          },
+          "state": {
+            "type": "string",
+            "description": "Lifecycle state: active, deleted, or suspended. Deleted worlds enter a 30-day grace period before permanent purge."
+          },
+          "storage": {
+            "type": "string",
+            "enum": ["d1"],
+            "description": "Storage backend for the world. All worlds share a single Cloudflare D1 database, separated by world_id."
+          },
+          "embeddingModel": {
+            "type": "string",
+            "description": "Embedding model identifier used for vector search indexing, e.g. openai/text-embedding-3-small."
+          },
+          "chunkSize": {
+            "type": "integer",
+            "description": "Maximum number of RDF quads per chunk when indexing for vector search."
+          },
+          "topK": {
+            "type": "integer",
+            "description": "Default number of top search results to return when the caller does not override."
+          },
+          "minScore": {
+            "type": "number",
+            "description": "Default minimum relevance score (0–1) for search results. Results below this threshold are omitted."
+          },
+          "createTime": {
+            "type": "string",
+            "description": "ISO 8601 timestamp when the world was created."
+          },
+          "updateTime": {
+            "type": "string",
+            "description": "ISO 8601 timestamp when the world was last updated."
+          },
+          "deleteTime": {
+            "type": "string",
+            "description": "ISO 8601 timestamp when the world was soft-deleted. Null if not deleted."
+          },
+          "expireTime": {
+            "type": "string",
+            "description": "ISO 8601 timestamp when the world will be permanently purged after the grace period. Null if not scheduled for purge."
+          }
+        },
+        "required": [
+          "id",
+          "displayName",
+          "state",
+          "storage",
+          "embeddingModel",
+          "chunkSize",
+          "topK",
+          "minScore",
+          "createTime",
+          "updateTime"
+        ]
+      },
+      "CreateWorldRequest": {
+        "type": "object",
+        "properties": {
+          "displayName": {
+            "type": "string",
+            "description": "User-facing display name for the new world."
+          },
+          "embeddingModel": {
+            "type": "string",
+            "description": "Embedding model to use for vector search. Defaults to the platform default."
+          },
+          "chunkSize": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "description": "Maximum quads per chunk for vector search indexing. Defaults to the platform default."
+          },
+          "topK": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "description": "Default number of top results for search queries against this world."
+          },
+          "minScore": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Default minimum relevance score (0–1) for search results in this world."
+          }
+        }
+      },
+      "UpdateWorldRequest": {
+        "type": "object",
+        "properties": {
+          "displayName": {
+            "type": "string",
+            "minLength": 1,
+            "description": "New display name for the world."
+          },
+          "embeddingModel": {
+            "type": "string",
+            "description": "New embedding model. Changing this triggers a reindex of existing data."
+          },
+          "chunkSize": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "description": "New chunk size for vector search indexing."
+          },
+          "topK": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "description": "New default top-K for search queries."
+          },
+          "minScore": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "New default minimum score threshold for search results."
+          }
+        }
+      },
+      "ImportResponse": {
+        "type": "object",
+        "properties": {
+          "imported": {
+            "type": "object",
+            "properties": {
+              "quads": {
+                "type": "integer",
+                "description": "Number of RDF quads successfully imported."
+              },
+              "chunks": {
+                "type": "integer",
+                "description": "Number of vector search chunks created from the imported quads."
+              }
+            },
+            "required": ["quads", "chunks"],
+            "description": "Imported quad and chunk counts."
+          }
+        },
+        "required": ["imported"]
+      },
+      "ImportRequest": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "string",
+            "minLength": 1,
+            "description": "RDF payload to import. The format must match the contentType field."
+          },
+          "contentType": {
+            "type": "string",
+            "default": "text/turtle",
+            "description": "MIME type of the import payload. Supported values: text/turtle, application/n-quads, application/n-triples, application/trig, application/ld+json. Defaults to text/turtle."
+          }
+        },
+        "required": ["data"]
+      },
+      "ExportQuadsResponse": {
+        "type": "object",
+        "properties": {
+          "quads": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Quad"
+            },
+            "description": "Page of exported RDF quads."
+          },
+          "nextOffset": {
+            "type": "integer",
+            "description": "Offset for the next page. Omit this field when there are no more results."
+          }
+        },
+        "required": ["quads"]
+      },
+      "Quad": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Stable content-addressed identifier for this RDF quad."
+          },
+          "subject": {
+            "type": "string",
+            "description": "RDF subject URI."
+          },
+          "predicate": {
+            "type": "string",
+            "description": "RDF predicate URI."
+          },
+          "object": {
+            "type": "string",
+            "description": "RDF object URI or literal value."
+          },
+          "graph": {
+            "type": "string",
+            "description": "Named graph URI. Null when the quad belongs to the default graph."
+          }
+        },
+        "required": ["id", "subject", "predicate", "object"]
+      },
+      "SearchResponse": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SearchResult"
+            },
+            "description": "Ranked search results, best first."
+          },
+          "mode": {
+            "type": "string",
+            "enum": ["semantic", "keyword", "hybrid", "fallback"],
+            "description": "Search mode that actually ran: keyword (full-text), semantic (vector), hybrid (both), or fallback (LIKE) when the primary engine is unavailable."
+          }
+        },
+        "required": ["results", "mode"]
+      },
+      "SearchResult": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Stable deterministic identifier for the matched quad and text (shared across backends), used for ranked-list evaluation and deduplication."
+          },
+          "subject": {
+            "type": "string",
+            "description": "RDF subject URI identifying the matched resource, e.g. https://example.org/entity/42."
+          },
+          "predicate": {
+            "type": "string",
+            "description": "RDF predicate URI describing the relationship, e.g. http://schema.org/name."
+          },
+          "graph": {
+            "type": "string",
+            "description": "Named graph URI the quad belongs to. Absent when the world uses a default graph."
+          },
+          "content": {
+            "type": "string",
+            "description": "Text content of the matched quad, used for display and snippet generation. The single text field replacing the legacy object field."
+          },
+          "score": {
+            "type": "number",
+            "nullable": true,
+            "description": "Relevance score from the search engine on the normalized 0–1 scale (1.0 = best). Null for fallback LIKE search results."
+          },
+          "scoreType": {
+            "type": "string",
+            "enum": ["rrf", "cosine", "unranked"],
+            "description": "Scoring family the score expresses: rrf (reciprocal rank fusion, normalized), cosine (vector similarity), or unranked (fallback results carry no ordering meaning)."
+          }
+        },
+        "required": [
+          "id",
+          "subject",
+          "predicate",
+          "content",
+          "score",
+          "scoreType"
+        ]
+      },
+      "SearchRequest": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Natural language or keyword search query to find matching content in the world."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 20,
+            "description": "Maximum number of results to return (1–100). Defaults to 20. The response is capped at this value after ranking; the engine's internal candidate pool is at least this large."
+          },
+          "minScore": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Override the world's minimum relevance score on the normalized 0–1 scale (1.0 = best). Results below this threshold are omitted after ranking."
+          },
+          "filter": {
+            "$ref": "#/components/schemas/SearchFilter"
+          }
+        },
+        "required": ["query"]
+      },
+      "SearchFilter": {
+        "type": "object",
+        "properties": {
+          "include": {
+            "type": "object",
+            "properties": {
+              "subjects": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Only match quads whose subject is in this list. Applied before ranking."
+              },
+              "predicates": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Only match quads whose predicate is in this list. Applied before ranking."
+              },
+              "graphs": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Only match quads whose graph is in this list. Applied before ranking."
+              }
+            },
+            "description": "Include allowlist: only quads matching these exact subject/predicate/graph values are candidates."
+          },
+          "exclude": {
+            "type": "object",
+            "properties": {
+              "subjects": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Exclude quads whose subject is in this list. Applied before ranking."
+              },
+              "predicates": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Exclude quads whose predicate is in this list. Applied before ranking."
+              },
+              "graphs": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Exclude quads whose graph is in this list. Applied before ranking."
+              }
+            },
+            "description": "Exclude denylist: quads matching these exact subject/predicate/graph values are not candidates."
+          }
+        },
+        "description": "Include/exclude quad filters applied before ranking (SDK QuadFilter semantics)."
+      },
+      "SparqlRequest": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "description": "SPARQL 1.1 query string. Supports SELECT, ASK, and SPARQL UPDATE (INSERT/DELETE). SELECT results are limited by the server-configured maximum."
+          }
+        },
+        "required": ["query"]
+      },
+      "ApiKeyCreateResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the created API key."
+          },
+          "token": {
+            "type": "string",
+            "description": "The full bearer token (wzw format). Displayed once on creation — store it securely."
+          },
+          "name": {
+            "type": "string",
+            "description": "Human-readable label for the key."
+          },
+          "namespace": {
+            "type": "string",
+            "description": "Namespace the key is scoped to."
+          },
+          "worldId": {
+            "type": "string",
+            "nullable": true,
+            "pattern": "^w_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+            "description": "World ID the key is scoped to, or null if the key has namespace-wide access."
+          },
+          "createTime": {
+            "type": "string",
+            "description": "ISO 8601 timestamp when the key was created."
+          }
+        },
+        "required": [
+          "id",
+          "token",
+          "name",
+          "namespace",
+          "worldId",
+          "createTime"
+        ]
+      },
+      "ApiKeyCreateRequest": {
+        "type": "object",
+        "properties": {
+          "namespace": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Namespace to scope the API key to. Required. The key can only access worlds within this namespace."
+          },
+          "worldId": {
+            "type": "string",
+            "pattern": "^w_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+            "description": "Optional world ID to scope the key to a single world. Omit to allow access to all worlds in the namespace."
+          },
+          "name": {
+            "type": "string",
+            "description": "Human-readable label for the key. Helps identify keys in the list."
+          },
+          "scopes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["data:read", "data:write"]
+            },
+            "description": "Optional scope grant. Defaults to [\"data:read\", \"data:write\"]. Use [\"data:read\"] for read-only keys."
+          }
+        },
+        "required": ["namespace"]
+      },
+      "ApiKeyResource": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the API key."
+          },
+          "name": {
+            "type": "string",
+            "description": "Human-readable label for the key."
+          },
+          "namespace": {
+            "type": "string",
+            "description": "Namespace the key is scoped to."
+          },
+          "worldId": {
+            "type": "string",
+            "pattern": "^w_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+            "description": "World ID the key is scoped to, or absent for namespace-wide keys."
+          },
+          "scopes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Granted scopes, e.g. [\"data:read\", \"data:write\"]."
+          },
+          "createTime": {
+            "type": "string",
+            "description": "ISO 8601 timestamp when the key was created."
+          }
+        },
+        "required": ["id", "name", "namespace", "scopes", "createTime"]
+      }
+    },
+    "parameters": {}
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "security": [],
+        "tags": ["Health"],
+        "operationId": "getHealth",
+        "summary": "Get health",
+        "description": "Liveness probe. Returns 200 when the service can reach its database; 503 when the database is unreachable.",
+        "x-mint": {
+          "metadata": {
+            "title": "Get health"
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Service is healthy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": ["ok"]
+                    }
+                  },
+                  "required": ["status"]
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service is degraded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": ["degraded"]
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["status", "error"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ready": {
+      "get": {
+        "security": [],
+        "tags": ["Health"],
+        "operationId": "getReadiness",
+        "summary": "Get readiness",
+        "description": "Readiness probe. Returns 200 only when the control-plane schema has the canonical columns.",
+        "x-mint": {
+          "metadata": {
+            "title": "Get readiness"
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Service is ready",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": ["ready"]
+                    },
+                    "schema": {
+                      "type": "string",
+                      "enum": ["canonical"]
+                    }
+                  },
+                  "required": ["status", "schema"]
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service is not ready",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": ["not_ready"]
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["status", "error"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/worlds": {
+      "get": {
+        "tags": ["Worlds"],
+        "operationId": "listWorlds",
+        "summary": "List worlds",
+        "description": "List all worlds accessible to the authenticated token. Admin tokens see all worlds; namespace-scoped tokens see only their namespace's worlds.",
+        "x-mint": {
+          "metadata": {
+            "title": "List worlds"
+          }
+        },
+        "security": [
+          {
+            "bearerWorldsToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "World list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "worlds": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/WorldResource"
+                      }
+                    }
+                  },
+                  "required": ["worlds"]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Worlds"],
+        "operationId": "createWorld",
+        "summary": "Create world",
+        "description": "Create a new world. Allocates a new world_id in the shared D1 database and initializes the search and vector indexes.",
+        "x-mint": {
+          "metadata": {
+            "title": "Create world"
+          }
+        },
+        "security": [
+          {
+            "bearerWorldsToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateWorldRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created World",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorldResource"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string"
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      },
+                      "required": ["code", "message"]
+                    }
+                  },
+                  "required": ["error"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/worlds/{worldId}": {
+      "get": {
+        "tags": ["Worlds"],
+        "operationId": "getWorld",
+        "summary": "Get world",
+        "description": "Retrieve a single world by its unique identifier. Returns the full WorldResource including state, storage backend, and search configuration.",
+        "x-mint": {
+          "metadata": {
+            "title": "Get world"
+          }
+        },
+        "security": [
+          {
+            "bearerWorldsToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^w_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+              "description": "The world-api-minted world ID, a w_ prefix and UUID."
+            },
+            "required": true,
+            "description": "The world-api-minted world ID, a w_ prefix and UUID.",
+            "name": "worldId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "World",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorldResource"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string"
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      },
+                      "required": ["code", "message"]
+                    }
+                  },
+                  "required": ["error"]
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": ["Worlds"],
+        "operationId": "updateWorld",
+        "summary": "Update world",
+        "description": "Update a world's display name, embedding model, or search configuration. Changing the embedding model triggers a reindex.",
+        "x-mint": {
+          "metadata": {
+            "title": "Update world"
+          }
+        },
+        "security": [
+          {
+            "bearerWorldsToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^w_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+              "description": "The world-api-minted world ID, a w_ prefix and UUID."
+            },
+            "required": true,
+            "description": "The world-api-minted world ID, a w_ prefix and UUID.",
+            "name": "worldId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateWorldRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated World",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorldResource"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string"
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      },
+                      "required": ["code", "message"]
+                    }
+                  },
+                  "required": ["error"]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string"
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      },
+                      "required": ["code", "message"]
+                    }
+                  },
+                  "required": ["error"]
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Worlds"],
+        "operationId": "deleteWorld",
+        "summary": "Delete world",
+        "description": "Soft-delete a world. The world enters a 30-day grace period during which it can be restored via undelete. After the grace period, the world is permanently purged.",
+        "x-mint": {
+          "metadata": {
+            "title": "Delete world"
+          }
+        },
+        "security": [
+          {
+            "bearerWorldsToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^w_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+              "description": "The world-api-minted world ID, a w_ prefix and UUID."
+            },
+            "required": true,
+            "description": "The world-api-minted world ID, a w_ prefix and UUID.",
+            "name": "worldId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Deleted"
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string"
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      },
+                      "required": ["code", "message"]
+                    }
+                  },
+                  "required": ["error"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/worlds/{worldId}/undelete": {
+      "post": {
+        "tags": ["Worlds"],
+        "operationId": "undeleteWorld",
+        "summary": "Undelete world",
+        "description": "Restore a soft-deleted world within its 30-day grace period. Returns the restored WorldResource. Fails if the grace period has expired.",
+        "x-mint": {
+          "metadata": {
+            "title": "Undelete world"
+          }
+        },
+        "security": [
+          {
+            "bearerWorldsToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^w_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+              "description": "The world-api-minted world ID, a w_ prefix and UUID."
+            },
+            "required": true,
+            "description": "The world-api-minted world ID, a w_ prefix and UUID.",
+            "name": "worldId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Restored World",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorldResource"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string"
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      },
+                      "required": ["code", "message"]
+                    }
+                  },
+                  "required": ["error"]
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Restore blocked",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string"
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      },
+                      "required": ["code", "message"]
+                    }
+                  },
+                  "required": ["error"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/worlds/{worldId}/suspend": {
+      "post": {
+        "tags": ["Worlds"],
+        "operationId": "suspendWorld",
+        "summary": "Suspend world",
+        "description": "Suspend a world, temporarily blocking all read and write operations. The world can be resumed later without data loss.",
+        "x-mint": {
+          "metadata": {
+            "title": "Suspend world"
+          }
+        },
+        "security": [
+          {
+            "bearerWorldsToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^w_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+              "description": "The world-api-minted world ID, a w_ prefix and UUID."
+            },
+            "required": true,
+            "description": "The world-api-minted world ID, a w_ prefix and UUID.",
+            "name": "worldId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Suspended World",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorldResource"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string"
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      },
+                      "required": ["code", "message"]
+                    }
+                  },
+                  "required": ["error"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/worlds/{worldId}/resume": {
+      "post": {
+        "tags": ["Worlds"],
+        "operationId": "resumeWorld",
+        "summary": "Resume world",
+        "description": "Resume a suspended world, restoring full read and write access.",
+        "x-mint": {
+          "metadata": {
+            "title": "Resume world"
+          }
+        },
+        "security": [
+          {
+            "bearerWorldsToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^w_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+              "description": "The world-api-minted world ID, a w_ prefix and UUID."
+            },
+            "required": true,
+            "description": "The world-api-minted world ID, a w_ prefix and UUID.",
+            "name": "worldId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resumed World",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorldResource"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string"
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      },
+                      "required": ["code", "message"]
+                    }
+                  },
+                  "required": ["error"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/namespaces/{namespace}/delete": {
+      "post": {
+        "tags": ["Admin"],
+        "operationId": "deleteNamespaceWorlds",
+        "summary": "Mark all worlds for a namespace deleted (account deletion)",
+        "description": "Admin-only. Soft-deletes all worlds in a namespace and revokes all API keys for that namespace. Used for account deletion workflows.",
+        "x-mint": {
+          "metadata": {
+            "title": "Delete namespace worlds"
+          }
+        },
+        "security": [
+          {
+            "bearerWorldsToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "namespace",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Delete result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "deletedWorlds": {
+                      "type": "integer"
+                    },
+                    "revokedKeys": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": ["deletedWorlds", "revokedKeys"]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string"
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      },
+                      "required": ["code", "message"]
+                    }
+                  },
+                  "required": ["error"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/purge": {
+      "post": {
+        "tags": ["Admin"],
+        "operationId": "purgeWorlds",
+        "summary": "Run purge sweep on demand",
+        "description": "Admin-only. Triggers the purge sweep to permanently delete all worlds whose 30-day grace period has expired. Normally runs on a schedule; this endpoint forces an immediate sweep.",
+        "x-mint": {
+          "metadata": {
+            "title": "Run purge sweep on demand"
+          }
+        },
+        "security": [
+          {
+            "bearerWorldsToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Purge sweep result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "purged": {
+                      "type": "integer"
+                    },
+                    "failed": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": ["purged", "failed"]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string"
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      },
+                      "required": ["code", "message"]
+                    }
+                  },
+                  "required": ["error"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/worlds/{worldId}/import": {
+      "post": {
+        "tags": ["ImportExport"],
+        "operationId": "importWorld",
+        "summary": "Import graph data",
+        "description": "Import RDF data into a world. Accepts Turtle, N-Quads, N-Triples, TriG, or JSON-LD payloads. Quads are stored in the world's Cloudflare D1 database and indexed for vector search.",
+        "x-mint": {
+          "metadata": {
+            "title": "Import graph data"
+          }
+        },
+        "security": [
+          {
+            "bearerWorldsToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^w_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+              "description": "The world-api-minted world ID, a w_ prefix and UUID."
+            },
+            "required": true,
+            "description": "The world-api-minted world ID, a w_ prefix and UUID.",
+            "name": "worldId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ImportRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Import result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImportResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string"
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      },
+                      "required": ["code", "message"]
+                    }
+                  },
+                  "required": ["error"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/worlds/{worldId}/export": {
+      "get": {
+        "tags": ["ImportExport"],
+        "operationId": "exportWorld",
+        "summary": "Export graph data",
+        "description": "Export RDF quads from a world. Supports JSON (RDF/JSON array), Turtle, TriG, and JSON-LD output formats. Use the limit and offset query parameters for pagination.",
+        "x-mint": {
+          "metadata": {
+            "title": "Export graph data"
+          }
+        },
+        "security": [
+          {
+            "bearerWorldsToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^w_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+              "description": "The world-api-minted world ID, a w_ prefix and UUID."
+            },
+            "required": true,
+            "description": "The world-api-minted world ID, a w_ prefix and UUID.",
+            "name": "worldId",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "default": "application/json",
+              "description": "Export format. Supported: application/json (RDF/JSON array), text/turtle (Turtle), application/trig (TriG), application/ld+json (JSON-LD). Defaults to application/json."
+            },
+            "required": false,
+            "description": "Export format. Supported: application/json (RDF/JSON array), text/turtle (Turtle), application/trig (TriG), application/ld+json (JSON-LD). Defaults to application/json.",
+            "name": "format",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "description": "Maximum number of quads to return in this page."
+            },
+            "required": false,
+            "description": "Maximum number of quads to return in this page.",
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "description": "Pagination offset. Use the nextOffset value from the previous response."
+            },
+            "required": false,
+            "description": "Pagination offset. Use the nextOffset value from the previous response.",
+            "name": "offset",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Export result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExportQuadsResponse"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "nullable": true
+                }
+              },
+              "application/n-quads": {
+                "schema": {
+                  "nullable": true
+                }
+              },
+              "application/n-triples": {
+                "schema": {
+                  "nullable": true
+                }
+              },
+              "text/turtle": {
+                "schema": {
+                  "nullable": true
+                }
+              },
+              "application/trig": {
+                "schema": {
+                  "nullable": true
+                }
+              },
+              "application/ld+json": {
+                "schema": {
+                  "nullable": true
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string"
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      },
+                      "required": ["code", "message"]
+                    }
+                  },
+                  "required": ["error"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/worlds/{worldId}/search": {
+      "post": {
+        "tags": ["Search"],
+        "operationId": "searchWorld",
+        "summary": "Search world",
+        "description": "Full-text and vector similarity search across a world's graph data. Returns ranked results with id, subject, predicate, content, score, and scoreType on the normalized 0–1 scale, plus the mode that actually ran. Falls back to LIKE-based search if the primary engine is unavailable.",
+        "x-mint": {
+          "metadata": {
+            "title": "Search world"
+          }
+        },
+        "security": [
+          {
+            "bearerWorldsToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^w_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+              "description": "The world-api-minted world ID, a w_ prefix and UUID."
+            },
+            "required": true,
+            "description": "The world-api-minted world ID, a w_ prefix and UUID.",
+            "name": "worldId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Search results",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string"
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      },
+                      "required": ["code", "message"]
+                    }
+                  },
+                  "required": ["error"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/worlds/sparql": {
+      "post": {
+        "tags": ["SPARQL"],
+        "operationId": "sparqlNoWorld",
+        "summary": "SPARQL without world",
+        "description": "Always returns 400. Use POST /worlds/{worldId}/sparql to execute a SPARQL query against a specific world.",
+        "x-mint": {
+          "metadata": {
+            "title": "SPARQL without world"
+          }
+        },
+        "security": [
+          {
+            "bearerWorldsToken": []
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Must specify a World",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string"
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      },
+                      "required": ["code", "message"]
+                    }
+                  },
+                  "required": ["error"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/worlds/{worldId}/sparql": {
+      "post": {
+        "tags": ["SPARQL"],
+        "operationId": "sparqlWorld",
+        "summary": "Execute SPARQL query",
+        "description": "Execute a SPARQL 1.1 query (SELECT, ASK, or UPDATE) against a world's RDF graph. SELECT results are limited by the server-configured maximum. Queries time out after the configured limit.",
+        "x-mint": {
+          "metadata": {
+            "title": "Execute SPARQL query"
+          }
+        },
+        "security": [
+          {
+            "bearerWorldsToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^w_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+              "description": "The world-api-minted world ID, a w_ prefix and UUID."
+            },
+            "required": true,
+            "description": "The world-api-minted world ID, a w_ prefix and UUID.",
+            "name": "worldId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SparqlRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "SPARQL query result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "nullable": true
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string"
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      },
+                      "required": ["code", "message"]
+                    }
+                  },
+                  "required": ["error"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api-keys": {
+      "post": {
+        "tags": ["APIKeys"],
+        "operationId": "createApiKey",
+        "summary": "Create API key",
+        "description": "Create a new API key scoped to a namespace and optionally a single world. The token is returned once on creation and cannot be retrieved again.",
+        "x-mint": {
+          "metadata": {
+            "title": "Create API key"
+          }
+        },
+        "security": [
+          {
+            "bearerWorldsToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApiKeyCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiKeyCreateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string"
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      },
+                      "required": ["code", "message"]
+                    }
+                  },
+                  "required": ["error"]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string"
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      },
+                      "required": ["code", "message"]
+                    }
+                  },
+                  "required": ["error"]
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["APIKeys"],
+        "operationId": "listApiKeys",
+        "summary": "List API keys",
+        "description": "List all active (non-revoked) API keys. Optionally filter by namespace. Admin-only.",
+        "x-mint": {
+          "metadata": {
+            "title": "List API keys"
+          }
+        },
+        "security": [
+          {
+            "bearerWorldsToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "description": "Filter API keys by namespace."
+            },
+            "required": false,
+            "description": "Filter API keys by namespace.",
+            "name": "namespace",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "API keys list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "keys": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ApiKeyResource"
+                      }
+                    }
+                  },
+                  "required": ["keys"]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string"
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      },
+                      "required": ["code", "message"]
+                    }
+                  },
+                  "required": ["error"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api-keys/{apiKeyId}": {
+      "delete": {
+        "tags": ["APIKeys"],
+        "operationId": "deleteApiKey",
+        "summary": "Revoke API key",
+        "description": "Permanently revoke an API key. The key immediately loses all access. This action cannot be undone.",
+        "x-mint": {
+          "metadata": {
+            "title": "Revoke API key"
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "description": "Unique identifier of the API key to revoke."
+            },
+            "required": true,
+            "description": "Unique identifier of the API key to revoke.",
+            "name": "apiKeyId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Revoked"
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string"
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      },
+                      "required": ["code", "message"]
+                    }
+                  },
+                  "required": ["error"]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string"
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      },
+                      "required": ["code", "message"]
+                    }
+                  },
+                  "required": ["error"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/worlds/{worldId}/reindex": {
+      "post": {
+        "tags": ["Reindex"],
+        "operationId": "reindexWorld",
+        "summary": "Reindex world vector & FTS indexes",
+        "description": "Rebuild the vector and full-text search indexes for a world from its stored RDF quads. Use after changing the embedding model or to repair search quality.",
+        "x-mint": {
+          "metadata": {
+            "title": "Reindex world vector & FTS indexes"
+          }
+        },
+        "security": [
+          {
+            "bearerWorldsToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^w_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+              "description": "The world-api-minted world ID, a w_ prefix and UUID."
+            },
+            "required": true,
+            "description": "The world-api-minted world ID, a w_ prefix and UUID.",
+            "name": "worldId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Reindex initiated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean"
+                    },
+                    "status": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["ok", "status"]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "World database not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string"
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      },
+                      "required": ["code", "message"]
+                    }
+                  },
+                  "required": ["error"]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
