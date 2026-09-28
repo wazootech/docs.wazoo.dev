@@ -81,9 +81,10 @@ The skill reads two environment variables, one per plane:
 | `WAZOO_PLATFORM_TOKEN` | `wzp_` | Control plane | World creation, token management, usage inspection          |
 | `WORLDS_TOKEN`         | `wzw_` | Data plane    | Graph import, hybrid search, graph queries (SPARQL), export |
 
-World creation is server-assigned. The API returns the worlds-api-minted UUID as
-`world.id`; use that exact value as `worldId` in later requests. Every entity
-resource exposes one `id` field.
+The Worlds API mints an immutable `w_<UUIDv4>` world ID. The create response
+exposes it as `world.id`, which you reuse unchanged. Create requests expose no
+caller-selected ID or slug field. Every public resource object exposes its
+identifier as `id`, and database primary keys use `<entity>_id`.
 
 ## What it covers
 

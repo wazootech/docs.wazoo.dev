@@ -59,11 +59,37 @@ The Platform API covers these management resources:
 | Users             | `/v1/users/me`                                                          |
 | Stripe webhook    | `/v1/stripe/webhook`                                                    |
 
-World IDs are minted by `worlds-api` as `w_<UUIDv4>`. The Platform API stores
-the ID as `world_id` and returns it as `id` on the world resource. Create a
-world with its display name; no slug or client-selected ID is accepted. Use
-`world.id` as the `worldId` path parameter. Every public resource exposes `id`,
-and each database record uses its matching `<entity>_id` primary key.
+`worlds-api` mints each immutable world ID as `w_<UUIDv4>`. The Platform API
+stores it as `world_id`, and both APIs expose the unchanged value as `id`.
+Create requests define a display name but no caller-selected ID or slug field.
+Use `world.id` as the `worldId` path parameter. Every public resource object
+exposes `id`, and database primary keys use the matching `<entity>_id` name.
+
+```http
+POST /v1/worlds
+Authorization: Bearer wzp_YOUR_PLATFORM_TOKEN
+Content-Type: application/json
+
+{
+  "world": {
+    "displayName": "My World",
+    "region": "auto"
+  }
+}
+
+HTTP/1.1 201 Created
+
+{
+  "world": {
+    "id": "w_123e4567-e89b-42d3-a456-426614174000",
+    "displayName": "My World",
+    "region": "auto",
+    "state": "ACTIVE",
+    "restorable": false,
+    "backend": "worlds-api"
+  }
+}
+```
 
 ## Data-plane boundary
 

@@ -64,9 +64,10 @@ curl -s -X POST "https://api.wazoo.dev/v1/worlds" \
   }'
 ```
 
-The API response includes the canonical minted identifier as `world.id`. Set
-`WORLD_ID` to that exact value (for example,
-`w_123e4567-e89b-42d3-a456-426614174000`) before running the requests below.
+The Worlds API mints one immutable `w_<UUIDv4>` ID and returns it as `world.id`.
+Create requests include the display name and expose no caller-selected ID or
+slug field. Set `WORLD_ID` to that exact returned value before running the
+requests below.
 
 ```bash
 export WORLD_ID="w_123e4567-e89b-42d3-a456-426614174000"

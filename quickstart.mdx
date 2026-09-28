@@ -35,7 +35,8 @@ If you prefer calling the Wazoo Platform API directly using HTTP/cURL:
         }
       }'
     ```
-    Use `world.id` from the response for later requests.
+    The Worlds API mints an immutable `w_<UUIDv4>` ID and returns it as
+    `world.id`, which callers reuse unchanged in later requests.
   </Step>
 </Steps>
 

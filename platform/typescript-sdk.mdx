@@ -87,6 +87,9 @@ await updateWorld({
 await deleteWorld({ path: { worldId } });
 ```
 
+`world.id` is the immutable `w_<UUIDv4>` ID minted by the Worlds API. Reuse it
+unchanged as the `worldId` path value.
+
 Creating a platform world provisions per-World graph storage. Use
 `data.wazoo.dev`, the generated [`@worlds/client`](/projects/worlds), or the
 embedded [`@worlds/sdk`](/projects/worlds) for graph data operations inside that
@@ -114,8 +117,10 @@ const created = await createPlatformToken({
 });
 console.log(created.data?.token); // wzp_...
 
-// Revoke a token by name
-await deletePlatformToken({ path: { tokenName: "my-read-token" } });
+// Revoke a token by the id returned when it was created
+const tokenId = created.data?.id;
+if (!tokenId) throw new Error("Token creation failed");
+await deletePlatformToken({ path: { tokenId } });
 ```
 
 ## World auth tokens

@@ -31,11 +31,13 @@ and carry provenance you can trace to their source.
     Worlds stores facts in isolated worlds. Create one for the company brain:
 
     ```bash
-    wazoo worlds create company-brain --name "Company Brain"
+    wazoo worlds create --name "Company Brain"
+    export WORLD_ID="w_123e4567-e89b-42d3-a456-426614174000"
     ```
 
-    The world ID `company-brain` is public and used in every data-plane
-    request. Choose a descriptive ID so agents can find the right world.
+    The Worlds API mints an immutable `w_<UUIDv4>` ID and returns it as `id`.
+    Replace the sample `WORLD_ID` with that exact value; the display name is not
+    an ID, and create requests expose no caller-selected ID or slug field.
 
   </Step>
   <Step title="Model the core schemas">
@@ -98,7 +100,7 @@ and carry provenance you can trace to their source.
 
     ```bash
     wiki export brain/decisions/ADR-004.md -f turtle -o brain/ADR-004.ttl
-    wazoo worlds import company-brain --file ./brain/ADR-004.ttl
+    wazoo worlds import "$WORLD_ID" --file ./brain/ADR-004.ttl
     ```
 
     The import endpoint accepts Turtle, JSON-LD, N-Triples, N-Quads, and Trig.
@@ -134,13 +136,13 @@ and carry provenance you can trace to their source.
 Search the brain for the decision you imported:
 
 ```bash
-wazoo worlds search company-brain --query "company context engine"
+wazoo worlds search "$WORLD_ID" --query "company context engine"
 ```
 
 Then confirm the fact exists in the graph with a SPARQL query:
 
 ```bash
-wazoo worlds sparql company-brain --query "SELECT * WHERE { ?s ?p ?o } LIMIT 10"
+wazoo worlds sparql "$WORLD_ID" --query "SELECT * WHERE { ?s ?p ?o } LIMIT 10"
 ```
 
 The search returns the ADR document, and the SPARQL query returns its quads.

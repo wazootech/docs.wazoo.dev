@@ -12,8 +12,8 @@ data from the command line.
 
 Create a new isolated memory world.
 
-World IDs are assigned by `worlds-api`. The response's `id` is the `worldId` for
-subsequent commands.
+The Worlds API mints an immutable `w_<UUIDv4>` ID. The response's `id` is reused
+unchanged as `worldId` in subsequent commands.
 
 ```bash
 wazoo worlds create --name "My Knowledge Base"
