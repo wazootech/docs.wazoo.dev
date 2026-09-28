@@ -29,13 +29,13 @@ If you prefer calling the Wazoo Platform API directly using HTTP/cURL:
       -H "Authorization: Bearer wzp_YOUR_PLATFORM_TOKEN" \
       -H "Content-Type: application/json" \
       -d '{
-        "worldId": "my-agent-world",
         "world": {
           "displayName": "My Agent World",
           "region": "auto"
         }
       }'
     ```
+    Use `world.id` from the response for later requests.
   </Step>
 </Steps>
 

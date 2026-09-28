@@ -213,7 +213,7 @@
       },
       {
         "group": "Platform API",
-        "openapi": "https://api.wazoo.dev/openapi.json",
+        "openapi": "./openapi/wazoo-api.json",
         "pages": [
           "GET /health",
           "GET /v1/users/me",
@@ -233,25 +233,25 @@
       {
         "group": "Worlds API",
         "openapi": {
-          "source": "https://data.wazoo.dev/openapi.json",
+          "source": "./openapi/worlds-api.json",
           "directory": "worlds-api"
         },
         "pages": [
           "GET /worlds",
           "POST /worlds",
-          "GET /worlds/{id}",
-          "PATCH /worlds/{id}",
-          "DELETE /worlds/{id}",
-          "POST /worlds/{id}/undelete",
-          "GET /worlds/{id}/export",
-          "POST /worlds/{id}/import",
-          "POST /worlds/{id}/search",
-          "POST /worlds/{id}/sparql",
+          "GET /worlds/{worldId}",
+          "PATCH /worlds/{worldId}",
+          "DELETE /worlds/{worldId}",
+          "POST /worlds/{worldId}/undelete",
+          "GET /worlds/{worldId}/export",
+          "POST /worlds/{worldId}/import",
+          "POST /worlds/{worldId}/search",
+          "POST /worlds/{worldId}/sparql",
           "POST /worlds/sparql",
-          "POST /worlds/{id}/reindex",
+          "POST /worlds/{worldId}/reindex",
           "GET /api-keys",
           "POST /api-keys",
-          "DELETE /api-keys/{keyId}",
+          "DELETE /api-keys/{apiKeyId}",
           "GET /health"
         ]
       }

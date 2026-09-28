@@ -81,6 +81,10 @@ The skill reads two environment variables, one per plane:
 | `WAZOO_PLATFORM_TOKEN` | `wzp_` | Control plane | World creation, token management, usage inspection          |
 | `WORLDS_TOKEN`         | `wzw_` | Data plane    | Graph import, hybrid search, graph queries (SPARQL), export |
 
+World creation is server-assigned. The API returns the worlds-api-minted UUID as
+`world.id`; use that exact value as `worldId` in later requests. Every entity
+resource exposes one `id` field.
+
 ## What it covers
 
 ### Control plane

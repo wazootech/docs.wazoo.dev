@@ -60,9 +60,16 @@ curl -s -X POST "https://api.wazoo.dev/v1/worlds" \
   -H "Authorization: Bearer $WAZOO_PLATFORM_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
-    "worldId": "quickstart-cloud",
     "world": { "displayName": "My First World", "region": "auto" }
   }'
+```
+
+The API response includes the canonical minted identifier as `world.id`. Set
+`WORLD_ID` to that exact value (for example,
+`w_123e4567-e89b-42d3-a456-426614174000`) before running the requests below.
+
+```bash
+export WORLD_ID="w_123e4567-e89b-42d3-a456-426614174000"
 ```
 
 ### Mint a world token
@@ -71,7 +78,7 @@ Data-plane requests use a `wzw_` token scoped to a single world. Save the
 returned secret immediately; it is shown only once:
 
 ```bash
-curl -s -X POST "https://api.wazoo.dev/v1/worlds/quickstart-cloud/auth/tokens" \
+curl -s -X POST "https://api.wazoo.dev/v1/worlds/$WORLD_ID/auth/tokens" \
   -H "Authorization: Bearer $WAZOO_PLATFORM_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{ "name": "quickstart" }'
@@ -82,7 +89,7 @@ Save it as `WORLDS_TOKEN`.
 ### Import, search, and query
 
 ```bash
-curl -s -X POST "https://data.wazoo.dev/worlds/quickstart-cloud/import" \
+curl -s -X POST "https://data.wazoo.dev/worlds/$WORLD_ID/import" \
   -H "Authorization: Bearer $WORLDS_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -92,7 +99,7 @@ curl -s -X POST "https://data.wazoo.dev/worlds/quickstart-cloud/import" \
 ```
 
 ```bash
-curl -s -X POST "https://data.wazoo.dev/worlds/quickstart-cloud/search" \
+curl -s -X POST "https://data.wazoo.dev/worlds/$WORLD_ID/search" \
   -H "Authorization: Bearer $WORLDS_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -102,7 +109,7 @@ curl -s -X POST "https://data.wazoo.dev/worlds/quickstart-cloud/search" \
 ```
 
 ```bash
-curl -s -X POST "https://data.wazoo.dev/worlds/quickstart-cloud/sparql" \
+curl -s -X POST "https://data.wazoo.dev/worlds/$WORLD_ID/sparql" \
   -H "Authorization: Bearer $WORLDS_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{

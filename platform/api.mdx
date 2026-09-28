@@ -59,9 +59,11 @@ The Platform API covers these management resources:
 | Users             | `/v1/users/me`                                                          |
 | Stripe webhook    | `/v1/stripe/webhook`                                                    |
 
-Public `worldId` values must match `^[a-z][a-z0-9-]{2,62}$`. Internal `uid`
-values use prefixes such as `w_...` so they cannot be confused with public path
-IDs.
+World IDs are minted by `worlds-api` as `w_<UUIDv4>`. The Platform API stores
+the ID as `world_id` and returns it as `id` on the world resource. Create a
+world with its display name; no slug or client-selected ID is accepted. Use
+`world.id` as the `worldId` path parameter. Every public resource exposes `id`,
+and each database record uses its matching `<entity>_id` primary key.
 
 ## Data-plane boundary
 
