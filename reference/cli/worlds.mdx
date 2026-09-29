@@ -12,8 +12,11 @@ data from the command line.
 
 Create a new isolated memory world.
 
+The Worlds API mints an immutable `w_<UUIDv4>` ID. The response's `id` is reused
+unchanged as `worldId` in subsequent commands.
+
 ```bash
-wazoo worlds create <world-id> --name "My Knowledge Base"
+wazoo worlds create --name "My Knowledge Base"
 ```
 
 ### `wazoo worlds get`
@@ -21,7 +24,7 @@ wazoo worlds create <world-id> --name "My Knowledge Base"
 Retrieve specific world details by ID.
 
 ```bash
-wazoo worlds get <world-id>
+wazoo worlds get <worldId>
 ```
 
 ### `wazoo worlds list`
@@ -40,7 +43,7 @@ Import text, files, or RDF knowledge graph data into a world. Supports Turtle,
 JSON-LD, N-Triples, N-Quads, and Trig.
 
 ```bash
-wazoo worlds import <world-id> --file ./data.ttl
+wazoo worlds import <worldId> --file ./data.ttl
 ```
 
 ### `wazoo worlds export`
@@ -48,7 +51,7 @@ wazoo worlds import <world-id> --file ./data.ttl
 Export world graph quads/triples.
 
 ```bash
-wazoo worlds export <world-id> --format turtle
+wazoo worlds export <worldId> --format turtle
 ```
 
 ### `wazoo worlds search`
@@ -56,7 +59,7 @@ wazoo worlds export <world-id> --format turtle
 Perform hybrid vector + graph pattern search across world memory.
 
 ```bash
-wazoo worlds search <world-id> --query "agent architecture"
+wazoo worlds search <worldId> --query "agent architecture"
 ```
 
 ### `wazoo worlds sparql`
@@ -64,5 +67,5 @@ wazoo worlds search <world-id> --query "agent architecture"
 Execute raw graph queries and pattern matching (SPARQL) against a world graph.
 
 ```bash
-wazoo worlds sparql <world-id> --query "SELECT * WHERE { ?s ?p ?o } LIMIT 10"
+wazoo worlds sparql <worldId> --query "SELECT * WHERE { ?s ?p ?o } LIMIT 10"
 ```

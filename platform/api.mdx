@@ -59,9 +59,36 @@ The Platform API covers these management resources:
 | Users             | `/v1/users/me`                                                          |
 | Stripe webhook    | `/v1/stripe/webhook`                                                    |
 
-Public `worldId` values must match `^[a-z][a-z0-9-]{2,62}$`. Internal `uid`
-values use prefixes such as `w_...` so they cannot be confused with public path
-IDs.
+`worlds-api` mints each immutable world ID as `w_<UUIDv4>`. The Platform API
+stores it as `world_id`, and both APIs expose the unchanged value as `id`.
+Create requests define a display name but no caller-selected ID or slug field.
+Use `world.id` as the `worldId` path parameter.
+
+```http
+POST /v1/worlds
+Authorization: Bearer wzp_YOUR_PLATFORM_TOKEN
+Content-Type: application/json
+
+{
+  "world": {
+    "displayName": "My World",
+    "region": "auto"
+  }
+}
+
+HTTP/1.1 201 Created
+
+{
+  "world": {
+    "id": "w_123e4567-e89b-42d3-a456-426614174000",
+    "displayName": "My World",
+    "region": "auto",
+    "state": "ACTIVE",
+    "restorable": false,
+    "backend": "worlds-api"
+  }
+}
+```
 
 ## Data-plane boundary
 

@@ -40,7 +40,7 @@ const client = createClient({
 const response = await listWorlds({ client });
 
 for (const world of response.data?.worlds ?? []) {
-  console.log(world.uid, world.displayName);
+  console.log(world.id, world.displayName);
 }
 ```
 
@@ -53,7 +53,7 @@ import { searchWorld } from "@worlds/client";
 
 const response = await searchWorld({
   client,
-  path: { id: "w_<uuid>" },
+  path: { worldId: "w_123e4567-e89b-42d3-a456-426614174000" },
   body: { query: "Ethan's manager", limit: 5 },
 });
 
@@ -73,7 +73,7 @@ import { importWorld } from "@worlds/client";
 
 const response = await importWorld({
   client,
-  path: { id: "w_<uuid>" },
+  path: { worldId: "w_123e4567-e89b-42d3-a456-426614174000" },
   body: {
     data: '(<urn:subject> <urn:predicate> "object") .',
     contentType: "text/turtle",
@@ -88,7 +88,7 @@ import { sparqlWorld } from "@worlds/client";
 
 const response = await sparqlWorld({
   client,
-  path: { id: "w_<uuid>" },
+  path: { worldId: "w_123e4567-e89b-42d3-a456-426614174000" },
   body: { query: 'SELECT ?s WHERE { ?s <urn:predicate> "object" }' },
 });
 ```
@@ -98,8 +98,14 @@ const response = await sparqlWorld({
 ```ts
 import { exportWorld, reindexWorld } from "@worlds/client";
 
-const exported = await exportWorld({ client, path: { id: "w_<uuid>" } });
-const reindexed = await reindexWorld({ client, path: { id: "w_<uuid>" } });
+const exported = await exportWorld({
+  client,
+  path: { worldId: "w_123e4567-e89b-42d3-a456-426614174000" },
+});
+const reindexed = await reindexWorld({
+  client,
+  path: { worldId: "w_123e4567-e89b-42d3-a456-426614174000" },
+});
 ```
 
 ## Self-hosting
