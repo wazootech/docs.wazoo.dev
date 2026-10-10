@@ -15,6 +15,7 @@
   "author": "Wazoo",
   "license": "WTFPL",
   "type": "commonjs",
+  "packageManager": "pnpm@12.11.2",
   "devDependencies": {
     "mintlify": "^4.2.639",
     "prettier": "^3.8.1"

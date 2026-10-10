@@ -1,0 +1,14 @@
+# pnpm 12 blocks dependency build scripts unless listed here.
+allowBuilds:
+  # Prebuilt @img/sharp-* binaries cover every platform we run on; the
+  # install script only matters for building libvips from source.
+  sharp: false
+  # Not needed by the mintlify commands we run: scarf is install telemetry,
+  # puppeteer downloads Chrome for scraping, keytar is CLI login storage.
+  '@scarf/scarf': false
+  keytar: false
+  puppeteer: false
+# pnpm 12 skips releases younger than a day. Our own JSR packages are
+# consumed right after they publish, so they bypass that delay.
+minimumReleaseAgeExclude:
+  - '@jsr/wazoo__*'
