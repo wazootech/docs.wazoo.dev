@@ -87,7 +87,7 @@ await updateWorld({
 await deleteWorld({ path: { worldId } });
 ```
 
-`world.id` is the immutable `w_<UUIDv4>` ID minted by the Worlds API. Reuse it
+`world.id` is the immutable `w_<ULID>` ID minted by the Worlds API. Reuse it
 unchanged as the `worldId` path value.
 
 Creating a platform world provisions per-World graph storage. Use

@@ -59,7 +59,7 @@ The Platform API covers these management resources:
 | Users             | `/v1/users/me`                                                          |
 | Stripe webhook    | `/v1/stripe/webhook`                                                    |
 
-`worlds-api` mints each immutable world ID as `w_<UUIDv4>`. The Platform API
+`worlds-api` mints each immutable world ID as `w_<ULID>`. The Platform API
 stores it as `world_id`, and both APIs expose the unchanged value as `id`.
 Create requests define a display name but no caller-selected ID or slug field.
 Use `world.id` as the `worldId` path parameter.
@@ -80,7 +80,7 @@ HTTP/1.1 201 Created
 
 {
   "world": {
-    "id": "w_123e4567-e89b-42d3-a456-426614174000",
+    "id": "w_01jd8x5mqv7k3n9r2t4w6y8z0b",
     "displayName": "My World",
     "region": "auto",
     "state": "ACTIVE",
