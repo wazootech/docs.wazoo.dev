@@ -9,7 +9,7 @@
     "broken-links": "mintlify broken-links",
     "format": "prettier \"**/*.{md,mdx,json}\" --write",
     "format:check": "prettier \"**/*.{md,mdx,json}\" --check",
-    "precommit": "npm run format:check --silent && npm run check --silent"
+    "precommit": "pnpm run --silent format:check && pnpm run --silent check"
   },
   "keywords": [],
   "author": "Wazoo",

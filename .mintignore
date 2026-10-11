@@ -6,3 +6,7 @@
 .env
 
 .vercel
+
+# pnpm 12 writes a multi-document lockfile that Mintlify cannot parse.
+pnpm-lock.yaml
+pnpm-workspace.yaml
