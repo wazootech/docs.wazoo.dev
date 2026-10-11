@@ -19,16 +19,18 @@ locally, and submit pull requests.
    cd docs.wazoo.dev
    ```
 
-2. **Install dependencies**
+2. **Install dependencies** with [pnpm](https://pnpm.io) (version pinned by
+   `packageManager`; install it with `npm install -g pnpm`, since Corepack
+   cannot run pnpm 12 yet)
 
    ```bash
-   npm install
+   pnpm install
    ```
 
 3. **Start the dev server**
 
    ```bash
-   npm run dev
+   pnpm run dev
    ```
 
    Open `http://localhost:3000` to preview changes live.
@@ -44,14 +46,14 @@ API spec in `openapi.yaml`.
 
 ### Scripts
 
-| Command             | Purpose                 |
-| ------------------- | ----------------------- |
-| `npm run dev`       | Start local preview     |
-| `npm run check`     | Validate docs build     |
-| `npm run format`    | Format all MD/MDX/JSON  |
-| `npm run precommit` | Format check + validate |
+| Command              | Purpose                 |
+| -------------------- | ----------------------- |
+| `pnpm run dev`       | Start local preview     |
+| `pnpm run check`     | Validate docs build     |
+| `pnpm run format`    | Format all MD/MDX/JSON  |
+| `pnpm run precommit` | Format check + validate |
 
-Run `npm run precommit` before opening a pull request to verify everything
+Run `pnpm run precommit` before opening a pull request to verify everything
 passes.
 
 ## Coding standards
@@ -61,7 +63,7 @@ passes.
   (`/projects/worlds`, not `../projects/worlds.mdx`).
 - Follow the [style guide](/contribute/style) for voice, formatting, and code
   conventions.
-- Run `npm run format` before committing.
+- Run `pnpm run format` before committing.
 
 ### LLM-consumable documentation mechanics
 
@@ -80,7 +82,7 @@ Wazoo documentation is published for both human developers and AI coding agents:
 1. **Create a branch** off `main` with a descriptive name like
    `feat/wiki-quickstart`.
 2. **Commit clearly** — atomic commits with concise messages.
-3. **Run checks** — `npm run precommit` must pass.
+3. **Run checks** — `pnpm run precommit` must pass.
 4. **Open a PR** — include a summary of what changed and why. Link related
    issues.
 5. **Reviews** — all PRs require at least one maintainer review before merging.

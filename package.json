@@ -9,12 +9,13 @@
     "broken-links": "mintlify broken-links",
     "format": "prettier \"**/*.{md,mdx,json}\" --write",
     "format:check": "prettier \"**/*.{md,mdx,json}\" --check",
-    "precommit": "npm run format:check --silent && npm run check --silent"
+    "precommit": "pnpm run --silent format:check && pnpm run --silent check"
   },
   "keywords": [],
   "author": "Wazoo",
   "license": "WTFPL",
   "type": "commonjs",
+  "packageManager": "pnpm@12.11.2",
   "devDependencies": {
     "mintlify": "^4.2.639",
     "prettier": "^3.8.1"

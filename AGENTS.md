@@ -8,15 +8,15 @@ configuration lives in `docs.json`.
 
 ## Commands
 
-| Command                     | Purpose                 |
-| --------------------------- | ----------------------- |
-| `npm run dev`               | Start local preview     |
-| `npm run check`             | Validate docs build     |
-| `npm run format`            | Format all MD/MDX/JSON  |
-| `npm run precommit`         | Format check + validate |
-| `npx mintlify broken-links` | Check internal links    |
+| Command                           | Purpose                 |
+| --------------------------------- | ----------------------- |
+| `pnpm run dev`                    | Start local preview     |
+| `pnpm run check`                  | Validate docs build     |
+| `pnpm run format`                 | Format all MD/MDX/JSON  |
+| `pnpm run precommit`              | Format check + validate |
+| `pnpm exec mintlify broken-links` | Check internal links    |
 
-Run `npm run precommit` before finalizing any commit.
+Run `pnpm run precommit` before finalizing any commit.
 
 ## Style guidelines
 

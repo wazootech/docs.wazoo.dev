@@ -18,25 +18,25 @@ The documentation covers:
 [Mintlify CLI](https://www.npmjs.com/package/mintlify):
 
 ```bash
-npm install
+pnpm install
 ```
 
 Run the development server:
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 View your local preview at `http://localhost:3000`.
 
 ### Scripts
 
-| Command             | Purpose                 |
-| ------------------- | ----------------------- |
-| `npm run dev`       | Start local preview     |
-| `npm run check`     | Validate docs build     |
-| `npm run format`    | Format all MD/MDX/JSON  |
-| `npm run precommit` | Format check + validate |
+| Command              | Purpose                 |
+| -------------------- | ----------------------- |
+| `pnpm run dev`       | Start local preview     |
+| `pnpm run check`     | Validate docs build     |
+| `pnpm run format`    | Format all MD/MDX/JSON  |
+| `pnpm run precommit` | Format check + validate |
 
 ## Deployment
 
