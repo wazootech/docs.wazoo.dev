@@ -53,7 +53,7 @@ import { searchWorld } from "@worlds/client";
 
 const response = await searchWorld({
   client,
-  path: { worldId: "w_123e4567-e89b-42d3-a456-426614174000" },
+  path: { worldId: "w_01jd8x5mqv7k3n9r2t4w6y8z0b" },
   body: { query: "Ethan's manager", limit: 5 },
 });
 
@@ -73,7 +73,7 @@ import { importWorld } from "@worlds/client";
 
 const response = await importWorld({
   client,
-  path: { worldId: "w_123e4567-e89b-42d3-a456-426614174000" },
+  path: { worldId: "w_01jd8x5mqv7k3n9r2t4w6y8z0b" },
   body: {
     data: '(<urn:subject> <urn:predicate> "object") .',
     contentType: "text/turtle",
@@ -88,7 +88,7 @@ import { sparqlWorld } from "@worlds/client";
 
 const response = await sparqlWorld({
   client,
-  path: { worldId: "w_123e4567-e89b-42d3-a456-426614174000" },
+  path: { worldId: "w_01jd8x5mqv7k3n9r2t4w6y8z0b" },
   body: { query: 'SELECT ?s WHERE { ?s <urn:predicate> "object" }' },
 });
 ```
@@ -100,11 +100,11 @@ import { exportWorld, reindexWorld } from "@worlds/client";
 
 const exported = await exportWorld({
   client,
-  path: { worldId: "w_123e4567-e89b-42d3-a456-426614174000" },
+  path: { worldId: "w_01jd8x5mqv7k3n9r2t4w6y8z0b" },
 });
 const reindexed = await reindexWorld({
   client,
-  path: { worldId: "w_123e4567-e89b-42d3-a456-426614174000" },
+  path: { worldId: "w_01jd8x5mqv7k3n9r2t4w6y8z0b" },
 });
 ```
 
