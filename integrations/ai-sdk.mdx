@@ -44,7 +44,7 @@ The tools are designed to work with the
 
 ```typescript
 import { generateText } from "ai";
-import { openai } from "@ai-sdk/openai";
+import { google } from "@ai-sdk/google";
 import { WorldsSdk } from "@worlds/sdk";
 import { RdfjsQuadStore, RdfjsSearchIndex } from "@worlds/sdk/rdfjs";
 import { WazooSparqlEngine } from "@wazoo/sparql-engine";
@@ -63,7 +63,7 @@ const tools = createTools({
 });
 
 const { text } = await generateText({
-  model: openai("gpt-4o"),
+  model: google("gemini-3.8-flash"),
   tools,
   prompt: "Find all people in the knowledge base and describe them.",
 });
