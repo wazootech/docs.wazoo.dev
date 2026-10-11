@@ -200,13 +200,13 @@ enables semantic similarity search where natural language queries find
 conceptually related information.
 
 ```typescript
-import { createSqliteSdk } from "@worlds/sqlite";
+import { createSqliteWorldsSdk } from "@worlds/sqlite";
 import { AiSdkEmbeddingService } from "@worlds/sdk/ai-sdk";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 
 const google = createGoogleGenerativeAI();
 
-const client = await createSqliteSdk({
+const client = await createSqliteWorldsSdk({
   path: ":memory:",
   embeddingService: new AiSdkEmbeddingService({
     model: google.textEmbeddingModel("text-embedding-004"),

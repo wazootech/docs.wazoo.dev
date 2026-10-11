@@ -38,15 +38,16 @@ factories with hybrid search and parity-green CI suites.
 ### LibSQL / Turso
 
 [`@worlds/libsql`](https://jsr.io/@worlds/libsql) provides durable LibSQL
-storage with hybrid full-text and vector search. `createLibsqlSdk` assembles a
-quad store, search index, and SPARQL engine over a LibSQL connection:
+storage with hybrid full-text and vector search. `createLibsqlWorldsSdk`
+assembles a quad store, search index, and SPARQL engine over a LibSQL
+connection:
 
 ```typescript
 import { createClient } from "@libsql/client";
-import { createLibsqlSdk } from "@worlds/libsql";
+import { createLibsqlWorldsSdk } from "@worlds/libsql";
 
 const databaseClient = createClient({ url: ":memory:" });
-const client = await createLibsqlSdk({ client: databaseClient });
+const client = await createLibsqlWorldsSdk({ client: databaseClient });
 ```
 
 Point the client at an embedded file or a remote Turso URL. The embedded `file:`
@@ -56,53 +57,54 @@ database.
 ### PostgreSQL
 
 [`@worlds/postgres`](https://jsr.io/@worlds/postgres) provides durable
-PostgreSQL storage with hybrid tsvector + pgvector search. `createPostgresSdk`
-assembles a quad store, search index, and SPARQL engine over a PostgreSQL
-connection:
+PostgreSQL storage with hybrid tsvector + pgvector search.
+`createPostgresWorldsSdk` assembles a quad store, search index, and SPARQL
+engine over a PostgreSQL connection:
 
 ```typescript
 import postgres from "postgres";
-import { createPostgresSdk } from "@worlds/postgres";
+import { createPostgresWorldsSdk } from "@worlds/postgres";
 
 const sql = postgres("postgres://user:password@localhost/worlds");
-const client = await createPostgresSdk({ sql });
+const client = await createPostgresWorldsSdk({ sql });
 ```
 
 ### SQLite (local file)
 
 [`@worlds/sqlite`](https://jsr.io/@worlds/sqlite) provides durable SQLite
 storage via `node:sqlite` with hybrid FTS5 + sqlite-vec search.
-`createSqliteSdk` assembles a quad store, search index, and SPARQL engine:
+`createSqliteWorldsSdk` assembles a quad store, search index, and SPARQL engine:
 
 ```typescript
-import { createSqliteSdk } from "@worlds/sqlite";
+import { createSqliteWorldsSdk } from "@worlds/sqlite";
 
-const client = await createSqliteSdk({ path: ":memory:" });
+const client = await createSqliteWorldsSdk({ path: ":memory:" });
 ```
 
 ### Cloudflare D1
 
 [`@worlds/cloudflare`](https://jsr.io/@worlds/cloudflare) provides durable D1
-storage with FTS5 keyword search. `createCloudflareSdk` assembles a quad store,
-search index, and SPARQL engine over a D1 binding:
+storage with FTS5 keyword search. `createCloudflareWorldsSdk` assembles a quad
+store, search index, and SPARQL engine over a D1 binding:
 
 ```typescript
-import { createCloudflareSdk } from "@worlds/cloudflare";
+import { createCloudflareWorldsSdk } from "@worlds/cloudflare";
 
 // Inside a Cloudflare Worker with a D1 binding:
-const client = await createCloudflareSdk({ d1: env.DB });
+const client = await createCloudflareWorldsSdk({ d1: env.DB });
 ```
 
 ### IndexedDB (browser)
 
 [`@worlds/indexeddb`](https://jsr.io/@worlds/indexeddb) provides durable
 browser-native storage via IndexedDB with JS-side hybrid TF-IDF + cosine search.
-`createIndexeddbSdk` assembles a quad store, search index, and SPARQL engine:
+`createIndexeddbWorldsSdk` assembles a quad store, search index, and SPARQL
+engine:
 
 ```typescript
-import { createIndexeddbSdk } from "@worlds/indexeddb";
+import { createIndexeddbWorldsSdk } from "@worlds/indexeddb";
 
-const client = await createIndexeddbSdk({ dbName: "wazoo" });
+const client = await createIndexeddbWorldsSdk({ dbName: "wazoo" });
 ```
 
 ## VPS deployment
@@ -122,9 +124,9 @@ docker compose up -d
 ```
 
 The compose file wires the `ghcr.io/wazootech` service images: `wazoo-api`,
-`worlds-api`, and `wazoo-console`, fronted by Caddy for HTTPS routing. The
-`worlds-api` service runs on a file-backed LibSQL database mounted as a Docker
-volume.
+`worlds-api`, and `wazoo-console`, fronted by Caddy for HTTPS routing. Both API
+images bind their storage at deploy time (Cloudflare D1); the containers no
+longer accept a LibSQL/Turso URL through the environment.
 
 For the DigitalOcean droplet, create `do.auto.tfvars` with the variables listed
 in the repository README, then apply the Terraform composition:
