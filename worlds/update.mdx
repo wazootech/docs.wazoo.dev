@@ -11,7 +11,9 @@ stateful context.
 
 A world mutates its state using RDF patches, which are additions and deletions
 of facts. A world stores current state: a deleted fact is removed, and Worlds
-does not keep a history of earlier states.
+does not keep a history of earlier states yet. Fact-level history is planned as
+an append-only change log that records every patch beside the current state
+([worlds-sdk-ts#221](https://github.com/wazootech/worlds-sdk-ts/issues/221)).
 
 ### Import quads
 
