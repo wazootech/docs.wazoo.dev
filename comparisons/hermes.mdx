@@ -8,13 +8,13 @@ hidden: true
 
 ## At a glance
 
-|              | Worlds                                           | [Hermes Agent](https://github.com/NousResearch/Hermes-Agent) (Nous Research)             |
-| :----------- | :----------------------------------------------- | :--------------------------------------------------------------------------------------- |
-| Data model   | RDF triples in an append-only fact ledger        | Four-tier memory (Markdown files, SQLite FTS5, Procedural Skills)                        |
-| Memory tiers | Curated RDF knowledge graph                      | Prompt memory (`MEMORY.md`), Session archive (`state.db`), Procedural skills (`skills/`) |
-| Retrieval    | Hybrid: vector, full-text, RDF filters           | FTS5 full-text search (`session_search`) & system prompt injection                       |
-| Provenance   | Fact-level, chronological, verifiable via SPARQL | Session/file-level tracking                                                              |
-| Deployment   | Edge-ready adapters (LibSQL, Postgres) or Cloud  | Local CLI framework / agent runtime                                                      |
+|              | Worlds                                                 | [Hermes Agent](https://github.com/NousResearch/Hermes-Agent) (Nous Research)             |
+| :----------- | :----------------------------------------------------- | :--------------------------------------------------------------------------------------- |
+| Data model   | RDF triples in named graphs                            | Four-tier memory (Markdown files, SQLite FTS5, Procedural Skills)                        |
+| Memory tiers | Curated RDF knowledge graph                            | Prompt memory (`MEMORY.md`), Session archive (`state.db`), Procedural skills (`skills/`) |
+| Retrieval    | Hybrid: vector, full-text, RDF filters                 | FTS5 full-text search (`session_search`) & system prompt injection                       |
+| Provenance   | Recorded as data in named graphs, queryable via SPARQL | Session/file-level tracking                                                              |
+| Deployment   | Edge-ready adapters (LibSQL, Postgres) or Cloud        | Local CLI framework / agent runtime                                                      |
 
 ## The philosophical difference
 
@@ -47,8 +47,6 @@ any other agent runtime) can query as a verifiable memory provider.
 
 - You need deterministic [graph querying](/worlds/query) (SPARQL) to traverse
   relationships across complex domain facts.
-- You require fact-level chronological provenance and auditability across all
-  asserted data.
 - You want an open, standards-based RDF memory layer shared across multiple
   agent runtimes (Claude Code, Letta, Hermes).
 - Your application demands strict compliance, safety, and deterministic

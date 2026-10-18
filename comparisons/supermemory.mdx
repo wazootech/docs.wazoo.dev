@@ -6,13 +6,13 @@ hidden: true
 
 ## At a glance
 
-|                 | Worlds                                           | [Supermemory](https://supermemory.ai) |
-| :-------------- | :----------------------------------------------- | :------------------------------------ |
-| Data model      | RDF triples in an append-only ledger             | Extracted entities and documents      |
-| How facts enter | Curated import (quads or text)                   | Automatic extraction from sources     |
-| Retrieval       | Hybrid: vector, full-text, RDF filters           | Search, memory graph, profiles        |
-| Provenance      | Fact-level, chronological, verifiable via SPARQL | Partial, derived from sources         |
-| Deployment      | Hosted beta or embedded adapters                 | Hosted or self-hosted                 |
+|                 | Worlds                                                 | [Supermemory](https://supermemory.ai) |
+| :-------------- | :----------------------------------------------------- | :------------------------------------ |
+| Data model      | RDF triples in named graphs                            | Extracted entities and documents      |
+| How facts enter | Curated import (quads or text)                         | Automatic extraction from sources     |
+| Retrieval       | Hybrid: vector, full-text, RDF filters                 | Search, memory graph, profiles        |
+| Provenance      | Recorded as data in named graphs, queryable via SPARQL | Partial, derived from sources         |
+| Deployment      | Hosted beta or embedded adapters                       | Hosted or self-hosted                 |
 
 ## The philosophical difference
 
@@ -22,8 +22,8 @@ through search, a knowledge graph, and entity profiles. Extraction does the
 work: you connect a source and the memory layer derives the structure.
 
 Worlds takes the opposite stance. Memory is curated, not accumulated. You decide
-which facts matter, assert them as RDF triples, and the engine keeps them in an
-append-only ledger. Nothing is inferred; everything is stated.
+which facts matter, assert them as RDF triples, and the engine stores them in
+the graph. Nothing is inferred; everything is stated.
 
 The tradeoff is effort against control. Extraction-based memory is cheap to
 start and useful for loosely-structured recall. Curated graphs cost more to
@@ -36,7 +36,6 @@ maintain and return exactly what you stored, with a path back to every source.
   model to guess between conflicting chunks.
 - You want a deterministic [query language](/worlds/query) (SPARQL) over your
   knowledge, not just retrieval.
-- You need a chronological record of when facts changed and who asserted them.
 
 ## When Worlds does not fit
 

@@ -7,13 +7,13 @@ hidden: true
 
 ## At a glance
 
-|                 | Worlds                        | [Maindex](https://github.com/maindex) |
-| :-------------- | :---------------------------- | :------------------------------------ |
-| Data model      | RDF triples in a ledger       | Typed memory structures               |
-| How facts enter | Import, patches, agent writes | API writes                            |
-| Retrieval       | Hybrid search + SPARQL        | MCP-based retrieval                   |
-| Provenance      | Fact-level ledger             | Provenance-attributed                 |
-| Deployment      | Hosted beta or embedded       | Managed layer                         |
+|                 | Worlds                           | [Maindex](https://github.com/maindex) |
+| :-------------- | :------------------------------- | :------------------------------------ |
+| Data model      | RDF triples in named graphs      | Typed memory structures               |
+| How facts enter | Import, patches, agent writes    | API writes                            |
+| Retrieval       | Hybrid search + SPARQL           | MCP-based retrieval                   |
+| Provenance      | Recorded as data in named graphs | Provenance-attributed                 |
+| Deployment      | Hosted beta or embedded          | Managed layer                         |
 
 ## The philosophical difference
 
@@ -25,8 +25,8 @@ Memory travels with the tools that use it.
 Worlds shares the source-of-truth ambition, but the structures are graphs rather
 than typed records. A fact in Worlds is a triple: two items connected by a
 property, stored against a timeline. Provenance in Maindex is an attribute on a
-record; in Worlds it is the path from a fact back to the source that asserted
-it. Scope control limits who reads; the ledger records what changed and when.
+record; in Worlds you record it as data, for example a named graph per source.
+Scope control limits who reads.
 
 ## When Worlds fits
 

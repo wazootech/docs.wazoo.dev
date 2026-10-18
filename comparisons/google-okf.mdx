@@ -1,20 +1,20 @@
 ---
 title: "Google OKF (Open Knowledge Format)"
 description:
-  "Worlds vs Google OKF: RDF fact ledger vs open knowledge representation
+  "Worlds vs Google OKF: RDF knowledge graph vs open knowledge representation
   format."
 hidden: true
 ---
 
 ## At a glance
 
-|               | Worlds                                                | Google OKF (Open Knowledge Format)                    |
-| :------------ | :---------------------------------------------------- | :---------------------------------------------------- |
-| Primary role  | Authoritative RDF fact ledger & SPARQL context engine | Open specification & format for structured knowledge  |
-| Data model    | RDF triples/quads in an append-only graph ledger      | Entity-attribute-value & schema-neutral graph payload |
-| Retrieval     | SPARQL graph queries, full-text, & vector fusion      | Schema parsing, serialization, & exchange format      |
-| Core strength | Deterministic multi-hop SPARQL graph verification     | Standardized schema payload interchange & format      |
-| Deployment    | Edge-ready adapters (LibSQL, Postgres) or Cloud       | Specification / interchange format                    |
+|               | Worlds                                            | Google OKF (Open Knowledge Format)                    |
+| :------------ | :------------------------------------------------ | :---------------------------------------------------- |
+| Primary role  | RDF knowledge graph & SPARQL context engine       | Open specification & format for structured knowledge  |
+| Data model    | RDF triples/quads in named graphs                 | Entity-attribute-value & schema-neutral graph payload |
+| Retrieval     | SPARQL graph queries, full-text, & vector fusion  | Schema parsing, serialization, & exchange format      |
+| Core strength | Deterministic multi-hop SPARQL graph verification | Standardized schema payload interchange & format      |
+| Deployment    | Edge-ready adapters (LibSQL, Postgres) or Cloud   | Specification / interchange format                    |
 
 ## Overlap and shared capabilities
 
@@ -37,8 +37,7 @@ whereas Worlds is a context storage engine and SPARQL query platform.
 
 - You need an active context engine and SPARQL query server to store, index, and
   query dynamic facts.
-- You require append-only quad ledgers with built-in provenance tracking and
-  hybrid search.
+- You require a quad store with named graphs and hybrid search.
 - You want edge-deployable database adapters (LibSQL, Turso, Postgres) for live
   agent fleets.
 

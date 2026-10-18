@@ -7,13 +7,13 @@ hidden: true
 
 ## At a glance
 
-|                 | Worlds                 | [Mem0](https://mem0.ai)                 |
-| :-------------- | :--------------------- | :-------------------------------------- |
-| Data model      | RDF triples            | Extracted memory items                  |
-| How facts enter | Curated import         | Automatic extraction from conversations |
-| Retrieval       | Hybrid search + SPARQL | Similarity search                       |
-| Provenance      | Fact-level ledger      | Item-level                              |
-| Query language  | SPARQL                 | SDK retrieval                           |
+|                 | Worlds                           | [Mem0](https://mem0.ai)                 |
+| :-------------- | :------------------------------- | :-------------------------------------- |
+| Data model      | RDF triples                      | Extracted memory items                  |
+| How facts enter | Curated import                   | Automatic extraction from conversations |
+| Retrieval       | Hybrid search + SPARQL           | Similarity search                       |
+| Provenance      | Recorded as data in named graphs | Item-level                              |
+| Query language  | SPARQL                           | SDK retrieval                           |
 
 ## The philosophical difference
 
@@ -22,9 +22,9 @@ extracted items you retrieve by similarity. The memory layer decides what
 matters and returns the most similar entries when asked.
 
 Worlds inverts that. You decide which facts matter, assert them as RDF triples,
-and the engine keeps them in a chronological ledger. Retrieval is deterministic:
-the graph either contains the fact or it does not, and [SPARQL](/worlds/query)
-can prove which.
+and the engine stores them in the graph. Retrieval is deterministic: the graph
+either contains the fact or it does not, and [SPARQL](/worlds/query) can prove
+which.
 
 Extracted memories are convenient for chat applications. They are weak when the
 agent's answer must be defensible, because the stored item is a model-generated

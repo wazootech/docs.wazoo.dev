@@ -10,10 +10,9 @@ IRI: two mentions of the same person are the same entity only when they carry
 the same IRI, and facts enter deliberately through import and patches rather
 than being inferred from transcripts. That is a design decision, not a missing
 capability. RDF is the substrate. Worlds provides the primitive building blocks
-— items, facts, the append-only ledger, hybrid search, SPARQL, provenance, and
-SHACL — and this guide composes those primitives into entity resolution:
-deciding when "Sarah", "Sarah Chen", and "S. Chen" refer to the same real-world
-person.
+— items, facts, hybrid search, SPARQL, provenance, and SHACL — and this guide
+composes those primitives into entity resolution: deciding when "Sarah", "Sarah
+Chen", and "S. Chen" refer to the same real-world person.
 
 Two patterns are covered. **Pattern A resolves at retrieval time**, which Worlds
 supports natively. **Pattern B resolves at write time**, the conservative
@@ -41,7 +40,7 @@ Entity resolution needs five things. Worlds provides all five as RDF primitives
 | One person, many names        | Label literals (`rdfs:label`, `schema:name`, `schema:alternateName`) indexed as aliases |
 | "Who does it appear next to?" | Co-occurrence, expressed as a SPARQL pattern over shared neighbors                      |
 | "How recently seen?"          | A timestamp predicate you assert — time is just another fact                            |
-| Merge decisions               | `wazoo:resolvesTo` assertions written as ledger patches                                 |
+| Merge decisions               | `wazoo:resolvesTo` assertions written as RDF patches                                    |
 
 The last two are the point of this guide: recency and resolution are not
 built-in features, but every fact you need to compute them is a triple you can
@@ -101,7 +100,7 @@ matches.
 ## Pattern B: resolve at write time (Hindsight-style)
 
 When mentions arrive as an extraction stream, resolve them before they reach the
-ledger. Worlds does not do this for you — the guide shows the pipeline.
+world. Worlds does not do this for you — the guide shows the pipeline.
 
 ### 1. Extract and assert mentions with provenance
 
@@ -204,13 +203,14 @@ the existing entity. When it does not, mint a fresh IRI — do not guess.
 urn:mention:42 wazoo:resolvesTo user:sarah-chen .
 ```
 
-Unlike a silent record collapse, this resolution is a ledger patch. If it was
-wrong, retract it with a patch and re-resolve — both states remain in the
-chronological ledger, and the provenance of every decision is queryable.
+Unlike a silent record collapse, this resolution is an explicit fact you can
+query. If it was wrong, retract it with a patch and re-resolve. A retracted fact
+is removed, not archived, so if you need the history of decisions, record each
+decision as its own item with a timestamp instead of deleting it.
 
 ### 5. Audit every decision
 
-Ask the ledger why a mention resolved the way it did:
+Ask the graph why a mention resolved the way it did:
 
 ```sparql
 PREFIX wazoo: <https://wazoo.dev/#>
@@ -233,7 +233,7 @@ extraction-based memory layers have to build by hand.
 | Candidate lookup | Search call                                                   | Hybrid search with label-alias indexing                   |
 | Similarity       | String-ratio function over labels (SPARQL has no fuzzy match) | FTS5 keyword retrieval                                    |
 | Co-occurrence    | —                                                             | The graph itself; one SPARQL pattern                      |
-| Recency          | A timestamp predicate you choose                              | Chronological, append-only ledger                         |
+| Recency          | A timestamp predicate you choose                              | Storage for the timestamp facts you assert                |
 | Decision         | Weighted score and threshold policy                           | `wazoo:resolvesTo` patches, SHACL shapes to validate them |
 
 ## Check for success
@@ -269,9 +269,9 @@ curl -s -X POST "https://data.wazoo.dev/worlds/w_01jd8x5mqv7k3n9r2t4w6y8z0b/spar
 
 ## Next steps
 
-- [Worlds concepts](/worlds/index): items, facts, and the ledger
+- [Worlds concepts](/worlds/index): items, facts, and properties
 - [Hybrid search](/worlds/search): tune the retrieval signal
 - [Graph queries](/worlds/query): write the patterns behind the score
-- [Update](/worlds/update): patch state with provenance
+- [Update](/worlds/update): patch state with RDF patches
 - [Build a company brain](/guides/company-brain): a sibling guide for shared
   team knowledge

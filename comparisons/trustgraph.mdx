@@ -8,14 +8,14 @@ hidden: true
 
 ## At a glance
 
-|                 | Worlds                 | [TrustGraph](https://trustgraph.ai)    |
-| :-------------- | :--------------------- | :------------------------------------- |
-| Data model      | RDF triples            | RDF triples (holonic context graph)    |
-| How facts enter | Curated import         | Automated extraction plus manual load  |
-| Query           | SPARQL + hybrid search | SPARQL + GraphRAG, Document RAG, NL    |
-| Provenance      | Fact-level ledger      | Extraction traces, audit logs          |
-| Hosting         | Managed data plane     | You run it (Docker, Kubernetes, cloud) |
-| Scope           | Context engine         | Full agent platform                    |
+|                 | Worlds                           | [TrustGraph](https://trustgraph.ai)    |
+| :-------------- | :------------------------------- | :------------------------------------- |
+| Data model      | RDF triples                      | RDF triples (holonic context graph)    |
+| How facts enter | Curated import                   | Automated extraction plus manual load  |
+| Query           | SPARQL + hybrid search           | SPARQL + GraphRAG, Document RAG, NL    |
+| Provenance      | Recorded as data in named graphs | Extraction traces, audit logs          |
+| Hosting         | Managed data plane               | You run it (Docker, Kubernetes, cloud) |
+| Scope           | Context engine                   | Full agent platform                    |
 
 ## The philosophical difference
 
@@ -30,16 +30,15 @@ operate the stack, choose the graph and vector stores, and keep everything
 inside your infrastructure.
 
 Worlds is a managed context engine and deliberately narrow. Facts enter by
-curation, not extraction, and land in an append-only ledger where every fact
-carries a traceable path to its source. Retrieval is deterministic by
-construction: the graph either contains the fact or it does not, and SPARQL can
-prove which. You bring the LLM and the embedding provider; Worlds stores and
-retrieves.
+curation, not extraction, and land in a graph you control. Retrieval is
+deterministic by construction: the graph either contains the fact or it does
+not, and SPARQL can prove which. You bring the LLM and the embedding provider;
+Worlds stores and retrieves.
 
 The practical difference is who decides what a fact is. TrustGraph's platform
 extracts context at scale and makes it explainable. Worlds asserts curated facts
 and makes them auditable. The extraction pipeline suits breadth; the curated
-ledger suits defensibility.
+graph suits defensibility.
 
 ## When Worlds fits
 

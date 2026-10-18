@@ -8,13 +8,13 @@ hidden: true
 
 ## At a glance
 
-|                 | Worlds                        | [MemSync](https://github.com/memsync) |
-| :-------------- | :---------------------------- | :------------------------------------ |
-| Data model      | RDF triples in a ledger       | Embeddings plus a memory API          |
-| How facts enter | Import, patches, agent writes | REST writes                           |
-| Retrieval       | Hybrid search + SPARQL        | Similarity over embeddings            |
-| Provenance      | Fact-level ledger             | Inference-verifiable                  |
-| Deployment      | Hosted beta or embedded       | Managed REST API                      |
+|                 | Worlds                           | [MemSync](https://github.com/memsync) |
+| :-------------- | :------------------------------- | :------------------------------------ |
+| Data model      | RDF triples in named graphs      | Embeddings plus a memory API          |
+| How facts enter | Import, patches, agent writes    | REST writes                           |
+| Retrieval       | Hybrid search + SPARQL           | Similarity over embeddings            |
+| Provenance      | Recorded as data in named graphs | Inference-verifiable                  |
+| Deployment      | Hosted beta or embedded          | Managed REST API                      |
 
 ## The philosophical difference
 
@@ -25,10 +25,9 @@ memory service can attest that the inference producing an embedding ran on
 verified infrastructure.
 
 Worlds verifies at the fact layer. A SPARQL ASK query returns a deterministic
-boolean for a specific assertion, and the ledger records when the fact entered
-and from where. The two kinds of verification answer different questions.
-MemSync proves the computation ran as claimed; Worlds proves the fact is in the
-graph.
+boolean for a specific assertion. The two kinds of verification answer different
+questions. MemSync proves the computation ran as claimed; Worlds proves the fact
+is in the graph.
 
 ## When Worlds fits
 
