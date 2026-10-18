@@ -8,13 +8,13 @@ hidden: true
 
 ## At a glance
 
-|                 | Worlds                        | [MemClaw](https://github.com/memclaw) |
-| :-------------- | :---------------------------- | :------------------------------------ |
-| Data model      | RDF triples in a ledger       | Shared memory partitions              |
-| How facts enter | Import, patches, agent writes | Agent writes to a partition           |
-| Retrieval       | Hybrid search + SPARQL        | Partition-aware retrieval             |
-| Provenance      | Fact-level ledger             | Governed access                       |
-| Deployment      | Hosted beta or embedded       | Cloud-managed                         |
+|                 | Worlds                           | [MemClaw](https://github.com/memclaw) |
+| :-------------- | :------------------------------- | :------------------------------------ |
+| Data model      | RDF triples in named graphs      | Shared memory partitions              |
+| How facts enter | Import, patches, agent writes    | Agent writes to a partition           |
+| Retrieval       | Hybrid search + SPARQL           | Partition-aware retrieval             |
+| Provenance      | Recorded as data in named graphs | Governed access                       |
+| Deployment      | Hosted beta or embedded          | Cloud-managed                         |
 
 ## The philosophical difference
 
@@ -27,8 +27,8 @@ Worlds is also shared: many agents query the same world. Isolation is per world,
 and data-plane tokens are scoped to a single world
 ([create a world](/projects/worlds)). Coordination happens at the data layer
 rather than the access layer. Facts are asserted deliberately and stored in a
-ledger, so two agents acting on the same world agree on the same state. MemClaw
-governs who may touch memory; Worlds governs what is true within it.
+shared graph, so two agents acting on the same world agree on the same state.
+MemClaw governs who may touch memory; Worlds governs what is true within it.
 
 ## When Worlds fits
 

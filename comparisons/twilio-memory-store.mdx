@@ -8,13 +8,13 @@ hidden: true
 
 ## At a glance
 
-|                 | Worlds                        | [Twilio Memory Store](https://www.twilio.com/docs) |
-| :-------------- | :---------------------------- | :------------------------------------------------- |
-| Data model      | RDF triples in a ledger       | Conversational and factual buckets                 |
-| How facts enter | Import, patches, agent writes | Bucket writes                                      |
-| Retrieval       | Hybrid search + SPARQL        | Bucket lookup + vectors                            |
-| Provenance      | Fact-level ledger             | Bucket-level                                       |
-| Isolation       | Per-world                     | Strict per-tenant                                  |
+|                 | Worlds                           | [Twilio Memory Store](https://www.twilio.com/docs) |
+| :-------------- | :------------------------------- | :------------------------------------------------- |
+| Data model      | RDF triples in named graphs      | Conversational and factual buckets                 |
+| How facts enter | Import, patches, agent writes    | Bucket writes                                      |
+| Retrieval       | Hybrid search + SPARQL           | Bucket lookup + vectors                            |
+| Provenance      | Recorded as data in named graphs | Bucket-level                                       |
+| Isolation       | Per-world                        | Strict per-tenant                                  |
 
 ## The philosophical difference
 
@@ -39,7 +39,6 @@ recording every fact against a timeline, so you can see when state changed.
   dependencies.
 - You want to [query facts](/worlds/query) across worlds rather than read fixed
   buckets.
-- You need a chronological ledger of fact changes.
 
 ## When Worlds does not fit
 

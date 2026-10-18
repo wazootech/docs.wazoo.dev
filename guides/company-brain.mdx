@@ -91,7 +91,7 @@ and carry provenance you can trace to their source.
     ```
 
     Add both to your CI pipeline so a document with a broken shape or a
-    dangling link cannot reach the ledger.
+    dangling link cannot reach the world.
 
   </Step>
   <Step title="Import verified facts into the world">
@@ -104,8 +104,9 @@ and carry provenance you can trace to their source.
     ```
 
     The import endpoint accepts Turtle, JSON-LD, N-Triples, N-Quads, and Trig.
-    Every import appends to the chronological ledger, so the brain keeps a
-    complete history of what it knows.
+    Import adds facts to the world's current state. Worlds does not keep a
+    history of earlier states, so keep your source documents in Git as the
+    record of how the brain changed.
 
   </Step>
   <Step title="Connect agent runtimes">
@@ -146,7 +147,7 @@ wazoo worlds sparql "$WORLD_ID" --query "SELECT * WHERE { ?s ?p ?o } LIMIT 10"
 ```
 
 The search returns the ADR document, and the SPARQL query returns its quads.
-Both results prove the agent-facing ledger contains verified, queryable facts.
+Both results prove the agent-facing world contains verified, queryable facts.
 
 ## Use cases
 
@@ -154,7 +155,7 @@ Both results prove the agent-facing ledger contains verified, queryable facts.
   decisions, system topology, and team roles instead of asking in Slack.
 - **Verifiable ADR tracking**: Agents check accepted decisions before proposing
   refactors or API changes.
-- **Multi-agent fleet coordination**: A shared ledger keeps Letta, Hermes, and
+- **Multi-agent fleet coordination**: A shared world keeps Letta, Hermes, and
   custom bots working from the same verified facts.
 
 ## Next steps

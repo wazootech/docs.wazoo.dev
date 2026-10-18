@@ -1,20 +1,20 @@
 ---
 title: "Graphiti"
 description:
-  "Worlds vs Graphiti: curated RDF fact ledger vs auto-extracted temporal
+  "Worlds vs Graphiti: curated RDF knowledge graph vs auto-extracted temporal
   knowledge graph."
 hidden: true
 ---
 
 ## At a glance
 
-|              | Worlds                                                | [Graphiti](https://github.com/getzep/graphiti)                    |
-| :----------- | :---------------------------------------------------- | :---------------------------------------------------------------- |
-| Primary role | Authoritative RDF fact ledger & SPARQL context engine | Temporal knowledge-graph engine for agent memory                  |
-| Data model   | W3C RDF triples in an append-only graph ledger        | Property graph with bi-temporal validity windows on edges         |
-| Retrieval    | SPARQL graph queries, full-text, & vector fusion      | Hybrid semantic, keyword, & graph search with reranking           |
-| Ingestion    | Curated imports and patches                           | LLM-driven episode extraction and conflict resolution             |
-| Deployment   | Edge-ready adapters (LibSQL, Postgres) or Cloud       | Self-hosted against Neo4j, FalkorDB, or Kuzu; Zep Cloud available |
+|              | Worlds                                           | [Graphiti](https://github.com/getzep/graphiti)                    |
+| :----------- | :----------------------------------------------- | :---------------------------------------------------------------- |
+| Primary role | RDF knowledge graph & SPARQL context engine      | Temporal knowledge-graph engine for agent memory                  |
+| Data model   | W3C RDF triples in named graphs                  | Property graph with bi-temporal validity windows on edges         |
+| Retrieval    | SPARQL graph queries, full-text, & vector fusion | Hybrid semantic, keyword, & graph search with reranking           |
+| Ingestion    | Curated imports and patches                      | LLM-driven episode extraction and conflict resolution             |
+| Deployment   | Edge-ready adapters (LibSQL, Postgres) or Cloud  | Self-hosted against Neo4j, FalkorDB, or Kuzu; Zep Cloud available |
 
 ## Overlap and shared capabilities
 
@@ -31,13 +31,13 @@ The difference is in how facts enter the graph and what guarantees they carry:
   answers both "what is true" and "what was true on a date". Conflicting facts
   are invalidated, not deleted.
 - Worlds treats ingestion as curation. Facts enter a world deliberately, through
-  import and patches, as W3C RDF triples in an append-only ledger. Every quad
-  records where it came from and when it entered.
+  import and patches, as W3C RDF triples in named graphs. Every quad records
+  where it came from and when it entered.
 
 Graphiti's temporal windows solve fact churn inside one deployment. Worlds'
-append-only ledger plus SPARQL gives you standards-based verification: the same
-graph queries against any backend, auditable provenance per quad, and no
-extraction step that can silently misread a source.
+curated graph plus SPARQL gives you standards-based verification: the same graph
+queries against any backend, and no extraction step that can silently misread a
+source.
 
 ## When Worlds fits
 
@@ -59,7 +59,7 @@ extraction step that can silently misread a source.
 
 The two address different trust models. Teams that need extracted, time-aware
 memory from high-churn event streams pair Graphiti with a curated verified
-ledger: extraction handles recall breadth, while a [Worlds](/projects/worlds)
+graph: extraction handles recall breadth, while a [Worlds](/projects/worlds)
 world holds the assertions agents must be able to prove. Because Worlds is
 provider-agnostic, its graph remains queryable regardless of which extraction
 engine feeds other parts of the pipeline.

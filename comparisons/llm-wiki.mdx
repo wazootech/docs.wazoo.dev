@@ -10,7 +10,7 @@ hidden: true
 
 |                 | Worlds                                            | LLM Wiki                                                   |
 | :-------------- | :------------------------------------------------ | :--------------------------------------------------------- |
-| Data model      | RDF triples in an append-only ledger              | Interlinked Markdown articles (`[[wikilinks]]`)            |
+| Data model      | RDF triples in named graphs                       | Interlinked Markdown articles (`[[wikilinks]]`)            |
 | Gardening model | Schema-checked assertions & SHACL validation      | Continuous agent summarizing, linking, & synthesis         |
 | Retrieval       | Hybrid: SPARQL graph filters, vector, & full-text | File traversal (`ls`, `cat`, `grep`) & wikilink navigation |
 | Provenance      | Quad-level, temporal, verifiable via SPARQL       | Article-level source citations & git commits               |
@@ -41,8 +41,6 @@ Where they overlap and build on each other:
   hallucinated facts in your knowledge base.
 - You require deterministic [graph queries](/worlds/query) (SPARQL) across
   connected entities rather than manual link-following.
-- You want an append-only ledger that tracks when facts were asserted and by
-  whom.
 
 ## When LLM Wiki fits
 

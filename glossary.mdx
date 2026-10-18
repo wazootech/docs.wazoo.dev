@@ -34,13 +34,12 @@ graphs against specified shapes and constraints.
 ### world
 
 A stateful dataset that acts as an agent's verifiable, AI-native context. A
-world records changes chronologically and stays synchronized with retrieval
-indexes. Worlds' default data model is an RDF knowledge graph with a hybrid
-search index combining FTS5/BM25 keyword matching, vector embeddings, and RDF
-structural filters, fused via
-[reciprocal rank fusion (RRF)](#reciprocal-rank-fusion-rrf). The world contract
-is data-model agnostic: a world can also be backed by a relational database or
-another syncable store.
+world holds current state and stays synchronized with retrieval indexes. Worlds'
+default data model is an RDF knowledge graph with a hybrid search index
+combining FTS5/BM25 keyword matching, vector embeddings, and RDF structural
+filters, fused via [reciprocal rank fusion (RRF)](#reciprocal-rank-fusion-rrf).
+The world contract is data-model agnostic: a world can also be backed by a
+relational database or another syncable store.
 
 ## Neuro-symbolic AI & memory
 
@@ -57,14 +56,15 @@ into a single, optimized rank list.
 
 ### Provenance
 
-The immutable, auditable lineage of facts stored in Worlds, tracking the exact
-source, timestamp, and context of every quad assertion.
+The source and context of a fact. In Worlds you record provenance as data, for
+example by placing facts in a named graph per source and describing that graph
+with its own facts. Worlds does not track a timestamp or source for each quad.
 
 ## Wazoo ecosystem
 
 ### Worlds
 
-The authoritative context engine and RDF fact ledger platform
+The RDF knowledge graph and context engine platform
 ([wazootech/worlds](https://github.com/wazootech/worlds-api)) built by Wazoo
 Technologies.
 

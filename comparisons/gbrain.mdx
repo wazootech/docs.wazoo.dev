@@ -1,18 +1,19 @@
 ---
 title: "GBrain"
-description: "Worlds vs GBrain: RDF fact ledger vs personal AI memory store."
+description:
+  "Worlds vs GBrain: RDF knowledge graph vs personal AI memory store."
 hidden: true
 ---
 
 ## At a glance
 
-|               | Worlds                                                | [GBrain](https://github.com/garrytan/gbrain)          |
-| :------------ | :---------------------------------------------------- | :---------------------------------------------------- |
-| Primary role  | Authoritative RDF fact ledger & SPARQL context engine | Personal AI memory & context repository               |
-| Data model    | RDF triples in an append-only graph ledger            | Key-value / document memory notes & embeddings        |
-| Retrieval     | SPARQL graph queries, full-text, & vector fusion      | Semantic vector search & key lookup                   |
-| Target domain | Multi-agent context, enterprise domain graphs         | Personal context, developer notes, & user preferences |
-| Deployment    | Edge-ready adapters (LibSQL, Postgres) or Cloud       | Self-hosted / local runtime                           |
+|               | Worlds                                           | [GBrain](https://github.com/garrytan/gbrain)          |
+| :------------ | :----------------------------------------------- | :---------------------------------------------------- |
+| Primary role  | RDF knowledge graph & SPARQL context engine      | Personal AI memory & context repository               |
+| Data model    | RDF triples in named graphs                      | Key-value / document memory notes & embeddings        |
+| Retrieval     | SPARQL graph queries, full-text, & vector fusion | Semantic vector search & key lookup                   |
+| Target domain | Multi-agent context, enterprise domain graphs    | Personal context, developer notes, & user preferences |
+| Deployment    | Edge-ready adapters (LibSQL, Postgres) or Cloud  | Self-hosted / local runtime                           |
 
 ## Overlap and shared capabilities
 
@@ -36,7 +37,6 @@ enterprise-grade, verifiable graph context for multi-agent systems.
 
 - You need deterministic graph querying (SPARQL) to verify multi-hop
   relationships across domain facts.
-- You require immutable provenance and audit trails for every assertion.
 - You want open-standard RDF schemas that operate natively across edge adapters
   (LibSQL, Postgres) and cloud databases.
 

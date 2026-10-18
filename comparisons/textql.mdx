@@ -1,20 +1,20 @@
 ---
 title: "TextQL"
 description:
-  "Worlds vs TextQL: RDF fact ledger vs enterprise data warehouse context
+  "Worlds vs TextQL: RDF knowledge graph vs enterprise data warehouse context
   engine."
 hidden: true
 ---
 
 ## At a glance
 
-|               | Worlds                                                | [TextQL](https://textql.com)                          |
-| :------------ | :---------------------------------------------------- | :---------------------------------------------------- |
-| Primary role  | Authoritative RDF fact ledger & SPARQL context engine | AI data analyst & warehouse semantic layer platform   |
-| Data model    | RDF triples in an append-only graph ledger            | SQL warehouse tables, semantic metrics, & catalog     |
-| Retrieval     | SPARQL graph queries, full-text, & vector fusion      | SQL generation, semantic search over warehouse schema |
-| Target domain | Persistent agent memory & verifiable domain graphs    | Business intelligence, SQL analytics, & warehouse RAG |
-| Deployment    | Edge-ready adapters (LibSQL, Postgres) or Cloud       | Managed Cloud SaaS / Enterprise Warehouse integration |
+|               | Worlds                                             | [TextQL](https://textql.com)                          |
+| :------------ | :------------------------------------------------- | :---------------------------------------------------- |
+| Primary role  | RDF knowledge graph & SPARQL context engine        | AI data analyst & warehouse semantic layer platform   |
+| Data model    | RDF triples in named graphs                        | SQL warehouse tables, semantic metrics, & catalog     |
+| Retrieval     | SPARQL graph queries, full-text, & vector fusion   | SQL generation, semantic search over warehouse schema |
+| Target domain | Persistent agent memory & verifiable domain graphs | Business intelligence, SQL analytics, & warehouse RAG |
+| Deployment    | Edge-ready adapters (LibSQL, Postgres) or Cloud    | Managed Cloud SaaS / Enterprise Warehouse integration |
 
 ## Overlap and shared capabilities
 
@@ -29,8 +29,7 @@ The core distinction is target substrate and query language:
   It acts as an AI data analyst, translating natural language into SQL queries
   against relational tables and semantic business metrics.
 - Worlds is an RDF knowledge graph context engine. It manages persistent triple
-  assertions, subject-predicate-object graphs, and SPARQL queries with immutable
-  quad provenance.
+  assertions, subject-predicate-object graphs, and SPARQL queries.
 
 TextQL brings natural language analytics to existing SQL data warehouses,
 whereas Worlds acts as a persistent, verifiable memory layer for software
@@ -38,8 +37,8 @@ agents.
 
 ## When Worlds fits
 
-- You need an append-only RDF fact ledger to store agent memories and enterprise
-  domain graphs.
+- You need an RDF knowledge graph to store agent memories and enterprise domain
+  graphs.
 - You require W3C standard SPARQL graph traversal across multi-hop entity
   relationships.
 - You want portable, edge-deployable graph storage via LibSQL, Turso, or

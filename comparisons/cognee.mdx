@@ -1,20 +1,20 @@
 ---
 title: "Cognee"
 description:
-  "Worlds vs Cognee: curated RDF fact ledger vs ECL-extracted graph and vector
-  memory."
+  "Worlds vs Cognee: curated RDF knowledge graph vs ECL-extracted graph and
+  vector memory."
 hidden: true
 ---
 
 ## At a glance
 
-|              | Worlds                                                | [Cognee](https://github.com/topoteretes/cognee)            |
-| :----------- | :---------------------------------------------------- | :--------------------------------------------------------- |
-| Primary role | Authoritative RDF fact ledger & SPARQL context engine | Self-hosted agent-memory platform over graphs plus vectors |
-| Data model   | W3C RDF triples in an append-only graph ledger        | Extracted entity-relation graph with embeddings (ECL)      |
-| Retrieval    | SPARQL graph queries, full-text, & vector fusion      | Graph traversal combined with similarity search            |
-| Ingestion    | Curated imports and patches                           | Automated extract-cognify-load pipeline over many sources  |
-| Deployment   | Edge-ready adapters (LibSQL, Postgres) or Cloud       | Python SDK, Docker, or Cognee Cloud; pluggable backends    |
+|              | Worlds                                           | [Cognee](https://github.com/topoteretes/cognee)            |
+| :----------- | :----------------------------------------------- | :--------------------------------------------------------- |
+| Primary role | RDF knowledge graph & SPARQL context engine      | Self-hosted agent-memory platform over graphs plus vectors |
+| Data model   | W3C RDF triples in named graphs                  | Extracted entity-relation graph with embeddings (ECL)      |
+| Retrieval    | SPARQL graph queries, full-text, & vector fusion | Graph traversal combined with similarity search            |
+| Ingestion    | Curated imports and patches                      | Automated extract-cognify-load pipeline over many sources  |
+| Deployment   | Edge-ready adapters (LibSQL, Postgres) or Cloud  | Python SDK, Docker, or Cognee Cloud; pluggable backends    |
 
 ## Overlap and shared capabilities
 
@@ -30,8 +30,7 @@ The difference is in what the graph is and who authors it:
   serve recall through `remember` / `recall` operations. The graph is derived
   output; its accuracy tracks the extraction models.
 - Worlds keeps the graph authoritative. Facts enter as W3C RDF through import
-  and patches you control, land in an append-only ledger with per-quad
-  provenance, and verify through SPARQL rather than similarity.
+  and patches you control, and verify through SPARQL rather than similarity.
 
 Cognee's automation is the feature when volume is high and curation is not an
 option. When assertions must be provable, for example in audit, compliance, or

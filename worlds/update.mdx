@@ -10,14 +10,16 @@ stateful context.
 ## State mutations
 
 A world mutates its state using RDF patches, which are additions and deletions
-of facts. Because Worlds is a chronological, append-only ledger, these patches
-permanently preserve historical truth.
+of facts. A world stores current state: a deleted fact is removed, and Worlds
+does not keep a history of earlier states yet. Fact-level history is planned as
+an append-only change log that records every patch beside the current state
+([worlds-sdk-ts#221](https://github.com/wazootech/worlds-sdk-ts/issues/221)).
 
 ### Import quads
 
-The mutation path on the hosted API is the [import endpoint](/console/import).
-[SPARQL](/worlds/query) on the data plane is read-only; to change state, send
-quads to import:
+The hosted API has two mutation paths: the [import endpoint](/console/import)
+and SPARQL UPDATE through [SPARQL](/worlds/query). Both require an API key with
+the `data:write` scope. To add facts, send quads to import:
 
 ```bash
 curl -s -X POST "https://data.wazoo.dev/worlds/w_01jd8x5mqv7k3n9r2t4w6y8z0b/import" \
@@ -32,14 +34,12 @@ curl -s -X POST "https://data.wazoo.dev/worlds/w_01jd8x5mqv7k3n9r2t4w6y8z0b/impo
 The import above asserts that `wazoo:worlds` is a `schema:SoftwareApplication`.
 Set `contentType` to `text/plain` to ingest unstructured text chunks instead.
 
-Unlike traditional databases that overwrite records, Worlds uses RDF patches to
-keep a chronological record of changes.
-
 ## Mutation and state
 
-Every update to a world is a transaction that appends new facts to the ledger.
-This ensures agents can always query past states and see how information has
-changed.
+Every update to a world is a transaction that adds and removes facts. You can
+query the current state; earlier states are not retained. To keep a record of
+how information changed, write it as facts, for example a timestamp or a
+superseded-by property.
 
 ### RDF patches
 
@@ -49,7 +49,7 @@ relationship, the engine performs a patch:
 1. Deletion: Remove the outdated triple.
 2. Addition: Insert the new, verified triple.
 
-This process is atomic and verifiable.
+This process is atomic.
 
 ## Update strategies
 
@@ -90,6 +90,6 @@ Historical reward signals boost retrieval results, which creates a recursive
 loop where the system learns which triples are most useful or truthful for the
 agent's context.
 
-This historical truth remains in the ledger, so this preference data can guide
-future queries. Learn more about
+Preference facts stay in the graph until you remove them, so this preference
+data can guide future queries. Learn more about
 [preference-aware retrieval](/worlds/query#preference-aware-retrieval).

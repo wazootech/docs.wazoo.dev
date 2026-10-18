@@ -49,9 +49,9 @@ use these properties to navigate and mutate state precisely.
 ## Facts
 
 A fact is a unit of data expressed as a structured statement that connects two
-items using a property. Every fact is tied to a moment in time. Worlds keeps an
-append-only, chronological ledger of facts, so agents can trace exactly how
-state and information change.
+items using a property. A world holds the current set of facts. Updates add and
+remove facts, and a removed fact is not retained, so record any history you need
+as facts in the graph.
 
 Conceptually, a fact is a structured assertion. For example, you can represent
 the assertion "Ethan is a person" as:

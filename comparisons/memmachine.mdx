@@ -2,19 +2,19 @@
 title: "MemMachine"
 description:
   "Worlds vs MemMachine: a graph-and-SQL memory service against a curated fact
-  ledger."
+  graph."
 hidden: true
 ---
 
 ## At a glance
 
-|                 | Worlds                        | [MemMachine](https://github.com/memmachine) |
-| :-------------- | :---------------------------- | :------------------------------------------ |
-| Data model      | RDF triples in a ledger       | Graph for episodes, SQL for profiles        |
-| How facts enter | Import, patches, agent writes | Logged conversations and profile writes     |
-| Retrieval       | Hybrid search + SPARQL        | Graph traversal + vectors                   |
-| Provenance      | Fact-level ledger             | Graph-derived                               |
-| Deployment      | Hosted beta or embedded       | Self-hosted or cloud                        |
+|                 | Worlds                           | [MemMachine](https://github.com/memmachine) |
+| :-------------- | :------------------------------- | :------------------------------------------ |
+| Data model      | RDF triples in named graphs      | Graph for episodes, SQL for profiles        |
+| How facts enter | Import, patches, agent writes    | Logged conversations and profile writes     |
+| Retrieval       | Hybrid search + SPARQL           | Graph traversal + vectors                   |
+| Provenance      | Recorded as data in named graphs | Graph-derived                               |
+| Deployment      | Hosted beta or embedded          | Self-hosted or cloud                        |
 
 ## The philosophical difference
 
@@ -24,11 +24,10 @@ conversations, lives in a Neo4j graph, while profile data lives in SQL.
 Retrieval walks the graph to reconstruct who said what to whom. It emphasizes
 token efficiency and works across LLM providers, including AWS Bedrock.
 
-Worlds stores relational structure too, but as RDF triples in an append-only
-ledger. The difference is where structure comes from. MemMachine derives context
-from conversation logs after the fact; Worlds accepts only facts you assert
-deliberately. Every fact in Worlds carries a path to its source and a point on
-the ledger's timeline.
+Worlds stores relational structure too, but as RDF triples in named graphs. The
+difference is where structure comes from. MemMachine derives context from
+conversation logs after the fact; Worlds accepts only facts you assert
+deliberately.
 
 The token-efficiency claim is worth weighing honestly. MemMachine reports using
 fewer tokens than comparable services. Worlds answers the same question with a
@@ -59,5 +58,5 @@ rather than a retrieved context window.
 
 Run MemMachine for the episodic layer, what an agent talked about and how it
 reacted, and Worlds for the durable facts the agent may act on. Both store
-graphs, but the Worlds ledger stays the authoritative source because its facts
+graphs, but the Worlds graph stays the authoritative source because its facts
 are curated and verifiable.

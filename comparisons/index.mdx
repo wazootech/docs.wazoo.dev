@@ -10,7 +10,7 @@ yourself.
 
 ## What Worlds provides
 
-- Graph storage: RDF triples in an append-only, chronological fact ledger.
+- Graph storage: RDF triples in named graphs.
 - Hybrid search: vector, full-text, and RDF filters fused by reciprocal rank
   fusion.
 - SPARQL queries: declarative, deterministic graph traversal.
@@ -89,15 +89,15 @@ The remaining alternatives cluster by model. Similarity layers such as LangMem,
 MemSearch, and MemSync recall by embedding. Graph-shaped stores such as
 MemMachine combine a knowledge graph with SQL. Governed services such as Twilio
 Memory Store, MemClaw, and Maindex organize structure and access. MemSpan trades
-structure for portability. None of them exposes a queryable, append-only fact
-[ledger](/worlds/index) with deterministic SPARQL verification.
+structure for portability. None of them exposes a queryable, standards-based
+[fact graph](/worlds/index) with deterministic SPARQL verification.
 
 ## When to choose Worlds
 
 Choose Worlds when conformance and interoperability are non-negotiable: agents
 that rely on W3C open standards (RDF, SPARQL), portable memory layers, and
-deterministic graph verification across any database or model provider. The
-append-only ledger and SPARQL query engine keep agent context interoperable and
+deterministic graph verification across any database or model provider. The RDF
+data model and SPARQL query engine keep agent context interoperable and
 inspectable across database and model providers.
 
 Real-world problems Worlds solves:
@@ -111,9 +111,9 @@ Real-world problems Worlds solves:
   matching confirms that entities and relationships exist before the agent acts
   on them, keeping multi-hop reasoning grounded in facts.
 - **You cannot answer "where did this fact come from?"** In strict environments,
-  every assertion needs a traceable source. The append-only ledger records
-  quad-level provenance, so you can audit where each fact came from and when it
-  entered the world.
+  every assertion needs a traceable source. Named graphs let you group facts by
+  source and describe each source with its own facts, so you can query where a
+  fact came from.
 - **You are locked into one vector store or model provider.** Worlds is
   provider-agnostic: you bring your own LLMs and embedding providers, and
   adapters persist to LibSQL/Turso or Postgres, so context stays portable.

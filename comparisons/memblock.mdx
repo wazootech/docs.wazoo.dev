@@ -8,13 +8,13 @@ hidden: true
 
 ## At a glance
 
-|              | Worlds                                           | [Memblock](https://www.memblock.xyz/)             |
-| :----------- | :----------------------------------------------- | :------------------------------------------------ |
-| Data model   | RDF triples in an append-only ledger             | Block-based memory structures & key-value records |
-| Memory model | Curated graph facts with explicit relations      | Managed memory blocks for LLM agent state         |
-| Retrieval    | Hybrid: vector, full-text, RDF filters           | Block lookup & similarity search                  |
-| Provenance   | Fact-level, chronological, verifiable via SPARQL | Session/block-level tracking                      |
-| Deployment   | Edge-ready adapters or hosted cloud              | Managed API / SDK                                 |
+|              | Worlds                                                 | [Memblock](https://www.memblock.xyz/)             |
+| :----------- | :----------------------------------------------------- | :------------------------------------------------ |
+| Data model   | RDF triples in named graphs                            | Block-based memory structures & key-value records |
+| Memory model | Curated graph facts with explicit relations            | Managed memory blocks for LLM agent state         |
+| Retrieval    | Hybrid: vector, full-text, RDF filters                 | Block lookup & similarity search                  |
+| Provenance   | Recorded as data in named graphs, queryable via SPARQL | Session/block-level tracking                      |
+| Deployment   | Edge-ready adapters or hosted cloud                    | Managed API / SDK                                 |
 
 ## The philosophical difference
 
@@ -38,7 +38,6 @@ state, Worlds optimizes for strict fact precision, deterministic graph querying
   [graph queries](/worlds/query) (SPARQL).
 - Your memory demands strict fact verification and conflict resolution at the
   data layer.
-- You need chronological tracking and full provenance back to source assertions.
 - You are building edge-native or self-hosted applications that require zero
   cloud API dependencies.
 

@@ -10,7 +10,7 @@ hidden: true
 
 |              | Worlds                                                | [Polygres](https://github.com/evokoa/polygres) (Evokoa)     |
 | :----------- | :---------------------------------------------------- | :---------------------------------------------------------- |
-| Data model   | RDF triples in an append-only fact ledger             | Relational Postgres tables + `pgGraph` index                |
+| Data model   | RDF triples in named graphs                           | Relational Postgres tables + `pgGraph` index                |
 | Schema model | Opinionated W3C graph standards (RDF/SHACL)           | Your own custom relational database schema                  |
 | Retrieval    | Hybrid: vector, full-text, RDF filters via SPARQL     | Hybrid: SQL + `pgGraph` multi-hop & `pgContext` vectors     |
 | Ideal for    | Portable agent memory, RDF graphs, & interoperability | Custom Postgres schemas needing in-database graph traversal |
@@ -27,8 +27,8 @@ without moving data.
 
 Worlds approaches context with opinionated, interoperable defaults. Instead of
 requiring you to design, migrate, and maintain custom relational table schemas
-and SQL join topologies, Worlds enforces standard RDF triples in an append-only
-chronological ledger, with SPARQL verification out of the box.
+and SQL join topologies, Worlds uses standard RDF triples in named graphs, with
+SPARQL verification out of the box.
 
 The tradeoff is do-it-yourself schema design vs. ready-to-use graph context:
 
@@ -42,9 +42,8 @@ The tradeoff is do-it-yourself schema design vs. ready-to-use graph context:
 
 - You want W3C open standards (RDF, SPARQL, SHACL) and portable agent memory
   across databases and model providers.
-- You prefer an opinionated fact ledger out of the box rather than designing
+- You prefer an opinionated fact graph out of the box rather than designing
   custom relational tables and graph indexes.
-- You need chronological provenance tracking for every asserted triple.
 - You are deploying to [edge environments](/contribute/self-host) (e.g.
   SQLite/LibSQL via `worlds-libsql`) where full Postgres infra is unavailable.
 

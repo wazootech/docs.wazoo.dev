@@ -11,7 +11,7 @@ description:
 | :---------------- | :--------------------------------------- | :------------------------------------------------------ |
 | Graph model       | RDF triples                              | Custom schema or relational tables                      |
 | Retrieval         | Hybrid search + pattern queries (SPARQL) | Custom vector + SQL index queries                       |
-| Provenance        | Fact-level ledger                        | Custom versioning & logging tables                      |
+| Provenance        | Recorded as data in named graphs         | Custom versioning & logging tables                      |
 | Ingestion         | Import API                               | Custom ETL pipeline & queues                            |
 | Pieces to operate | One engine                               | Postgres, pgvector, queue worker, ETL script, audit log |
 
@@ -36,9 +36,9 @@ The work that actually adds up:
 - A schema that starts simple grows into a multi-service pipeline, and someone
   has to operate it.
 
-Worlds handles these cases directly. Facts are RDF quads in an append-only
-ledger with provenance built in, and retrieval combines vector similarity,
-keyword search, and pattern matching (SPARQL) in a single engine.
+Worlds handles these cases directly. Facts are RDF quads in named graphs, and
+retrieval combines vector similarity, keyword search, and pattern matching
+(SPARQL) in a single engine.
 
 ## When Worlds fits
 

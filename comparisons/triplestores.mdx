@@ -10,8 +10,8 @@ hidden: true
 
 |                   | Worlds                                               | Traditional Triplestores (Jena, GraphDB, Oxigraph) |
 | :---------------- | :--------------------------------------------------- | :------------------------------------------------- |
-| Primary role      | Multi-modal AI context engine & RDF fact ledger      | Dedicated RDF graph database & SPARQL endpoint     |
-| Data model        | Append-only RDF quad ledger + hybrid vector index    | RDF triples/quads with OWL/RDFS reasoning          |
+| Primary role      | Multi-modal AI context engine & RDF knowledge graph  | Dedicated RDF graph database & SPARQL endpoint     |
+| Data model        | RDF quad store + hybrid vector index                 | RDF triples/quads with OWL/RDFS reasoning          |
 | Retrieval         | Reciprocal Rank Fusion (SPARQL + Vector + Full-text) | Standard W3C SPARQL 1.1 Query & Update             |
 | Embedding search  | Native vector index integrated into RRF retrieval    | Varies (plugin-based or external vector stores)    |
 | Storage Substrate | LibSQL/Turso, Postgres, or Cloud                     | Custom disk structures / RocksDB / Java storage    |
@@ -43,8 +43,6 @@ The difference lies in target architecture:
   search for AI agents.
 - You want lightweight, edge-ready storage adapters (LibSQL, Postgres) without
   managing a Java JVM cluster.
-- You require append-only quad ledgers with built-in provenance tracking for
-  agent context.
 
 ## When Traditional Triplestores fit
 
