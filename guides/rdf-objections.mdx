@@ -16,8 +16,8 @@ with examples you can run against a world.
 - A world token (`wzw_`) with the `data:read` and `data:write` scopes, generated
   on the [Console tokens page](/console/tokens), exported as `WORLDS_TOKEN`.
 - A world ID, exported as `WORLD_ID`.
-- `curl` and `jq` for the API calls, and [uv](https://docs.astral.sh/uv/) to run
-  the SHACL validator.
+- `curl` and `jq` for the API calls, and Node.js 22.18 or later, Deno, or Bun to
+  run the SHACL validator.
 
 ## Load the example data
 
@@ -220,29 +220,65 @@ user:gregory a schema:Person ;
   schema:name "Gregory Hale" .
 ```
 
-```bash
-uvx pyshacl -s shapes.ttl gregory.ttl
+Validate it with
+[rdf-validate-shacl](https://github.com/zazuko/rdf-validate-shacl), the SHACL
+library behind the [Wiki CLI](/projects/wiki). Save the following as
+`validate.ts`:
+
+```typescript validate.ts
+import { readFileSync } from "node:fs";
+import rdf from "@zazuko/env";
+import { Parser } from "n3";
+import SHACLValidator from "rdf-validate-shacl";
+
+const load = (path: string) =>
+  rdf.dataset(new Parser().parse(readFileSync(path, "utf8")));
+
+const [shapesPath, dataPath] = process.argv.slice(2);
+const validator = new SHACLValidator(load(shapesPath), { factory: rdf });
+const report = await validator.validate(load(dataPath));
+
+for (const result of report.results) {
+  console.log(
+    `${result.focusNode?.value} ${result.path?.value}: ${result.message[0]?.value}`,
+  );
+}
+console.log(report.conforms ? "Conforms" : "Does not conform");
+process.exit(report.conforms ? 0 : 1);
 ```
+
+Install the dependencies and run it with Node.js 22.18 or later, Deno, or Bun:
+
+<CodeGroup>
+
+```bash Node.js
+npm init -y
+npm pkg set type=module
+npm install rdf-validate-shacl@0.6.5 @zazuko/env n3
+node validate.ts shapes.ttl gregory.ttl
+```
+
+```bash Deno
+deno add npm:rdf-validate-shacl@0.6.5 npm:@zazuko/env npm:n3
+deno run --allow-read --allow-env validate.ts shapes.ttl gregory.ttl
+```
+
+```bash Bun
+bun add rdf-validate-shacl@0.6.5 @zazuko/env n3
+bun validate.ts shapes.ttl gregory.ttl
+```
+
+</CodeGroup>
 
 ```text Output
-Validation Report
-Conforms: False
-Results (2):
-Constraint Violation in MinCountConstraintComponent (http://www.w3.org/ns/shacl#MinCountConstraintComponent):
-	Severity: sh:Violation
-	Source Shape: [ sh:datatype xsd:string ; sh:minCount Literal("1", datatype=xsd:integer) ; sh:path schema:familyName ]
-	Focus Node: user:gregory
-	Result Path: schema:familyName
-	Message: Less than 1 values on user:gregory->schema:familyName
-Constraint Violation in MinCountConstraintComponent (http://www.w3.org/ns/shacl#MinCountConstraintComponent):
-	Severity: sh:Violation
-	Source Shape: [ sh:datatype xsd:string ; sh:minCount Literal("1", datatype=xsd:integer) ; sh:path schema:givenName ]
-	Focus Node: user:gregory
-	Result Path: schema:givenName
-	Message: Less than 1 values on user:gregory->schema:givenName
+https://etok.me/#gregory https://schema.org/givenName: Less than 1 values
+https://etok.me/#gregory https://schema.org/familyName: Less than 1 values
+Does not conform
 ```
 
-`pyshacl` exits with status 1, so a CI step or import script stops here. Rewrite
+The script exits with status 1, so a CI step or import script stops here. SHACL
+is a W3C standard, so any conforming processor, such as
+[pySHACL](https://github.com/RDFLib/pySHACL), accepts the same shapes. Rewrite
 the record in the new shape:
 
 ```turtle gregory.ttl
@@ -255,8 +291,7 @@ user:gregory a schema:Person ;
 ```
 
 ```text Output
-Validation Report
-Conforms: True
+Conforms
 ```
 
 Import it with the same request as `people.ttl`. The display-name query returns
