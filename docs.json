@@ -114,6 +114,7 @@
           "guides/company-brain",
           "guides/custom-sparql-engine",
           "guides/entity-resolution",
+          "guides/rdf-objections",
           "guides/multi-wiki"
         ]
       },

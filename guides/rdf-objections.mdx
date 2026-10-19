@@ -1,0 +1,281 @@
+---
+title: "Common objections to RDF"
+description:
+  "Answers to the questions developers coming from SQL or a document store ask
+  before trusting a world: missing facts, schemaless data, and schema changes."
+---
+
+Developers who know SQL or a document store tend to raise the same objections
+before they put agent context in an RDF graph. This guide answers three of them
+with examples you can run against a world.
+
+## Prerequisites
+
+- A Wazoo private beta account. Sign up at
+  [wazoo.dev/beta](https://wazoo.dev/beta).
+- A world token (`wzw_`) with the `data:read` and `data:write` scopes, generated
+  on the [Console tokens page](/console/tokens), exported as `WORLDS_TOKEN`.
+- A world ID, exported as `WORLD_ID`.
+- `curl` and `jq` for the API calls, and [uv](https://docs.astral.sh/uv/) to run
+  the SHACL validator.
+
+## Load the example data
+
+The examples use two people. Ethan has an email address on record and Sandra
+does not. Save the following as `people.ttl`:
+
+```turtle people.ttl
+@prefix user: <https://etok.me/#> .
+@prefix schema: <https://schema.org/> .
+
+user:ethan a schema:Person ;
+  schema:name "Ethan Davidson" ;
+  schema:email "ethan@etok.me" .
+
+user:sandra a schema:Person ;
+  schema:name "Sandra Ortiz" .
+```
+
+Import it into your world:
+
+```bash
+jq -n --rawfile data people.ttl '{contentType: "text/turtle", data: $data}' |
+  curl -s -X POST "https://data.wazoo.dev/worlds/$WORLD_ID/import" \
+    -H "Authorization: Bearer $WORLDS_TOKEN" \
+    -H "Content-Type: application/json" \
+    -d @-
+```
+
+```json Response
+{ "imported": { "quads": 5, "chunks": 0 } }
+```
+
+Each query below is a `.rq` file sent with the same pattern:
+
+```bash
+jq -n --rawfile query emails.rq '{query: $query}' |
+  curl -s -X POST "https://data.wazoo.dev/worlds/$WORLD_ID/sparql" \
+    -H "Authorization: Bearer $WORLDS_TOKEN" \
+    -H "Content-Type: application/json" \
+    -d @-
+```
+
+## Is a missing fact false?
+
+No. A SQL table makes a closed-world assumption: if a row or column value is
+absent, the answer is no. RDF makes an open-world assumption: if a fact is
+absent, the answer is unknown. A world records what you asserted and nothing
+about what you did not.
+
+That difference matters for agents. An agent that reads a missing email address
+as "has no email" invents a fact. An agent that reads it as "no email on record"
+reports what it knows.
+
+Ask for every person and their email address, if any:
+
+```sparql emails.rq
+PREFIX schema: <https://schema.org/>
+
+SELECT ?person ?email WHERE {
+  ?person a schema:Person .
+  OPTIONAL { ?person schema:email ?email }
+}
+```
+
+```json Response
+{
+  "head": { "vars": ["person", "email"] },
+  "results": {
+    "bindings": [
+      {
+        "person": { "type": "uri", "value": "https://etok.me/#ethan" },
+        "email": { "type": "literal", "value": "ethan@etok.me" }
+      },
+      { "person": { "type": "uri", "value": "https://etok.me/#sandra" } }
+    ]
+  }
+}
+```
+
+Sandra's row has no `email` binding. Read it as "not recorded". When your
+application needs a definite negative, assert it as its own fact so a query can
+tell it apart from a gap.
+
+## Will a schemaless graph turn into a mess?
+
+Not if you add constraints once the model settles. A world accepts any
+well-formed RDF, so you can start without a schema, the way you start a
+JavaScript project without types. When a shape stabilizes, describe it with
+[SHACL](https://www.w3.org/TR/shacl/) shapes and validate data against them
+before import, the way you add TypeScript types to code that already runs.
+
+The example data above has no schema. The next section adds one without
+rewriting the existing facts.
+
+Worlds does not validate writes against SHACL shapes yet, so run validation in
+your pipeline before data reaches the world. Validation on every write, on by
+default with a per-world opt-out, is planned
+([worlds-sdk-ts#151](https://github.com/wazootech/worlds-sdk-ts/issues/151)).
+
+## How does a schema change work?
+
+In SQL, splitting a `name` column into first and last name means a migration:
+alter the table, backfill every row, and deploy readers and writers in step. In
+a world, you add the new properties beside the old one and move readers and
+writers over at their own pace.
+
+<Steps>
+<Step title="Add the new properties beside the old one">
+
+Assert `schema:givenName` and `schema:familyName` for Ethan. His `schema:name`
+stays in place, so existing readers keep working.
+
+```sparql split-name.rq
+PREFIX user: <https://etok.me/#>
+PREFIX schema: <https://schema.org/>
+
+INSERT DATA {
+  user:ethan schema:givenName "Ethan" ;
+    schema:familyName "Davidson" .
+}
+```
+
+```json Response
+{ "ok": true }
+```
+
+A SPARQL update requires the `data:write` scope.
+
+</Step>
+<Step title="Read either shape">
+
+Update readers to prefer the new properties and fall back to the old one. The
+`CONCAT` is unbound when either part is missing, so `COALESCE` falls back to
+`schema:name`.
+
+```sparql display-names.rq
+PREFIX schema: <https://schema.org/>
+
+SELECT ?person ?displayName WHERE {
+  ?person a schema:Person .
+  OPTIONAL { ?person schema:givenName ?given ; schema:familyName ?family }
+  OPTIONAL { ?person schema:name ?name }
+  BIND(COALESCE(CONCAT(?given, " ", ?family), ?name) AS ?displayName)
+}
+```
+
+```json Response
+{
+  "head": { "vars": ["person", "displayName"] },
+  "results": {
+    "bindings": [
+      {
+        "person": { "type": "uri", "value": "https://etok.me/#ethan" },
+        "displayName": { "type": "literal", "value": "Ethan Davidson" }
+      },
+      {
+        "person": { "type": "uri", "value": "https://etok.me/#sandra" },
+        "displayName": { "type": "literal", "value": "Sandra Ortiz" }
+      }
+    ]
+  }
+}
+```
+
+Ethan's display name now comes from the new properties and Sandra's from
+`schema:name`. Neither record had to change for the query to work.
+
+</Step>
+<Step title="Require the new shape for new data">
+
+Save a shape that requires both new properties on every `schema:Person` as
+`shapes.ttl`:
+
+```turtle shapes.ttl
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix schema: <https://schema.org/> .
+@prefix shape: <https://etok.me/shapes#> .
+
+shape:Person a sh:NodeShape ;
+  sh:targetClass schema:Person ;
+  sh:property [
+    sh:path schema:givenName ;
+    sh:minCount 1 ;
+    sh:datatype <http://www.w3.org/2001/XMLSchema#string>
+  ] , [
+    sh:path schema:familyName ;
+    sh:minCount 1 ;
+    sh:datatype <http://www.w3.org/2001/XMLSchema#string>
+  ] .
+```
+
+A new record written in the old shape fails validation. Save it as
+`gregory.ttl`:
+
+```turtle gregory.ttl
+@prefix user: <https://etok.me/#> .
+@prefix schema: <https://schema.org/> .
+
+user:gregory a schema:Person ;
+  schema:name "Gregory Hale" .
+```
+
+```bash
+uvx pyshacl -s shapes.ttl gregory.ttl
+```
+
+```text Output
+Validation Report
+Conforms: False
+Results (2):
+Constraint Violation in MinCountConstraintComponent (http://www.w3.org/ns/shacl#MinCountConstraintComponent):
+	Severity: sh:Violation
+	Source Shape: [ sh:datatype xsd:string ; sh:minCount Literal("1", datatype=xsd:integer) ; sh:path schema:familyName ]
+	Focus Node: user:gregory
+	Result Path: schema:familyName
+	Message: Less than 1 values on user:gregory->schema:familyName
+Constraint Violation in MinCountConstraintComponent (http://www.w3.org/ns/shacl#MinCountConstraintComponent):
+	Severity: sh:Violation
+	Source Shape: [ sh:datatype xsd:string ; sh:minCount Literal("1", datatype=xsd:integer) ; sh:path schema:givenName ]
+	Focus Node: user:gregory
+	Result Path: schema:givenName
+	Message: Less than 1 values on user:gregory->schema:givenName
+```
+
+`pyshacl` exits with status 1, so a CI step or import script stops here. Rewrite
+the record in the new shape:
+
+```turtle gregory.ttl
+@prefix user: <https://etok.me/#> .
+@prefix schema: <https://schema.org/> .
+
+user:gregory a schema:Person ;
+  schema:givenName "Gregory" ;
+  schema:familyName "Hale" .
+```
+
+```text Output
+Validation Report
+Conforms: True
+```
+
+Import it with the same request as `people.ttl`. The display-name query returns
+"Gregory Hale" from the new properties.
+
+</Step>
+<Step title="Backfill and retire the old property when you choose">
+
+Records written before the change, like Sandra's, still carry only
+`schema:name`. Validate only new data until you backfill them. Once every reader
+uses the new properties, you can stop writing `schema:name`. Nothing sets a
+deadline for that step.
+
+</Step>
+</Steps>
+
+## Related pages
+
+- [Update a world](/worlds/update) covers imports and patches.
+- [Query a world](/worlds/query) covers SPARQL against a world.
+- [Comparison with relational databases](/comparisons/relational-databases)
+  compares the two models side by side.
