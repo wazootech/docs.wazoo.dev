@@ -228,14 +228,14 @@ extraction-based memory layers have to build by hand.
 
 ## What you build vs what Worlds gives you
 
-| Layer            | You build                                                     | Worlds provides                                                    |
-| :--------------- | :------------------------------------------------------------ | :----------------------------------------------------------------- |
-| Extraction       | LLM prompt that pulls mentions from a source                  | Import path for the asserted quads                                 |
-| Candidate lookup | Search call                                                   | Hybrid search with label-alias indexing                            |
-| Similarity       | String-ratio function over labels (SPARQL has no fuzzy match) | FTS5 keyword retrieval                                             |
-| Co-occurrence    | —                                                             | The graph itself; one SPARQL pattern                               |
-| Recency          | A timestamp predicate you choose                              | Storage for the timestamp facts you assert                         |
-| Decision         | Weighted score and threshold policy                           | `wazoo:resolvesTo` patches; validate them with SHACL before import |
+| Layer            | You build                                                     | Worlds provides                            |
+| :--------------- | :------------------------------------------------------------ | :----------------------------------------- |
+| Extraction       | LLM prompt that pulls mentions from a source                  | Import path for the asserted quads         |
+| Candidate lookup | Search call                                                   | Hybrid search with label-alias indexing    |
+| Similarity       | String-ratio function over labels (SPARQL has no fuzzy match) | FTS5 keyword retrieval                     |
+| Co-occurrence    | —                                                             | The graph itself; one SPARQL pattern       |
+| Recency          | A timestamp predicate you choose                              | Storage for the timestamp facts you assert |
+| Decision         | Weighted score, threshold policy, SHACL check before import   | `wazoo:resolvesTo` patches                 |
 
 ## Check for success
 
