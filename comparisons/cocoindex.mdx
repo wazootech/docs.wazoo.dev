@@ -28,7 +28,7 @@ The difference is in which layer of the stack they manage:
 - CocoIndex is an incremental ETL sidecar pipeline. It continuously watches
   source files and updates derived pgvector or WASM PGlite vector indexes.
 - Worlds is an authoritative RDF fact engine. It manages canonical triple
-  assertions, SHACL shapes, and SPARQL graph filters.
+  assertions and SPARQL graph filters.
 
 Rather than competing, the two systems serve complementary steps in the context
 pipeline: CocoIndex handles background incremental indexing, while Worlds

@@ -8,13 +8,13 @@ hidden: true
 
 ## At a glance
 
-|                 | Worlds                                            | LLM Wiki                                                   |
-| :-------------- | :------------------------------------------------ | :--------------------------------------------------------- |
-| Data model      | RDF triples in named graphs                       | Interlinked Markdown articles (`[[wikilinks]]`)            |
-| Gardening model | Schema-checked assertions & SHACL validation      | Continuous agent summarizing, linking, & synthesis         |
-| Retrieval       | Hybrid: SPARQL graph filters, vector, & full-text | File traversal (`ls`, `cat`, `grep`) & wikilink navigation |
-| Provenance      | Quad-level, temporal, verifiable via SPARQL       | Article-level source citations & git commits               |
-| Primary surface | Context engine API & agent tool calls             | Human & agent-readable Markdown vault                      |
+|                 | Worlds                                                 | LLM Wiki                                                   |
+| :-------------- | :----------------------------------------------------- | :--------------------------------------------------------- |
+| Data model      | RDF triples in named graphs                            | Interlinked Markdown articles (`[[wikilinks]]`)            |
+| Gardening model | SHACL-checked before import (Wiki CLI)                 | Continuous agent summarizing, linking, & synthesis         |
+| Retrieval       | Hybrid: SPARQL graph filters, vector, & full-text      | File traversal (`ls`, `cat`, `grep`) & wikilink navigation |
+| Provenance      | Recorded as data in named graphs, queryable via SPARQL | Article-level source citations & git commits               |
+| Primary surface | Context engine API & agent tool calls                  | Human & agent-readable Markdown vault                      |
 
 ## Overlap and shared capabilities
 
@@ -31,14 +31,14 @@ Where they overlap and build on each other:
 - LLM Wiki defines the human-and-agent readable workspace, where agents
   continuously summarize, synthesize, and interlink Markdown articles
   (`[[wikilinks]]`).
-- Worlds provides the underlying schema-checked fact engine. It takes those
-  compiled articles and frontmatter assertions, enforces SHACL shape validation,
+- Worlds provides the underlying fact engine. It imports those compiled articles
+  and frontmatter assertions after the Wiki CLI validates their SHACL shapes,
   and lets agents execute SPARQL graph queries across the knowledge graph.
 
 ## When Worlds fits
 
-- You need strict schema validation (SHACL) to prevent metadata drift and
-  hallucinated facts in your knowledge base.
+- You need strict schema validation (SHACL, run by the Wiki CLI before import)
+  to prevent metadata drift and hallucinated facts in your knowledge base.
 - You require deterministic [graph queries](/worlds/query) (SPARQL) across
   connected entities rather than manual link-following.
 

@@ -47,9 +47,12 @@ An RDF patch is a structured set of additions and deletions. When you update a
 relationship, the engine performs a patch:
 
 1. Deletion: Remove the outdated triple.
-2. Addition: Insert the new, verified triple.
+2. Addition: Insert the new triple.
 
-This process is atomic.
+This process is atomic. Worlds does not validate patches against SHACL shapes
+yet; validate before import, for example with the [Wiki CLI](/projects/wiki).
+Validation on write is planned
+([worlds-sdk-ts#151](https://github.com/wazootech/worlds-sdk-ts/issues/151)).
 
 ## Update strategies
 
