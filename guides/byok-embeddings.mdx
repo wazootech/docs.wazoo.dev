@@ -182,14 +182,14 @@ hybrid search returns. Vectors built before a revoke are never reused.
 
 ## Troubleshooting
 
-| Symptom                                              | Cause and fix                                                                                                  |
-| :--------------------------------------------------- | :------------------------------------------------------------------------------------------------------------- |
-| `409` with `EMBEDDING_CREDENTIAL_REQUIRED` on step 2 | You have no active key for the model's provider. Store one in step 1.                                          |
-| `400` when storing a key                             | The key has whitespace or is outside 16 to 512 characters, or the provider is not `openai` or `openrouter`.    |
-| `503` with `EMBEDDINGS_NOT_CONFIGURED`               | Embeddings are not enabled on this deployment. Contact the team.                                               |
-| `embeddingStatus` is `invalid`                       | Your provider rejected the key several times in a row. Check the key and its spend limit, then store it again. |
+| Symptom                                              | Cause and fix                                                                                                                                                                 |
+| :--------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `409` with `EMBEDDING_CREDENTIAL_REQUIRED` on step 2 | You have no active key for the model's provider. Store one in step 1.                                                                                                         |
+| `400` when storing a key                             | The key has whitespace or is outside 16 to 512 characters, or the provider is not `openai` or `openrouter`.                                                                   |
+| `503` with `EMBEDDINGS_NOT_CONFIGURED`               | Embeddings are not enabled on this deployment. Contact the team.                                                                                                              |
+| `embeddingStatus` is `invalid`                       | Your provider rejected the key several times in a row. Check the key and its spend limit, then store it again.                                                                |
 | Search `mode` stays `keyword` after reindex          | Wait a minute or two, because indexing is eventually consistent. If it persists, check `embeddingStatus`: anything other than `ready` or `partial` keeps search keyword-only. |
-| `completed_with_vector_errors`                       | Call reindex again. The `vectorSync.errors` list names the failures.                                           |
+| `completed_with_vector_errors`                       | Call reindex again. The `vectorSync.errors` list names the failures.                                                                                                          |
 
 ## Next steps
 
