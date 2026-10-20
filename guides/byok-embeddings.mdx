@@ -27,21 +27,23 @@ worlds.
 A namespace holds one key per provider. The model you choose for a world decides
 which provider's key is used.
 
-| Provider   | Model id                                   | Notes                      |
-| :--------- | :----------------------------------------- | :------------------------- |
-| OpenAI     | `openai/text-embedding-3-small`            | Recommended starting point |
-| OpenAI     | `openai/text-embedding-3-large`            | Sent at 1536 dimensions    |
-| OpenRouter | `openrouter/openai/text-embedding-3-small` | Billed through OpenRouter  |
-| OpenRouter | `openrouter/openai/text-embedding-3-large` | Sent at 1536 dimensions    |
+| Provider   | Model id                                   | Notes                     |
+| :--------- | :----------------------------------------- | :------------------------ |
+| OpenAI     | `openai/text-embedding-3-small`            | Smallest and cheapest     |
+| OpenAI     | `openai/text-embedding-3-large`            | Sent at 1536 dimensions   |
+| OpenRouter | `openrouter/openai/text-embedding-3-small` | Billed through OpenRouter |
+| OpenRouter | `openrouter/openai/text-embedding-3-large` | Sent at 1536 dimensions   |
 
 All vectors are 1536 dimensions wide, so a model is only available if it can
-produce that width. Other models are not accepted.
+produce that width, and the larger models are sent a request for 1536
+dimensions. Other models are not accepted.
 
 ## Prerequisites
 
 - A Wazoo platform token (`wzp_`) from the [Console](https://console.wazoo.dev).
   See [Tokens](/console/tokens).
-- A world and a world token (`wzw_`) for it.
+- A world and a world token (`wzw_`) for it. Choosing a model and reindexing
+  need a token with the `data:write` scope. Searching needs `data:read`.
 - An account and API key with an embedding provider. Set a monthly spend limit
   on the key.
 
@@ -75,7 +77,7 @@ produce that width. Other models are not accepted.
 
   </Step>
   <Step title="Choose a model for a world">
-    Set the model on the world with its world token. Choosing a model requires
+    Set the model on the world with a world token that has `data:write`. Choosing a model requires
     an active key for that model's provider.
 
     ```bash title="Choose a model"
@@ -137,11 +139,12 @@ produce that width. Other models are not accepted.
       -d '{ "query": "who does Gregory report to?", "limit": 5 }'
     ```
 
-    The response `mode` is `hybrid` when vectors were used and `keyword` when
-    search fell back to full-text only. A query that shares no words with the
-    stored text, such as a paraphrase, returns results only in `hybrid` mode.
-    If `mode` is still `keyword` right after a reindex, wait a minute and
-    search again.
+    The response `mode` says which search ran: `hybrid` (keyword and vectors),
+    `semantic` (vectors only), `keyword` (full text only), or `fallback` (a
+    simple text match, used when the search engine is unavailable). A query
+    that shares no words with the stored text, such as a paraphrase, returns
+    results only in `hybrid` or `semantic` mode. If `mode` is still `keyword`
+    right after a reindex, wait a minute and search again.
 
   </Step>
 </Steps>
@@ -177,19 +180,20 @@ hybrid search returns. Vectors built before a revoke are never reused.
 - Each namespace has a daily limit on embedding writes. When it is exhausted,
   reindex returns `429` with the code `EMBEDDING_BUDGET_EXCEEDED` and nothing is
   embedded or billed.
-- Searching embeds only the query text. Search falls back to keyword results if
-  the provider is slow or unavailable.
+- Searching embeds only the query text. Each namespace also has a daily limit on
+  embedded searches. Past it, or when the provider is slow or unavailable,
+  search falls back to keyword results.
 
 ## Troubleshooting
 
-| Symptom                                              | Cause and fix                                                                                                                                                                 |
-| :--------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `409` with `EMBEDDING_CREDENTIAL_REQUIRED` on step 2 | You have no active key for the model's provider. Store one in step 1.                                                                                                         |
-| `400` when storing a key                             | The key has whitespace or is outside 16 to 512 characters, or the provider is not `openai` or `openrouter`.                                                                   |
-| `503` with `EMBEDDINGS_NOT_CONFIGURED`               | Embeddings are not enabled on this deployment. Contact the team.                                                                                                              |
-| `embeddingStatus` is `invalid`                       | Your provider rejected the key several times in a row. Check the key and its spend limit, then store it again.                                                                |
-| Search `mode` stays `keyword` after reindex          | Wait a minute or two, because indexing is eventually consistent. If it persists, check `embeddingStatus`: anything other than `ready` or `partial` keeps search keyword-only. |
-| `completed_with_vector_errors`                       | Call reindex again. The `vectorSync.errors` list names the failures.                                                                                                          |
+| Symptom                                              | Cause and fix                                                                                                                                                                                                                                                 |
+| :--------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `409` with `EMBEDDING_CREDENTIAL_REQUIRED` on step 2 | You have no active key for the model's provider. Store one in step 1.                                                                                                                                                                                         |
+| `400` when storing a key                             | The key has whitespace or is outside 16 to 512 characters, or the provider in the path is not `openai` or `openrouter`.                                                                                                                                       |
+| `503` with `EMBEDDINGS_NOT_CONFIGURED`               | Embeddings are not enabled on this deployment. Contact the Wazoo team.                                                                                                                                                                                        |
+| `embeddingStatus` is `invalid`                       | Your provider rejected the key several times in a row. Check the key and its spend limit, then store it again.                                                                                                                                                |
+| Search `mode` stays `keyword` after reindex          | Wait a minute or two, because indexing is eventually consistent. If it persists, check `embeddingStatus`: anything other than `ready` or `partial` keeps search keyword-only. A `fallback` mode means the search engine itself was unavailable, so try again. |
+| `completed_with_vector_errors`                       | Call reindex again. The `vectorSync.errors` list names the failures.                                                                                                                                                                                          |
 
 ## Next steps
 
