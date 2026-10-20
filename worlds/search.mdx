@@ -8,9 +8,10 @@ Before reasoning about facts, agents must find the correct starting point.
 
 ## Hosted private-beta status
 
-The hosted Worlds Data API currently uses keyword full-text search. It does not
-have an embedding provider configured, so vector ranking and the hybrid flow
-described below are not active in the hosted beta.
+The hosted Worlds Data API uses keyword full-text search by default. Vector
+ranking and the hybrid flow described below turn on for a world when you bring
+your own embedding provider key. Follow
+[Set up bring-your-own-key embeddings](/guides/byok-embeddings).
 
 ## Hybrid retrieval design
 
@@ -36,8 +37,9 @@ noise from any single signal.
 
 ## Execute a search
 
-Use the data-plane search endpoint for keyword search in the hosted private
-beta. Data-plane requests authenticate with a `wzw_` world token:
+Use the data-plane search endpoint. It searches by keyword until you set up
+bring-your-own-key embeddings. Data-plane requests authenticate with a `wzw_`
+world token:
 
 ```bash
 curl -s -X POST "https://data.wazoo.dev/worlds/w_01jd8x5mqv7k3n9r2t4w6y8z0b/search" \

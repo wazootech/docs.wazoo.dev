@@ -115,7 +115,8 @@
           "guides/custom-sparql-engine",
           "guides/entity-resolution",
           "guides/rdf-objections",
-          "guides/multi-wiki"
+          "guides/multi-wiki",
+          "guides/byok-embeddings"
         ]
       },
       {
