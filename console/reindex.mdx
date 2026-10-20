@@ -13,8 +13,9 @@ normally need to reindex after an import.
 The Console's Reindex World action currently returns `completed` without running
 a rebuild. Do not use it to repair stale search results.
 
-The hosted private-beta data plane does not configure an embedding provider, so
-reindexing does not currently rebuild vector embeddings.
+The Console action does not rebuild vector embeddings either. To embed a world
+with your own provider key, call the data-plane reindex endpoint. See
+[Set up bring-your-own-key embeddings](/guides/byok-embeddings).
 
 ## If search is stale
 
