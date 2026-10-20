@@ -106,6 +106,10 @@ produce that width. Other models are not accepted.
     | `completed_with_vector_errors` | Some vectors failed. `vectorSync` lists what. Call reindex again to retry.                |
     | `in_progress`                  | A large world reindexes in windows. Call reindex again until the status is `completed`. |
 
+    Indexing is eventually consistent. When reindex reports `completed`, your
+    vectors are written, but search can take a minute or more to start using
+    them. Until then search stays keyword-only, so results still return.
+
   </Step>
   <Step title="Check the world's status">
     ```bash title="Read the world"
@@ -136,6 +140,8 @@ produce that width. Other models are not accepted.
     The response `mode` is `hybrid` when vectors were used and `keyword` when
     search fell back to full-text only. A query that shares no words with the
     stored text, such as a paraphrase, returns results only in `hybrid` mode.
+    If `mode` is still `keyword` right after a reindex, wait a minute and
+    search again.
 
   </Step>
 </Steps>
@@ -182,7 +188,7 @@ hybrid search returns. Vectors built before a revoke are never reused.
 | `400` when storing a key                             | The key has whitespace or is outside 16 to 512 characters, or the provider is not `openai` or `openrouter`.    |
 | `503` with `EMBEDDINGS_NOT_CONFIGURED`               | Embeddings are not enabled on this deployment. Contact the team.                                               |
 | `embeddingStatus` is `invalid`                       | Your provider rejected the key several times in a row. Check the key and its spend limit, then store it again. |
-| Search `mode` stays `keyword` after reindex          | Check `embeddingStatus`. Anything other than `ready` or `partial` keeps search keyword-only.                   |
+| Search `mode` stays `keyword` after reindex          | Wait a minute or two, because indexing is eventually consistent. If it persists, check `embeddingStatus`: anything other than `ready` or `partial` keeps search keyword-only. |
 | `completed_with_vector_errors`                       | Call reindex again. The `vectorSync.errors` list names the failures.                                           |
 
 ## Next steps
