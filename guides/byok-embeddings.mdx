@@ -5,13 +5,6 @@ description:
   reindex, and search with hybrid ranking."
 ---
 
-<Warning>
-  This guide describes the Platform API as proposed in
-  [wazootech/wazoo-api#123](https://github.com/wazootech/wazoo-api/issues/123).
-  The `/v1/users/me/embedding-providers` endpoints are not live yet. Do not
-  publish this page until they ship.
-</Warning>
-
 By default, search in a world is keyword search. With bring-your-own-key (BYOK)
 embeddings, Worlds also builds vector embeddings of a world's text with your
 embedding provider account, and search combines both rankings. Paraphrases and
@@ -40,8 +33,9 @@ dimensions. Other models are not accepted.
 
 ## Prerequisites
 
-- A Wazoo platform token (`wzp_`) from the [Console](https://console.wazoo.dev).
-  See [Tokens](/console/tokens).
+- A Wazoo platform token (`wzp_`) with the `users.write` scope, to store and
+  revoke keys. A token with `users.read` can list them. See
+  [Tokens](/console/tokens).
 - A world and a world token (`wzw_`) for it. Choosing a model and reindexing
   need a token with the `data:write` scope. Searching needs `data:read`.
 - An account and API key with an embedding provider. Set a monthly spend limit
