@@ -36,33 +36,48 @@ bunx jsr add @wazoo/client
 
 ## Quickstart
 
-```typescript
-import { listWorlds } from "@wazoo/client";
+The client does not read environment variables on its own. Create a client
+that points at the platform API and pass your platform token explicitly:
 
-// Connects to https://api.wazoo.dev and reads process.env.WAZOO_PLATFORM_TOKEN out of the box
-const { data, error } = await listWorlds();
+```typescript
+import { createClient, listWorlds } from "@wazoo/client";
+
+const client = createClient({
+  baseUrl: "https://api.wazoo.dev",
+  auth: process.env.WAZOO_PLATFORM_TOKEN,
+});
+
+const { data, error } = await listWorlds({ client });
 console.log(data?.worlds);
 ```
 
-Platform tokens require the `wzp_` prefix.
+Platform tokens require the `wzp_` prefix. Without `auth`, every call returns
+`401 UNAUTHENTICATED`.
 
 ## Worlds
 
 ```typescript
 import {
-  listWorlds,
   createWorld,
   getWorld,
+  listWorlds,
   updateWorld,
   deleteWorld,
+  createClient,
 } from "@wazoo/client";
 
+const client = createClient({
+  baseUrl: "https://api.wazoo.dev",
+  auth: process.env.WAZOO_PLATFORM_TOKEN,
+});
+
 // List active worlds
-const { data } = await listWorlds();
+const { data } = await listWorlds({ client });
 console.log(data?.worlds);
 
 // Create a world
 const created = await createWorld({
+  client,
   body: {
     world: { displayName: "Support Knowledge", region: "auto" },
   },
@@ -71,11 +86,13 @@ const worldId = created.data!.world.id;
 
 // Get a world by ID
 const world = await getWorld({
+  client,
   path: { worldId },
 });
 
 // Update display name
 await updateWorld({
+  client,
   path: { worldId },
   body: {
     updateMask: "displayName",
@@ -84,7 +101,7 @@ await updateWorld({
 });
 
 // Soft-delete (recoverable for 30 days)
-await deleteWorld({ path: { worldId } });
+await deleteWorld({ client, path: { worldId } });
 ```
 
 `world.id` is the immutable `w_<ULID>` ID minted by the Worlds API. Reuse it
@@ -100,16 +117,23 @@ architecture.
 
 ```typescript
 import {
+  createClient,
   listPlatformTokens,
   createPlatformToken,
   deletePlatformToken,
 } from "@wazoo/client";
 
+const client = createClient({
+  baseUrl: "https://api.wazoo.dev",
+  auth: process.env.WAZOO_PLATFORM_TOKEN,
+});
+
 // List tokens
-const { data } = await listPlatformTokens();
+const { data } = await listPlatformTokens({ client });
 
 // Create a token (secret shown once)
 const created = await createPlatformToken({
+  client,
   body: {
     name: "my-read-token",
     scope: "users.read worlds.read usage.read",
@@ -118,7 +142,7 @@ const created = await createPlatformToken({
 console.log(created.data?.token); // wzp_...
 
 // Revoke a token by name
-await deletePlatformToken({ path: { tokenName: "my-read-token" } });
+await deletePlatformToken({ client, path: { tokenName: "my-read-token" } });
 ```
 
 ## World auth tokens
@@ -128,21 +152,30 @@ namespace and optionally a single world.
 
 ```typescript
 import {
+  createClient,
   listWorldTokens,
   createWorldToken,
   deleteWorldToken,
 } from "@wazoo/client";
 
+const client = createClient({
+  baseUrl: "https://api.wazoo.dev",
+  auth: process.env.WAZOO_PLATFORM_TOKEN,
+});
+
 const { data } = await listWorldTokens({
+  client,
   path: { worldId },
 });
 
 const created = await createWorldToken({
+  client,
   path: { worldId },
 });
 console.log(created.data?.token); // one-time secret
 
 await deleteWorldToken({
+  client,
   path: { worldId, tokenUid: created.data!.token.uid },
 });
 ```
@@ -150,14 +183,21 @@ await deleteWorldToken({
 ## Usage and limits
 
 ```typescript
-import { getWorldUsage, getWorldLimits } from "@wazoo/client";
+import { createClient, getWorldUsage, getWorldLimits } from "@wazoo/client";
+
+const client = createClient({
+  baseUrl: "https://api.wazoo.dev",
+  auth: process.env.WAZOO_PLATFORM_TOKEN,
+});
 
 const usage = await getWorldUsage({
+  client,
   path: { worldId },
 });
 console.log(usage.data?.usage.total);
 
 const limits = await getWorldLimits({
+  client,
   path: { worldId },
 });
 ```
