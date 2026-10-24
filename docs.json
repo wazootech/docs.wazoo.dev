@@ -134,11 +134,7 @@
       {
         "group": "Wazoo CLI",
         "pages": [
-          "reference/cli/index",
-          "reference/cli/health",
-          "reference/cli/tokens",
-          "reference/cli/usage",
-          "reference/cli/worlds"
+          "reference/cli/index"
         ]
       },
       {
