@@ -44,10 +44,16 @@ curl -s -X POST "https://data.wazoo.dev/worlds/w_01jd8x5mqv7k3n9r2t4w6y8z0b/sear
   -H "Authorization: Bearer $WORLDS_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
-    "query": "Ethan's manager",
+    "query": "who manages Ethan",
     "limit": 5
   }'
 ```
+
+Watch the shell quoting: a JSON string inside single quotes breaks the moment
+the text contains an apostrophe ("Ethan's manager" terminates the quote early).
+If a query genuinely needs an apostrophe, end the single-quoted string, escape
+the apostrophe, and reopen it — or put the payload in a file and use
+`-d @payload.json`.
 
 Results return the matching subject and predicate IRIs plus the literal
 `content`, so an agent can bind the exact entity before running

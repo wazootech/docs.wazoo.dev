@@ -101,6 +101,7 @@
         "group": "Worlds",
         "pages": [
           "worlds/index",
+          "worlds/first-query",
           "worlds/search",
           "worlds/query",
           "worlds/update",

@@ -1,0 +1,185 @@
+---
+title: "Your first query"
+description:
+  "Create a world, mint a world token, import data, and run your first search
+  and SPARQL query — one page, curl only."
+---
+
+The complete path from an empty account to a query result, using nothing but
+curl. Two tokens are involved, and they are not interchangeable:
+
+| Token          | Prefix | Issued by                              | Grants                                                  |
+| :------------- | :----- | :------------------------------------- | :------------------------------------------------------ |
+| Platform token | `wzp_` | [Console tokens page](/console/tokens) | Control-plane: create worlds, mint world tokens         |
+| World token    | `wzw_` | The Worlds API                         | Data-plane: import, search, SPARQL, export on one world |
+
+Set the platform token once:
+
+```bash
+export WAZOO_PLATFORM_TOKEN="wzp_YOUR_PLATFORM_TOKEN"
+```
+
+<Note>
+  The hosted beta currently runs keyword full-text search. Vector ranking and
+  the hybrid flow are coming; see [Search](/worlds/search) for the current
+  status.
+</Note>
+
+## 1. Create a world
+
+```bash
+curl -s -X POST "https://api.wazoo.dev/v1/worlds" \
+  -H "Authorization: Bearer $WAZOO_PLATFORM_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "world": {
+      "displayName": "Team memory"
+    }
+  }'
+```
+
+The response carries the world's permanent ID. Worlds API mints it as a
+`w_<ULID>`, and it never changes:
+
+```json
+{
+  "world": {
+    "id": "w_01jd8x5mqv7k3n9r2t4w6y8z0b",
+    "displayName": "Team memory"
+  }
+}
+```
+
+Save it — every later call names this world:
+
+```bash
+export WORLD_ID="w_01jd8x5mqv7k3n9r2t4w6y8z0b"
+```
+
+## 2. Mint a world token
+
+World tokens are what the data plane authenticates. Mint one scoped to the world
+you just created:
+
+```bash
+curl -s -X POST "https://api.wazoo.dev/v1/worlds/$WORLD_ID/auth/tokens" \
+  -H "Authorization: Bearer $WAZOO_PLATFORM_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{ "name": "first-query-tutorial" }'
+```
+
+```json
+{
+  "token": {
+    "uid": "key_01jd8y...",
+    "token": "wzw_YOUR_WORLD_TOKEN",
+    "name": "first-query-tutorial",
+    "worldId": "w_01jd8x5mqv7k3n9r2t4w6y8z0b"
+  }
+}
+```
+
+The secret `wzw_` value lives at `token.token` and is shown exactly once, at
+creation. Copy it now; it is not retrievable later (revoke and re-mint instead):
+
+```bash
+export WORLDS_TOKEN="wzw_YOUR_WORLD_TOKEN"
+```
+
+## 3. Import data
+
+Worlds ingests RDF in Turtle, TriG, N-Triples, N-Quads, JSON-LD, or plain text
+chunks. Import a small Turtle graph:
+
+```bash
+curl -s -X POST "https://data.wazoo.dev/worlds/$WORLD_ID/import" \
+  -H "Authorization: Bearer $WORLDS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "contentType": "text/turtle",
+    "data": "@prefix ex: <https://example.org/> .\nex:alice ex:manages ex:bob .\nex:bob ex:name \"Bob\" ."
+  }'
+```
+
+```json
+{
+  "imported": { "quads": 2, "chunks": 2 }
+}
+```
+
+The import response reports how many quads landed and how many search chunks
+they produced. If either count is 0, the payload did not parse — the format must
+match `contentType` exactly.
+
+## 4. Run your first search
+
+```bash
+curl -s -X POST "https://data.wazoo.dev/worlds/$WORLD_ID/search" \
+  -H "Authorization: Bearer $WORLDS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "Bob",
+    "limit": 5
+  }'
+```
+
+Results come back best-first with the matched quad and a relevance score:
+
+```json
+{
+  "results": [
+    {
+      "id": "...",
+      "subject": "https://example.org/bob",
+      "predicate": "http://schema.org/name",
+      "content": "Bob",
+      "score": 0.92,
+      "scoreType": "rrf"
+    }
+  ],
+  "mode": "keyword"
+}
+```
+
+`mode` tells you which search path actually ran (`keyword` in the hosted beta,
+`hybrid` when embeddings are configured). Search resolves the
+[entity](/glossary#world); SPARQL answers structured questions about it.
+
+## 5. Run your first SPARQL query
+
+The subject from search (or any IRI you know) drives a SPARQL 1.1 query:
+
+```bash
+curl -s -X POST "https://data.wazoo.dev/worlds/$WORLD_ID/sparql" \
+  -H "Authorization: Bearer $WORLDS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "SELECT ?name WHERE { <https://example.org/bob> <http://schema.org/name> ?name }"
+  }'
+```
+
+That is the full loop: a world holds the graph, a world token opens it, import
+fills it, search finds the entity, SPARQL answers the structured question.
+
+## Paging large exports
+
+`GET /worlds/{worldId}/export` returns at most `limit` quads per call (default
+1000 for JSON). When more data remains, the response carries the next offset in
+an `X-Next-Offset` header (and a `nextOffset` field in JSON bodies). Pass it
+back as `offset` until the header stops appearing:
+
+```bash
+OFFSET=0
+while :; do
+  RESP=$(curl -s -D /tmp/wz-headers \
+    "https://data.wazoo.dev/worlds/$WORLD_ID/export?format=application/json&limit=1000&offset=$OFFSET" \
+    -H "Authorization: Bearer $WORLDS_TOKEN")
+  echo "$RESP"
+  NEXT=$(grep -i '^x-next-offset:' /tmp/wz-headers | tr -d '\r' | awk '{print $2}')
+  [ -z "$NEXT" ] && break
+  OFFSET=$NEXT
+done
+```
+
+The same `limit`/`offset`/`X-Next-Offset` contract is what the
+[TypeScript client](/worlds/client) exposes on `exportWorld`.
