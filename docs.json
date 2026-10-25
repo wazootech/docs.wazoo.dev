@@ -133,9 +133,7 @@
       },
       {
         "group": "Wazoo CLI",
-        "pages": [
-          "reference/cli/index"
-        ]
+        "pages": ["reference/cli/index"]
       },
       {
         "group": "Integrations",
