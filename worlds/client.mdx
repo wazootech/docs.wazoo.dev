@@ -114,8 +114,8 @@ const reindexed = await reindexWorld({
 defaulting to 1000 quads for `application/json` and `text/plain`; serialized RDF
 formats return the whole world when `limit` is omitted), and `offset` is where
 the page starts. When more quads remain, the response carries the next offset as
-`nextOffset` in JSON bodies (and as the `X-Next-Offset` header in every
-format). A `nextOffset` of `undefined` means you have reached the end.
+`nextOffset` in JSON bodies (and as the `X-Next-Offset` header in every format).
+A `nextOffset` of `undefined` means you have reached the end.
 
 Loop until the world is fully exported:
 
