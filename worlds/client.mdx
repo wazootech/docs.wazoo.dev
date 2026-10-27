@@ -108,6 +108,41 @@ const reindexed = await reindexWorld({
 });
 ```
 
+### Exporting large worlds
+
+`exportWorld` paginates. `limit` is the page size (a positive integer,
+defaulting to 1000 quads for `application/json` and `text/plain`; serialized RDF
+formats return the whole world when `limit` is omitted), and `offset` is where
+the page starts. When more quads remain, the response carries the next offset as
+`nextOffset` in JSON bodies (and as the `X-Next-Offset` header in every format).
+A `nextOffset` of `undefined` means you have reached the end.
+
+Loop until the world is fully exported:
+
+```ts
+import { exportWorld } from "@worlds/client";
+
+const worldId = "w_01jd8x5mqv7k3n9r2t4w6y8z0b";
+const quads = [];
+let offset = 0;
+
+while (true) {
+  const page = await exportWorld({
+    client,
+    path: { worldId },
+    query: { limit: "1000", offset: String(offset) },
+  });
+  quads.push(...page.data!.quads);
+
+  const next = page.data!.nextOffset;
+  if (next === undefined) break;
+  offset = next;
+}
+```
+
+Pass `limit`/`offset` as strings: they are query parameters, and the generated
+types type them that way.
+
 ## Self-hosting
 
 Point the client at a self-hosted Worlds Data API instance by overriding
