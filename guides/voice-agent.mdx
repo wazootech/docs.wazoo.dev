@@ -1,0 +1,319 @@
+---
+title: "Build a voice agent"
+description:
+  "A voice agent that answers from a Wazoo world: streaming speech-to-text,
+  grounded recall over search and SPARQL, and streaming text-to-speech."
+---
+
+A voice agent hears a question, answers it, and speaks the answer back. The hard
+part is not the audio; it is what the answer is grounded in. Vector search over
+transcripts returns whichever chunk sounds similar. A Wazoo world returns facts
+with subjects, predicates, and SPARQL on top, so the agent can answer "who
+manages Ethan" by querying a relation instead of hoping a chunk contains it.
+
+This guide builds a voice agent with three parts:
+
+1. Streaming speech-to-text (AssemblyAI) turns speech into question text.
+2. An LLM turn (Vercel AI SDK) answers using `@wazoo/tools` recall tools:
+   `searchWorld` and `executeSparql` against a world.
+3. Streaming text-to-speech (AssemblyAI) speaks the reply over one WebSocket
+   session for the whole conversation.
+
+The audio legs come from the AssemblyAI JavaScript SDK (text-to-speech is in the
+SDK from 4.42.0). Everything is runnable without a microphone: the guide drives
+the speech-to-text leg from an audio file, the same path a mic pipeline uses.
+
+## Prerequisites
+
+- A Wazoo private beta account. Sign up at
+  [wazoo.dev/beta](https://wazoo.dev/beta).
+- A platform token (`wzp_`) and a world token (`wzw_`) with data-plane access.
+  Generate them on the [Console tokens page](/console/tokens). The two tokens
+  are not interchangeable; see [Your first query](/worlds/first-query) for what
+  each grants.
+- An AssemblyAI API key.
+- Node.js 18+.
+
+## Architecture
+
+```
+mic (or file) -> streaming STT (ws)
+              -> LLM turn with @wazoo/tools recall tools
+                   searchWorld + executeSparql against the world
+              -> reply text, split into sentences
+              -> streaming TTS session (one ws for the conversation)
+              -> speaker (24 kHz 16-bit mono PCM)
+```
+
+Two details matter more than the rest of the design, and both come from the
+AssemblyAI APIs: the TTS side wants one session per conversation (each
+connection burns a per-account new-sessions-per-minute slot, so opening a
+connection per sentence hits the limit fast), and the STT side only finalizes a
+turn when you send a terminate message, which the SDK's `close()` does.
+
+## Steps
+
+<Steps>
+  <Step title="Install the SDKs">
+
+    ```bash
+    npm install assemblyai@4.42.0 ai @ai-sdk/deepseek @wazoo/tools @worlds/client
+    ```
+
+    Any AI SDK model provider works in place of DeepSeek; the agent turn is
+    provider-agnostic.
+
+  </Step>
+  <Step title="Hear the TTS leg: one request, one WAV">
+
+    Before wiring anything, verify the voice leg with one HTTP request. The
+    Text-to-Speech API takes text and returns a complete WAV:
+
+    ```bash
+    curl -sS --fail-with-body https://tts.us.assemblyai.com/v1/speech \
+      -H "Authorization: $ASSEMBLYAI_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{"text": "Hi, thanks for calling. How can I help you today?",
+           "voice_id": "aai-jane", "container": "wav", "stream": false}' \
+      -o hello.wav
+    ```
+
+    The response headers tell you what you got: `x-tts-sample-rate: 24000`,
+    `x-tts-encoding: pcm_s16le`, `x-tts-billed-characters` for what you were
+    charged, and `x-tts-audio-duration-ms`. Read the sample rate from the
+    response rather than hardcoding it.
+
+    Synthesis is not deterministic: the same sentence can come back a few
+    hundred milliseconds longer or shorter. Billing counts characters, not
+    seconds.
+
+  </Step>
+  <Step title="Speak a whole reply over one session">
+
+    A voice agent speaks many short texts, one per turn. The TTS WebSocket
+    API keeps one session open for the whole conversation, each sentence is a
+    request on it, and audio streams back while the sentence is still being
+    synthesized. In the JavaScript SDK:
+
+    ```ts
+    import { createWriteStream } from "node:fs";
+    import { AssemblyAI } from "assemblyai";
+
+    const client = new AssemblyAI({ apiKey: process.env.ASSEMBLYAI_API_KEY });
+
+    const session = client.tts.session({
+      voiceId: "aai-jane",
+      language: "english",
+    });
+    await session.connect();
+
+    for (const sentence of sentences) {
+      for await (const chunk of session.speak(sentence)) {
+        out.write(chunk); // raw 24 kHz s16le mono PCM
+      }
+    }
+    await session.close();
+    ```
+
+    First audio arrives about 100 ms after each sentence is sent, so
+    splitting the reply into sentences and speaking them in order keeps
+    playback continuous. The chunks are headerless PCM; to audition a file
+    outside the agent:
+
+    ```bash
+    ffplay -f s16le -ar 24000 -ac 1 reply.pcm
+    ```
+
+  </Step>
+  <Step title="Transcribe speech with streaming STT">
+
+    The streaming speech-to-text API transcribes a WebSocket audio stream and
+    emits turn events: `partial` transcripts while you speak, a `final` when
+    the turn ends. For a runnable version with no microphone, stream a WAV
+    file in real-time-sized frames. Any clip converts to the expected format
+    with `ffmpeg -i question.wav -ar 16000 -ac 1 question16.wav`:
+
+    ```ts
+    import { readFile } from "node:fs/promises";
+    import { AssemblyAI } from "assemblyai";
+
+    const client = new AssemblyAI({ apiKey: process.env.ASSEMBLYAI_API_KEY });
+    const finals: string[] = [];
+    const client = new AssemblyAI({ apiKey: process.env.ASSEMBLYAI_API_KEY });
+    const transcriber = client.streaming.transcriber({
+      speechModel: "universal-3-6-pro",
+      encoding: "pcm_s16le", // the wire name; raw 16-bit little-endian PCM
+      sampleRate: 16000,
+    });
+    transcriber.on("turn", (turn) => {
+      if (turn.end_of_turn && turn.transcript) finals.push(turn.transcript);
+    });
+
+    await transcriber.connect();
+    const pcm = await readFile("question16.wav");
+    const frame = 3200; // ~100 ms of 16 kHz s16le mono
+    for (let off = 0; off < pcm.length; off += frame) {
+      transcriber.sendAudio(pcm.subarray(off, off + frame));
+      await new Promise((r) => setTimeout(r, 100));
+    }
+    await transcriber.close(); // terminate: finalizes the open turn
+    ```
+
+    The terminate step is not optional polish. The turn stays open until you
+    terminate, so waiting for a final before closing deadlocks: send the
+    audio, let the trailing silence play out, then close. With a real mic
+    pipeline the same rule applies on every turn: finalize before the agent
+    starts answering.
+
+    Valid encodings are `pcm_s16le`, `pcm_mulaw`, `opus`, `ogg_opus`, and
+    `aac`. For `opus`, `ogg_opus`, and `aac` the stream describes its own
+    sample rate; for the raw PCM encodings set `sampleRate` yourself.
+
+    Streaming STT bills on connection time, not audio volume. Close sessions
+    when the conversation ends.
+
+  </Step>
+  <Step title="Give the agent a world">
+
+    `@wazoo/tools` exposes recall tools that wrap a Worlds client. Point them
+    at the hosted data plane by adapting `@worlds/client`:
+
+    ```ts
+    import { createClient, searchWorld, sparqlWorld } from "@worlds/client";
+    import { createRecallTools } from "@wazoo/tools";
+
+    const client = createClient({
+      baseUrl: "https://data.wazoo.dev",
+      auth: process.env.WORLDS_TOKEN, // a wzw_ world token
+    });
+
+    const hosted = {
+      search: async ({ query, topK, minScore }) => {
+        const response = await searchWorld({
+          client,
+          path: { worldId: process.env.WORLD_ID! },
+          body: { query, limit: topK, minScore },
+        });
+        return response.data; // { results: [...] }
+      },
+      sparql: async ({ query }: { query: string }) => {
+        const response = await sparqlWorld({
+          client,
+          path: { worldId: process.env.WORLD_ID! },
+          body: { query },
+        });
+        // The tool surfaces `data`; `kind` must not be "void".
+        return { kind: "select", data: response.data };
+      },
+    };
+
+    const recall = createRecallTools({ client: hosted });
+    ```
+
+    <Note>
+      The hosted beta currently runs keyword full-text search. Vector
+      ranking and the hybrid flow are coming; see [Search](/worlds/search)
+      for the current status. SPARQL is the structured recall path either
+      way, so prompt the agent to prefer it for questions about relations
+      (who manages what, which entities have which property) and to use
+      search for fuzzy text lookups.
+    </Note>
+
+    For a zero-dependency local agent (CI, tests, demos with no network),
+    swap the same recall tools onto an embedded world:
+
+    ```ts
+    import { MemoryStore, WazooSparqlEngine } from "@wazoo/sparql-engine";
+    import { WorldsSdk } from "@worlds/sdk";
+    import { RdfjsQuadStore, RdfjsSearchIndex } from "@worlds/sdk/rdfjs";
+
+    const worlds = new WorldsSdk({
+      quadStore: new RdfjsQuadStore({ store: new MemoryStore() }),
+      searchIndex: new RdfjsSearchIndex(store),
+      sparqlEngine: new WazooSparqlEngine({ store }),
+    });
+    await worlds.import({
+      source: { kind: "serialized", data: turtle, contentType: "text/turtle" },
+    });
+
+    const recall = createRecallTools({ client: worlds });
+    ```
+
+    The embedded search index matches text inside literals only, so seed
+    worlds for it with literal-bearing triples. The hosted world is the
+    default path for anything real.
+
+  </Step>
+  <Step title="Run the loop">
+
+    The whole agent is one turn function and one event loop: the
+    transcriber's final turn triggers an LLM call with the recall tools, the
+    reply is split into sentences, and each sentence is spoken into the TTS
+    session:
+
+    ```ts
+    import { generateText, stepCountIs } from "ai";
+    import { deepseek } from "@ai-sdk/deepseek";
+
+    async function agentTurn(question: string) {
+      const { text } = await generateText({
+        model: deepseek("deepseek-chat"),
+        system:
+          "You are a voice agent answering spoken questions from a Wazoo " +
+          "knowledge world. Ground answers in the tools: prefer " +
+          "executeSparql for structured questions (relations, lists) and " +
+          "searchWorld for fuzzy lookups. Never announce a lookup; answer " +
+          "in two or three short spoken sentences. No markdown.",
+        tools: recall,
+        stopWhen: stepCountIs(6),
+        prompt: question,
+      });
+      return text;
+    }
+    ```
+
+    Two prompt details earn their keep with spoken replies. "Never announce a
+    lookup" keeps the model from speaking filler like "let me check that for
+    you" while it works through tool rounds, which callers hear as dead air
+    followed by a second answer. And limiting the tool rounds keeps latency
+    bounded: the loop can spend several seconds before the first sentence
+    exists, and every second is audible.
+
+    Measured on this exact loop, from final transcript to first audio:
+    the agent turn took 1.4 to 7 seconds depending on tool round count,
+    and the first TTS audio arrived about 100 ms after each sentence was
+    sent. The agent turn dominates end-to-end latency; the audio legs do
+    not.
+
+  </Step>
+  <Step title="Deploy the browser side safely">
+
+    A browser cannot set an `Authorization` header on a WebSocket, and it
+    must never hold the API key. The TTS API accepts a short-lived token in
+    the `token` query parameter, minted server-side with `product=tts`, one
+    per connection:
+
+    ```ts
+    // server side, one per connection
+    const token = await client.tts.createTemporaryToken({
+      expires_in_seconds: 60,
+    });
+    // browser side
+    const session = client.tts.session({ token, voiceId: "aai-jane" });
+    ```
+
+    The same pattern applies to the streaming STT WebSocket. Never put the
+    API key in a URL that runs on a user's device.
+
+  </Step>
+</Steps>
+
+## Where to take it
+
+- Swap the question source from file to mic capture; the transcriber loop is
+  identical.
+- Add barge-in: stream partial transcripts during TTS playback and cancel the
+  session when the speaker starts talking.
+- Give the agent write access with
+  [the ingest tools](https://jsr.io/@wazoo/tools) so the conversation itself
+  updates the world.
