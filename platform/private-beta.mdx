@@ -27,8 +27,8 @@ passcode (WorkOS).
 ## Beta status
 
 The Platform API is public-facing and production-oriented. Some Console flows
-are still private-beta and may not be available to every user. Usage tracking is
-in place, but private beta access does not require live payment enforcement.
+are still private-beta and may not be available to every user. Private beta
+access does not require payment.
 
 ## Known limitations
 
@@ -39,8 +39,9 @@ These are active limitations during the private beta:
 - Console flows: some Console features are still in development and may not be
   available to every user.
 - No self-service signup: access is managed through a manual allowlist.
-- No billing enforcement: usage is tracked but not metered. Limits may be
-  adjusted.
+- Free, with limits: private beta access is free and paid plans are not
+  available yet. A daily write limit and a limit of 10 active Worlds apply, and
+  both may be adjusted. See [Pricing](/platform/pricing#usage-limits).
 - Search: the hosted beta uses full-text search only; an embedding provider is
   not configured. Successful imports rebuild the full-text projection, but the
   manual [Reindex](/console/reindex) action currently reports completion without
