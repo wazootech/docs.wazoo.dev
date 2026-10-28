@@ -5,24 +5,45 @@ description:
 ---
 
 The Wazoo Platform is currently free during private beta. Payment is not
-required, and billing is not enforced.
+required, and paid plans are not available yet.
 
 ## Private beta pricing
 
 - Free access: Access to hosted Worlds, the Wazoo Console, and the Platform API
   is free during private beta.
-- Tracked, not metered: Resource accounting tracks database operations, import
-  bytes, query durations, and storage bytes, but usage limits are not enforced
-  and live payment is not required.
+- Daily write limit: each account has a limit on the database rows its Worlds
+  write each day (UTC). Reading is never limited. See
+  [Usage limits](#usage-limits).
+- World limit: an account can hold up to 10 active Worlds during private beta.
 - No self-service signup: Private beta access is managed via allowlist. Sign up
   at [wazoo.dev/beta](https://wazoo.dev/beta).
 
+## Usage limits
+
+Your Worlds share one daily write limit. It counts the database rows that writes
+produce, including index rows, so it measures stored data and not requests:
+
+- Each stored quad uses about 9 rows.
+- A world with inference enabled stores the inferred quads too, so one asserted
+  quad can use many more rows.
+- SPARQL updates, imports, and the inference back-fill are refused once you
+  reach the limit. Queries, search, and export are never refused.
+- The count resets at 00:00 UTC.
+
+Settings in the [Console](https://console.wazoo.dev) shows your plan, the rows
+you have written today, and your limit. When you reach the limit, writes return
+`429` with the code `WRITE_BUDGET_EXCEEDED` until the count resets. Reads keep
+working. See
+[Troubleshooting](/platform/troubleshooting#write-limit-reached-429).
+
+Wazoo does not yet record import bytes, query duration, or storage bytes per
+account.
+
 ## Billing architecture
 
-Stripe-backed billing endpoints exist in the Wazoo API infrastructure, but
-billing enforcement remains inactive for private beta accounts. For detailed
-information on resource-accounting dimensions and platform tokens, see the
-[Platform API reference](/platform/api).
+Stripe-backed billing endpoints exist in the Wazoo API infrastructure, but no
+paid plan is available for private beta accounts. For platform tokens and the
+management routes, see the [Platform API reference](/platform/api).
 
 ## Beta limitations
 

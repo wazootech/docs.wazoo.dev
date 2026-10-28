@@ -16,10 +16,11 @@ Use the Platform API when you are provisioning or managing resources. Use the
 Worlds Data API when an application or agent needs to query or update graph
 state.
 
-Usage and limits use transparent resource accounting: Worlds records the
-underlying resources consumed by Worlds operations, such as database operations,
-import bytes, query duration, and storage bytes. Stripe is the billing source of
-truth, but private beta access does not require live payment enforcement.
+Limits are based on the database rows your writes produce. Worlds counts the
+rows written for each account every day and refuses further writes once the
+account reaches its daily limit; reads are never limited. See
+[Pricing](/platform/pricing#usage-limits). Private beta access does not require
+payment.
 
 The Console is the human-facing control surface for the same platform concepts.
 Some Console flows are still private-beta and may not be available to every

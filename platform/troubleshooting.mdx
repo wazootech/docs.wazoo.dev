@@ -57,6 +57,27 @@ your data to one of those formats and try again.
 The JSON file must contain an array of objects, each with `subject`,
 `predicate`, and `object` fields. Fix the file and try again.
 
+## Limits
+
+### Write limit reached (429)
+
+A write returns `429` with the code `WRITE_BUDGET_EXCEEDED` and a message that
+names your daily limit. Your account has written as many database rows as its
+daily limit allows. Nothing from the refused request was written.
+
+- Reads, queries, search, and export keep working.
+- The count resets at 00:00 UTC. Try the write again after that.
+- Settings in the console shows the rows you have written today and your limit.
+- A world with inference enabled stores inferred quads too, so it uses more rows
+  than the asserted quads alone. Turning inference off uses fewer rows per quad.
+- Importing in smaller batches spreads the same data across several days.
+
+### World limit reached (429)
+
+Creating a World returns `429` with the code `RESOURCE_EXHAUSTED` when your
+account already holds 10 active Worlds. Delete a World you no longer need, or
+contact the Wazoo team.
+
 ## Search issues
 
 ### Search returns no results
