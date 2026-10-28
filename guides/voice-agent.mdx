@@ -219,6 +219,20 @@ turn when you send a terminate message, which the SDK's `close()` does.
       search for fuzzy text lookups.
     </Note>
 
+    One behavior to know when seeding a new world: a Turtle import can
+    report `chunks: 0` even though the quads parsed and landed. Keyword
+    search reads chunks, not quads, so search comes back empty until the
+    index is built:
+
+    ```bash
+    curl -s -X POST "https://data.wazoo.dev/worlds/$WORLD_ID/reindex" \
+      -H "Authorization: Bearer $WORLDS_TOKEN"
+    ```
+
+    The response reports the chunk count once it completes. For relation
+    questions the agent does not need the search index at all; SPARQL
+    queries the quads directly.
+
     For a zero-dependency local agent (CI, tests, demos with no network),
     swap the same recall tools onto an embedded world:
 
