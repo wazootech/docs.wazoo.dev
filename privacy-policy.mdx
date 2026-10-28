@@ -18,21 +18,35 @@ a child under 13 without verifiable parental consent, we will delete it.
 ## What we collect
 
 - Account information you provide, such as your email address and display name.
-- Usage and billing data needed to operate the service, including world
-  resources, API tokens, and usage events.
-- Standard web analytics data from the Console and documentation site.
+- Usage data needed to operate the service, including world resources, API
+  tokens, and daily write counts.
+- Billing data if you subscribe to a paid plan. Stripe collects your payment
+  details. We keep your Stripe customer and subscription identifiers and your
+  plan, and we do not receive or store your card number.
+- Standard web analytics data. The wazoo.dev website uses Google Analytics.
 
 ## How we use information
 
 - To operate and secure your account and worlds.
-- To meter and manage platform usage during the private beta.
+- To meter plan limits and manage platform usage.
+- To process payments and manage your subscription.
+- To send sign-in codes and other messages about your account.
 - To respond to support requests and maintain service quality.
 
 ## Sharing
 
 We do not sell personal information. We share data only with the service
-providers required to operate the platform (for example, hosting and database
-providers) and when required by law.
+providers required to operate the platform, and when required by law. These
+providers act on our behalf:
+
+- Cloudflare hosts the platform, the databases that hold your worlds, and the
+  network that serves them.
+- WorkOS handles sign-in and authentication.
+- Resend delivers sign-in codes and account email.
+- Stripe processes payments for paid plans.
+- Google provides analytics for the wazoo.dev website.
+
+Each provider handles the data under its own terms and privacy policy.
 
 ## Do Not Sell or Share
 
@@ -43,8 +57,14 @@ the future, we will update this policy and honor Global Privacy Control signals.
 
 ## Your choices
 
-You can request deletion of your account and associated data by contacting the
-team at [wazoo.dev/meet](https://wazoo.dev/meet). See the
+You can export your account data and delete your account from Settings in the
+Console. Deleting your account removes your account information, cancels any
+subscription, and marks your worlds for deletion. Worlds are permanently purged
+after a 30-day grace period. Stripe keeps billing records, such as invoices and
+the customer record, as it is required to for tax and accounting purposes.
+
+If you cannot use the Console, contact the team at
+[wazoo.dev/meet](https://wazoo.dev/meet). See the
 [Worlds data API](/worlds/query) for tools to export and manage the data in your
 worlds.
 
