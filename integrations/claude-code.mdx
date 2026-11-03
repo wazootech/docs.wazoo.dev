@@ -1,9 +1,14 @@
 ---
 title: "Claude Code"
 icon: "/images/icons/claude-code-icon.svg"
-description: "Connect Worlds to Claude Code"
-hidden: true
+description: "Connect Worlds to Claude Code with the wazoo agent skill"
 ---
+
+[Claude Code](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/overview)
+is an agentic coding companion built by Anthropic that operates directly inside
+your local terminal. Claude Code reads Agent Skills, so it connects to Wazoo
+through the [`wazoo` skill](/skills/wazoo) from
+[wazootech/wazoo-skills](https://github.com/wazootech/wazoo-skills).
 
 <Warning>
   **Experimental Integration** The official Worlds capabilities for this
@@ -11,6 +16,41 @@ hidden: true
   language parity.
 </Warning>
 
-[Claude Code](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/overview)
-is an agentic coding companion built by Anthropic that operates directly inside
-your local terminal.
+## Requirements
+
+- A platform token (`wzp_...`) for control-plane operations and a world token
+  (`wzw_...`) for data-plane operations. Mint both in the console (see
+  [tokens](/console/tokens)).
+
+## Install the skill
+
+From your project root:
+
+```bash
+npx skills add wazootech/wazoo-skills --skill=wazoo -y
+```
+
+This copies the skill to `.agents/skills/wazoo/SKILL.md`. Commit that file so
+teammates and their agents get the same capability. Update with:
+
+```bash
+npx skills update wazoo
+```
+
+## Set the tokens
+
+The skill drives two REST surfaces through environment variables:
+
+```bash
+export WAZOO_PLATFORM_TOKEN="wzp_..." # control plane: worlds, tokens, usage
+export WORLDS_TOKEN="wzw_..." # data plane: import, search, SPARQL, export
+```
+
+## What the agent can do
+
+Once installed, the skill instructs the agent how to manage worlds, import
+Turtle, run SPARQL, and search. The underlying calls are the same surfaces
+documented in [Worlds](/worlds/index): [import](/worlds/update),
+[search](/worlds/search), and [SPARQL queries](/worlds/query).
+
+For the full command reference, see [the `wazoo` skill docs](/skills/wazoo).
