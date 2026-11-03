@@ -1,0 +1,73 @@
+---
+title: "OpenBot"
+description: "Give an OpenBot agent Wazoo memory with the wazoo-openbot plugin"
+---
+
+[OpenBot](https://docs.getopenbot.com) is a local-first harness for running AI
+agents on your own hardware. Agents are defined with `AGENT.md` files and
+extended with plugins that handle events on the OpenBot bus. The
+[`wazoo-openbot`](https://github.com/wazootech/wazoo-openbot) plugin gives an
+OpenBot agent a persistent world-model memory backed by a hosted Wazoo world.
+
+## What the plugin provides
+
+The plugin adds four tools to the agent that hosts it:
+
+| Tool            | Purpose                                                                                                                                   |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `search_world`  | Hybrid search over the world's memory. Keyword search always works; the vector arm activates when embeddings are configured on the world. |
+| `run_sparql`    | Run a SPARQL 1.1 SELECT query against the world's graph. Use this for structured questions: lists, relations, counts.                     |
+| `import_turtle` | Import RDF/Turtle into the world and rebuild the search index.                                                                            |
+| `reindex_world` | Rebuild the search index on demand.                                                                                                       |
+
+## Requirements
+
+- An [OpenBot](https://docs.getopenbot.com) install (`npm i -g openbot`).
+- A world token (`wzw_...`) and world id (`w_...`). Mint both from the Wazoo
+  console (see [tokens](/console/tokens)).
+
+## Install the plugin
+
+Clone and build the plugin, then copy it into the OpenBot plugins folder:
+
+```bash
+git clone https://github.com/wazootech/wazoo-openbot.git
+cd wazoo-openbot
+bun install
+bun run build
+mkdir -p ~/.openbot/plugins/wazoo
+cp -r dist/* ~/.openbot/plugins/wazoo/
+```
+
+## Wire it into an agent
+
+Reference the plugin in the agent's `AGENT.md`:
+
+```yaml
+plugins:
+  - id: wazoo
+    config:
+      worldToken: wzw_YOUR_WORLD_TOKEN
+      worldId: w_YOUR_WORLD_ID
+```
+
+The plugin reads `worldToken`, `worldId`, and the optional `baseUrl` (default
+`https://data.wazoo.dev`) from this config. With no config, every tool call
+fails with a message that names the missing field.
+
+## Usage notes
+
+Keyword search matches literal values in the graph, not predicate names: a
+search for `Ethan` finds triples whose object is `Ethan`, while a search for
+`manages` finds nothing. For structural questions ("who manages X", "list all
+projects"), prefer `run_sparql`.
+
+`import_turtle` rebuilds the search index automatically. If you import through
+another surface, run `reindex_world` afterwards, or keyword search returns
+nothing for the new facts.
+
+## Source
+
+The plugin lives at
+[wazootech/wazoo-openbot](https://github.com/wazootech/wazoo-openbot). Its only
+runtime dependency is the Worlds REST API; tests run with `bun test`.
