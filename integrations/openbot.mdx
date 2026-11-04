@@ -24,8 +24,9 @@ The plugin adds four tools to the agent that hosts it:
 ## Requirements
 
 - An [OpenBot](https://docs.getopenbot.com) install (`npm i -g openbot`).
-- A world token (`wzw_...`) and world id (`w_...`). Mint both from the Wazoo
-  console (see [tokens](/console/tokens)).
+- A Wazoo account with a platform token (`wzp_...`) for one-click setup, or a
+  world token (`wzw_...`) and world id (`w_...`) to bring your own world (see
+  [tokens](/console/tokens)).
 
 ## Install the plugin
 
@@ -47,14 +48,24 @@ Reference the plugin in the agent's `AGENT.md`:
 ```yaml
 plugins:
   - id: wazoo
+```
+
+Then connect a Wazoo platform token when the host shows the connect prompt. On
+first use, the plugin creates a world named after the agent, mints a scoped
+`wzw_` token, and caches both; later calls reuse them.
+
+To pin a specific world instead:
+
+```yaml
+plugins:
+  - id: wazoo
     config:
       worldToken: wzw_YOUR_WORLD_TOKEN
       worldId: w_YOUR_WORLD_ID
 ```
 
-The plugin reads `worldToken`, `worldId`, and the optional `baseUrl` (default
-`https://data.wazoo.dev`) from this config. With no config, every tool call
-fails with a message that names the missing field.
+Explicit config wins over provisioning. With neither a connection nor config,
+every tool call fails with a message that names both setup paths.
 
 ## Memory teammate mode
 
