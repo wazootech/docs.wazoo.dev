@@ -16,6 +16,26 @@ It pairs with the [neurosymbolic approach](/guides/neurosymbolic) guide, which
 covers the write-time boundary in depth (neural networks propose, rules
 dispose). Here we follow a claim through the whole loop.
 
+```mermaid
+flowchart LR
+    XP[Experience:
+    conversations,
+    tool calls,
+    trajectories]
+    EX[Extractor:
+    emits discrete claims]
+    G[(World's RDF graph:
+    claims + provenance)]
+    AG[Agent context]
+
+    XP --> EX --> G
+    G -->|keyword + vector| AG
+    G -->|SPARQL| AG
+```
+
+Each claim carries its source, so any fact the agent uses can be traced back and
+audited. The sections below walk through the stages.
+
 ## Extract: experience becomes claims
 
 The pipeline starts with unstructured experience: conversations, tool calls,
@@ -59,6 +79,23 @@ Stored claims answer to three query surfaces:
 - **SPARQL** answers structural questions exactly: "list every project this
   person manages" is a graph traversal, not a similarity contest. The result is
   deterministic and repeatable.
+
+```mermaid
+flowchart LR
+    Q[Question]
+    K[Keyword search]
+    V[Vector search]
+    S[SPARQL traversal]
+    F[Ranking fusion]
+    A[Answer with
+    provenance]
+
+    Q --> K --> F
+    Q --> V --> F
+    Q --> S
+    F --> A
+    S --> A
+```
 
 Hybrid search runs keyword and vector together and fuses the rankings. The
 practical split: fuzzy recall goes through search, precise structured questions
