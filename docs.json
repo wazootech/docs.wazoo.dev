@@ -112,7 +112,7 @@
         "group": "Guides",
         "pages": [
           "guides/neurosymbolic",
-          "guides/memory-pipeline",
+          "guides/memory",
           "guides/company-brain",
           "guides/custom-sparql-engine",
           "guides/entity-resolution",
