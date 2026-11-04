@@ -148,6 +148,7 @@
           "integrations/n8n",
           "integrations/openclaw",
           "integrations/opencode",
+          "integrations/openbot",
           "integrations/openai",
           "integrations/zapier",
           "integrations/zo"
