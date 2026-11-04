@@ -143,6 +143,8 @@
           "integrations/agents-skills-mcp",
           "integrations/ai-sdk",
           "integrations/claude-code",
+          "integrations/codex",
+          "integrations/cursor",
           "integrations/gemini-api",
           "integrations/mastra",
           "integrations/n8n",
