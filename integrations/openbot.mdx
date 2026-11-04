@@ -13,12 +13,13 @@ OpenBot agent a persistent world-model memory backed by a hosted Wazoo world.
 
 The plugin adds four tools to the agent that hosts it:
 
-| Tool            | Purpose                                                                                                                                   |
-| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| `search_world`  | Hybrid search over the world's memory. Keyword search always works; the vector arm activates when embeddings are configured on the world. |
-| `run_sparql`    | Run a SPARQL 1.1 SELECT query against the world's graph. Use this for structured questions: lists, relations, counts.                     |
-| `import_turtle` | Import RDF/Turtle into the world and rebuild the search index.                                                                            |
-| `reindex_world` | Rebuild the search index on demand.                                                                                                       |
+| Tool            | Purpose                                                                                                                                                                                   |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `search_world`  | Hybrid search over the world's memory. Keyword search always works; the vector arm activates when embeddings are configured on the world.                                                 |
+| `run_sparql`    | Run a SPARQL 1.1 SELECT query against the world's graph. Use this for structured questions: lists, relations, counts.                                                                     |
+| `remember`      | Save one typed memory (decision, preference, person, project, finding, correction). Corrections carry the statement they supersede; statements that look like tokens or keys are refused. |
+| `import_turtle` | Import RDF/Turtle into the world and rebuild the search index.                                                                                                                            |
+| `reindex_world` | Rebuild the search index on demand.                                                                                                                                                       |
 
 ## Requirements
 
@@ -54,6 +55,39 @@ plugins:
 The plugin reads `worldToken`, `worldId`, and the optional `baseUrl` (default
 `https://data.wazoo.dev`) from this config. With no config, every tool call
 fails with a message that names the missing field.
+
+## Memory teammate mode
+
+The tools are passive by default: an agent uses them when it thinks to. One
+standing rule in each agent's instructions turns the world into the team's
+shared memory instead. Adapt this to the agent's format:
+
+```markdown
+Before work that depends on past decisions, people, preferences, or project
+context, use search_world first; if the result is structural (who owns what,
+list all X), use run_sparql. When something worth keeping is decided or stated,
+save it with remember, filed by kind (decision, preference, person, project,
+finding, correction). Never save secrets or preferences you only inferred. If a
+stored fact is wrong, save a correction with supersedes set to the outdated
+statement.
+```
+
+Every agent with the rule reads from and writes to the same world, so one
+agent's decisions are visible to the rest. What the team has kept is one SPARQL
+query away:
+
+```sparql
+PREFIX wz: <https://wazoo.dev/vocab#>
+SELECT ?kind ?statement ?when WHERE {
+  ?memory a ?kind ;
+    wz:statement ?statement ;
+    wz:recordedAt ?when .
+} ORDER BY DESC(?when)
+```
+
+See
+[examples/memory-teammate.md](https://github.com/wazootech/wazoo-openbot/blob/main/examples/memory-teammate.md)
+in the plugin repo for the full pattern.
 
 ## Usage notes
 
