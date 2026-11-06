@@ -9,7 +9,7 @@
   },
   "favicon": "/images/wazoo.svg",
   "colors": {
-    "primary": "#FF9800",
+    "primary": "#FF8C00",
     "light": "#FFB74D",
     "dark": "#F57C00"
   },
@@ -23,7 +23,7 @@
   },
   "background": {
     "color": {
-      "light": "#fafaf9",
+      "light": "#F7F2E8",
       "dark": "#040404"
     }
   },
