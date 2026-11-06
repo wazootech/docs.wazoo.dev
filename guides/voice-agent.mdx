@@ -293,11 +293,43 @@ turn when you send a terminate message, which the SDK's `close()` does.
     bounded: the loop can spend several seconds before the first sentence
     exists, and every second is audible.
 
-    Measured on this exact loop, from final transcript to first audio:
-    the agent turn took 1.4 to 7 seconds depending on tool round count,
-    and the first TTS audio arrived about 100 ms after each sentence was
-    sent. The agent turn dominates end-to-end latency; the audio legs do
-    not.
+  </Step>
+  <Step title="Cut latency with retrieve-then-speak">
+
+    The tool loop is flexible but slow: every round is a full model call, and
+    the model may spend several rounds exploring before it speaks. Production
+    voice agents flip the shape: retrieve first, speak second.
+
+    - Recall runs while the user is still talking. The streaming STT API
+      emits `partial` transcripts as words arrive; four words in, fire the
+      retrieval pre-pass, and reuse its result if the final transcript only
+      differs in spelling.
+    - Keyword-only search matches literal substrings, so query per meaningful
+      token (stopwords stripped, two or three tokens) in parallel and merge
+      the hit subjects. Filter results to `http(s)` subjects: search can
+      return blank-node chunk ids, and a relative IRI inside a SPARQL
+      `VALUES` clause silently breaks the whole query.
+    - Fetch every hit subject's triples in one batched query:
+
+      ```sparql
+      SELECT ?s ?p ?o WHERE {
+        VALUES ?s { <https://demo.wazoo.dev/ethan> <https://demo.wazoo.dev/wazoo> }
+        ?s ?p ?o
+      }
+      ```
+
+    - Answer with no tools at all: the facts go into the system prompt, the
+      model streams, and each completed sentence is spoken immediately. The
+      tool loop remains as the fallback when retrieval comes up empty, plus
+      a final no-tools pass that summarizes the tool results if the loop
+      ran out of rounds without speaking.
+
+    Measured against a hosted world with keyword-only recall and
+    `deepseek-v4-flash`: first spoken word 10 to 20 seconds after the
+    question ends, dominated by backend search-call variance (0.7 to 8
+    seconds per call observed), and the first TTS audio arrives about 100
+    ms after each sentence is sent. Enabling hybrid recall (embeddings)
+    shortens the retrieval leg further.
 
   </Step>
   <Step title="Deploy the browser side safely">
