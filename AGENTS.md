@@ -64,3 +64,19 @@ These are the non-negotiable rules. See `/contribute/style` for the full guide.
 - **engine / context engine**: functional descriptions
 - **verified facts**: technical descriptions of graph state
 - **memory**: conceptual analogy, permitted for developer intuition
+
+## Code health
+
+Family-wide rules live in the
+[wazootech workspace constitution](https://github.com/wazootech/workspace/blob/main/AGENTS.md#code-health-standards);
+this repo's specifics:
+
+- Before pushing, run `pnpm run precommit` (prettier `format:check` plus
+  `mintlify validate`); CI also runs `pnpm run broken-links`.
+- `.github/workflows/secret-scan.yml` runs gitleaks on every PR and push to
+  `main`. `.gitleaks.toml` extends the default rules and allowlists only the
+  `wzp_YOUR_*` placeholder token used in docs examples; never put a real key in
+  an example.
+- Third-party actions in `.github/workflows/` are pinned to commit SHAs;
+  `renovate.json` keeps them current.
+- `.github/CODEOWNERS` assigns `* @EthanThatOneKid`.
