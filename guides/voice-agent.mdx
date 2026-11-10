@@ -354,6 +354,38 @@ turn when you send a terminate message, which the SDK's `close()` does.
   </Step>
 </Steps>
 
+## Choosing the voice providers
+
+The guide builds on AssemblyAI's streaming APIs, but the audio legs are
+swappable: both sides are WebSockets in and out, and the agent turn is decoupled
+from either. When picking an STT or TTS provider for a voice agent, measure
+against your own use case instead of vendor benchmarks:
+
+- [Voice Arena](https://voicearena.com) publishes human-eval leaderboards for
+  both legs: streaming and offline STT ranked by semantic WER on public and
+  private test sets, and TTS ranked by Bradley-Terry Elo from blind pairwise
+  votes with time-to-first-audio listed per model. The TTS board splits
+  real-time-only models, which is the filter that matters for a conversational
+  agent; an offline-quality model with 600 ms TTFA is the wrong choice even if
+  it tops the general ranking.
+- For STT, check the streaming-specific rows: a provider's batch model can lead
+  the general board while its realtime model trails (this ordering exists on the
+  current board too). The demo needs `end_of_turn` turn events and partial
+  transcripts, so confirm those are first-class in whichever API you pick.
+- For TTS, the number to compare is time to first audio, not Elo alone: the demo
+  speaks each sentence as the answer stream completes it, so TTFA dominates
+  perceived latency while the graph recall dominates the wait before speech
+  starts.
+- Both boards are human-eval based; run your own domain audio (your callers,
+  your accent mix, your vocabulary) through the finalists before committing.
+  Public test sets underrepresent domain terms, and the guide's whole point is
+  that vocabulary (entity names, relation labels) is what your graph holds.
+
+The demo pins AssemblyAI for the hackathon's featured-stack constraint and
+because the streaming APIs expose the pieces this guide relies on (turn events,
+sentence-level sessions, temporary browser tokens). The recall layer does not
+change if you swap either audio provider.
+
 ## Where to take it
 
 - Swap the question source from file to mic capture; the transcriber loop is
