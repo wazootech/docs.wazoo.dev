@@ -28,7 +28,8 @@
     }
   },
   "styling": {
-    "eyebrows": "breadcrumbs"
+    "eyebrows": "breadcrumbs",
+    "latex": true
   },
   "contextual": {
     "options": ["copy", "view"]
@@ -214,7 +215,7 @@
       },
       {
         "group": "Platform API",
-        "openapi": "https://api.wazoo.dev/openapi.json",
+        "openapi": "openapi-platform.json",
         "pages": [
           "GET /health",
           "GET /v1/users/me",
@@ -234,7 +235,7 @@
       {
         "group": "Worlds API",
         "openapi": {
-          "source": "https://data.wazoo.dev/openapi.json",
+          "source": "openapi-worlds.json",
           "directory": "worlds-api"
         },
         "pages": [
