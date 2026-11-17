@@ -28,10 +28,14 @@
     }
   },
   "styling": {
-    "eyebrows": "breadcrumbs"
+    "eyebrows": "breadcrumbs",
+    "latex": true
   },
   "contextual": {
-    "options": ["copy", "view"]
+    "options": [
+      "copy",
+      "view"
+    ]
   },
   "seo": {
     "indexing": "all",
@@ -69,7 +73,12 @@
     "groups": [
       {
         "group": "Welcome",
-        "pages": ["introduction", "projects", "manifesto", "glossary"]
+        "pages": [
+          "introduction",
+          "projects",
+          "manifesto",
+          "glossary"
+        ]
       },
       {
         "group": "Platform",
@@ -85,7 +94,10 @@
       },
       {
         "group": "Skills",
-        "pages": ["skills/wazoo", "skills/wspace"]
+        "pages": [
+          "skills/wazoo",
+          "skills/wspace"
+        ]
       },
       {
         "group": "Ecosystem",
@@ -136,7 +148,9 @@
       },
       {
         "group": "Wazoo CLI",
-        "pages": ["reference/cli/index"]
+        "pages": [
+          "reference/cli/index"
+        ]
       },
       {
         "group": "Integrations",
@@ -210,11 +224,14 @@
       },
       {
         "group": "Legal",
-        "pages": ["privacy-policy", "terms"]
+        "pages": [
+          "privacy-policy",
+          "terms"
+        ]
       },
       {
         "group": "Platform API",
-        "openapi": "https://api.wazoo.dev/openapi.json",
+        "openapi": "openapi-platform.json",
         "pages": [
           "GET /health",
           "GET /v1/users/me",
@@ -234,7 +251,7 @@
       {
         "group": "Worlds API",
         "openapi": {
-          "source": "https://data.wazoo.dev/openapi.json",
+          "source": "openapi-worlds.json",
           "directory": "worlds-api"
         },
         "pages": [
