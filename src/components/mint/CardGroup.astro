@@ -1,0 +1,8 @@
+---
+import { CardGrid } from '@astrojs/starlight/components';
+
+const { cols } = Astro.props;
+---
+<CardGrid columns={cols ? Number(cols) : undefined}>
+  <slot />
+</CardGrid>

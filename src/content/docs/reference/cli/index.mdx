@@ -1,0 +1,69 @@
+---
+title: "Wazoo CLI"
+description:
+  "Wazoo Platform CLI installation, global flags, and command reference"
+---
+
+import { CodeGroup, Note } from '../../../../components/mint';
+
+<Note type="warn">
+  The `@wazoo/cli` package is currently unavailable: every published JSR version
+  (0.0.1 through 0.0.6) has been yanked, so all installation commands below
+  fail, and the package is not published to npm. This reference is retained for
+  when the CLI republishes. In the meantime, use the [Platform
+  API](/platform/api) directly - everything the CLI does is a documented HTTP
+  call.
+</Note>
+
+The Wazoo CLI (`@wazoo/cli`) allows you to manage Wazoo Platform resources,
+query memory worlds, manage API tokens, and perform graph data operations
+directly from your terminal.
+
+## Installation
+
+Install the canonical Wazoo CLI globally via JSR.
+
+<CodeGroup>
+
+```bash npm
+npx jsr add --global @wazoo/cli
+```
+
+```bash deno
+deno install -Ar --name wazoo jsr:@wazoo/cli
+```
+
+```bash pnpm
+pnpm dlx jsr add --global @wazoo/cli
+```
+
+```bash yarn
+yarn dlx jsr add --global @wazoo/cli
+```
+
+```bash bun
+bunx jsr add --global @wazoo/cli
+```
+
+</CodeGroup>
+
+## Global options
+
+All `wazoo` commands accept the following global flags:
+
+| Flag              | Description                                                                   |
+| :---------------- | :---------------------------------------------------------------------------- |
+| `--api-url <url>` | Wazoo API base URL (overrides `WAZOO_API_URL` environment variable)           |
+| `--token <token>` | Wazoo API authentication token (overrides `WAZOO_API_TOKEN` / `WORLDS_TOKEN`) |
+| `--json`          | Output response data in structured JSON format                                |
+
+## Platform commands
+
+- [wazoo health](./health.mdx): Check status and health of the Wazoo API service
+- [wazoo tokens](./tokens.mdx): List and create platform authentication tokens
+- [wazoo usage](./usage.mdx): View world and account usage metrics
+
+## World management & data operations
+
+- [wazoo worlds](./worlds.mdx): Create, list, get, import, export, search, and
+  run graph queries on worlds

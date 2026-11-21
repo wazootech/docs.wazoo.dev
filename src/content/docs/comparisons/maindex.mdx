@@ -1,0 +1,47 @@
+---
+title: "Maindex"
+description:
+  "Worlds vs Maindex: an MCP memory layer against a verifiable fact graph."
+---
+
+## At a glance
+
+|                 | Worlds                           | [Maindex](https://github.com/maindex) |
+| :-------------- | :------------------------------- | :------------------------------------ |
+| Data model      | RDF triples in named graphs      | Typed memory structures               |
+| How facts enter | Import, patches, agent writes    | API writes                            |
+| Retrieval       | Hybrid search + SPARQL           | MCP-based retrieval                   |
+| Provenance      | Recorded as data in named graphs | Provenance-attributed                 |
+| Deployment      | Hosted beta or embedded          | Managed layer                         |
+
+## The philosophical difference
+
+[Maindex](https://github.com/maindex) is a cross-platform memory layer exposed
+as an MCP server. It acts as a source of truth across applications and agents,
+with typed structures, provenance attributes, and scoped user-controlled access.
+Memory travels with the tools that use it.
+
+Worlds shares the source-of-truth ambition, but the structures are graphs rather
+than typed records. A fact in Worlds is a triple: two items connected by a
+property, stored against a timeline. Provenance in Maindex is an attribute on a
+record; in Worlds you record it as data, for example a named graph per source.
+Scope control limits who reads.
+
+## When Worlds fits
+
+- Facts have relationships you need to traverse, not attributes to read.
+- You want deterministic [SPARQL answers](/worlds/query) over your knowledge.
+- You need to reconstruct history: when a fact changed and from what source.
+
+## When Worlds does not fit
+
+- Your tooling is built around MCP and you want typed memory records attached to
+  the tools themselves.
+- Typed records with provenance fields satisfy your requirements.
+- You have no relationships worth traversing.
+
+## Coexistence
+
+Route memory between tools through Maindex's MCP layer while Worlds holds the
+authoritative graph. The [MCP integration](/integrations/agents-skills-mcp)
+shows how Worlds itself can be reached through MCP tools.
