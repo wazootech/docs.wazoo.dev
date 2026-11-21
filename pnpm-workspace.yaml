@@ -3,6 +3,9 @@ allowBuilds:
   # Prebuilt @img/sharp-* binaries cover every platform we run on; the
   # install script only matters for building libvips from source.
   sharp: false
+  # esbuild's postinstall verifies/downloads its platform binary; required
+  # for the astro build on this branch.
+  esbuild: true
   # Not needed by the mintlify commands we run: scarf is install telemetry,
   # puppeteer downloads Chrome for scraping, keytar is CLI login storage.
   '@scarf/scarf': false
@@ -12,6 +15,3 @@ allowBuilds:
 # consumed right after they publish, so they bypass that delay.
 minimumReleaseAgeExclude:
   - '@jsr/wazoo__*'
-onlyBuiltDependencies:
-  - esbuild
-  - sharp
