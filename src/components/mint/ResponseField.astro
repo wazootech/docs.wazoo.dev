@@ -1,8 +1,9 @@
 ---
 const { name, type, required } = Astro.props;
 ---
+
 <div class="mint-response-field">
   <code>{name}</code>
-  <span class="mint-field-meta">{type}{required ? '' : ' · optional'}</span>
+  <span class="mint-field-meta">{type}{required ? "" : " · optional"}</span>
   <div><slot /></div>
 </div>

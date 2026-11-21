@@ -1,9 +1,10 @@
 ---
-import { Card as StarlightCard } from '@astrojs/starlight/components';
+import { Card as StarlightCard } from "@astrojs/starlight/components";
 
 const { title, href, description } = Astro.props;
-const hasBody = Astro.slots.has('default');
+const hasBody = Astro.slots.has("default");
 ---
-<StarlightCard {...(href ? { href } : {})} {...(title ? { title } : {})}>
+
+<StarlightCard {...href ? { href } : {}} {...title ? { title } : {}}>
   {hasBody ? <slot /> : description ? <p set:html={description} /> : null}
 </StarlightCard>

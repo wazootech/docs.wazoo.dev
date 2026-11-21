@@ -1,8 +1,9 @@
 ---
-import { Aside } from '@astrojs/starlight/components';
+import { Aside } from "@astrojs/starlight/components";
 
 const { title } = Astro.props;
 ---
-<Aside type="note" {...(title ? { title } : {})}>
+
+<Aside type="note" {...title ? { title } : {}}>
   <slot />
 </Aside>

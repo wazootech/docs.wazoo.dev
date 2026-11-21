@@ -10,7 +10,8 @@
     "preview": "astro preview",
     "format": "prettier \"**/*.{md,mdx,json,mjs,ts,astro}\" --write",
     "format:check": "prettier \"**/*.{md,mdx,json,mjs,ts,astro}\" --check",
-    "precommit": "pnpm run --silent format:check && pnpm run --silent check"
+    "precommit": "pnpm run --silent format:check && pnpm run --silent check",
+    "broken-links": "echo \"skipped on starlight spike branch (mintlify-only tool)\""
   },
   "keywords": [],
   "author": "Wazoo",
