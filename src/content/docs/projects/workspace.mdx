@@ -1,0 +1,211 @@
+---
+title: "Workspace"
+description:
+  "wspace is a Git-native CLI that manages multi-repository workspaces without
+  Git submodules."
+---
+
+import { CodeGroup } from "../../../components/mint";
+
+`wspace` (published as [`@wazoo/workspace`](https://jsr.io/@wazoo/workspace)) is
+a Git-native CLI that manages multi-repository Wazoo workspaces without Git
+submodules. It consolidates workspace conventions into a manifest
+(`workspace.json`) and standardizes feature development with Git worktrees.
+
+## Overview
+
+Complex applications and agent infrastructure often span multiple independent
+Git repositories. `wspace` treats repository families as a synchronized
+ecosystem without submodules:
+
+- **Submodules**: Preserves independent Git history, remotes, package managers,
+  and release surfaces for every repository.
+- **Git worktree isolation**: Isolates feature development into linked worktrees
+  (`worktrees/<repo>/<feature>`), preventing dirty state in base checkouts.
+- **Conservative operations**: Mutating command (`update`) refuses to rewrite
+  user history, touch dirty repositories, or alter unmanaged checkouts.
+- **Project agnostic**: Configured via a manifest file (`workspace.json`) or
+  custom `--manifest <path>`.
+
+## Repositories and packages
+
+| Package / Repository                                        | Purpose                                 | Distribution                                              |
+| ----------------------------------------------------------- | --------------------------------------- | --------------------------------------------------------- |
+| [workspace-cli](https://github.com/wazootech/workspace-cli) | Workspace CLI implementation (`wspace`) | [JSR `@wazoo/workspace`](https://jsr.io/@wazoo/workspace) |
+
+## Installation
+
+Install the `wspace` CLI using Deno:
+
+<CodeGroup>
+```sh Deno JSR
+deno install -g --allow-read --allow-write --allow-run=git jsr:@wazoo/workspace/cli
+```
+
+```sh From Source
+git clone https://github.com/wazootech/workspace-cli.git
+cd workspace-cli
+deno task build
+```
+
+</CodeGroup>
+
+The JSR package installs a binary named `wspace`. Building from source writes
+the binary to `./wspace`.
+
+## Command reference
+
+### `wspace check`
+
+Performs a read-only health check across the manifest-managed repositories and
+linked feature worktrees.
+
+```sh
+wspace check [--json]
+```
+
+- Reports each repository as `CLEAN`, `DIRTY`, `FEATURE_CLEAN`, `DIVERGED`,
+  `UNKNOWN`, `MISSING`, or `UNMANAGED`, with `WORKTREE_DIRTY` or `ERROR` for
+  linked worktrees.
+- Filters directory scans to exclude managed repositories from unmanaged output.
+- Exits `0` when clean and `1` when any repository or worktree requires
+  attention.
+
+### `wspace init`
+
+Scaffolds a brand-new workspace in an empty directory: writes a schema v4
+`workspace.json` with optional `host`, `owner`, and seed entries, then creates
+`repos/`.
+
+```sh
+wspace init [--host <host>] [--owner <owner>] [<repo...>]
+```
+
+- Refuses to overwrite an existing manifest.
+- Does not clone repositories; run `wspace install` after scaffolding.
+
+### `wspace install`
+
+Clones repositories listed in the manifest that are missing from
+`repositoriesDirectory`.
+
+```sh
+wspace install [<repo...>] [--json]
+```
+
+- Re-resolves the tree between passes, so newly detected sub-manifests bootstrap
+  without reruns.
+- Exits non-zero (`1`) if a clone fails or collides with a non-Git path
+  (`PATH_BLOCKED`).
+- Does not reset, overwrite, or clean up existing checkouts.
+
+### `wspace update`
+
+Fetches remotes and fast-forwards clean default branches.
+
+```sh
+wspace update [--json]
+```
+
+- Skips repositories checked out on feature branches (`SKIP_FEATURE`) or
+  containing uncommitted changes (`SKIP_DIRTY`).
+- Fast-forwards only clean default branches tracking remote branches without
+  divergence.
+
+### `wspace validate`
+
+Validates the manifest schema without touching the filesystem or invoking Git.
+
+```sh
+wspace validate [--manifest <path>]
+```
+
+## Beginner worktree lifecycle
+
+Execute all commands from the workspace root (the directory containing
+`workspace.json`):
+
+1. **Scaffold**: `wspace init` (new workspaces) or `wspace install` (existing
+   manifests)
+2. **Check status**: `wspace check`
+3. **Refresh baselines**: `wspace update`
+4. **Create worktree**:
+   ```sh
+   git -C repos/<repo> worktree add "$PWD/worktrees/<repo>/<feature>" -b <feature>
+   ```
+5. **Develop**:
+   ```sh
+   cd worktrees/<repo>/<feature>
+   # make changes, run tests, commit
+   ```
+6. **Sync local secrets**: copy local credentials (`.env` files, tokens) into
+   the checkout manually; they are never committed or synced by `wspace`
+7. **Push and create pull request**:
+   ```sh
+   git push -u origin <feature>
+   gh pr create
+   ```
+8. **Find merged worktrees**: `git -C repos/<repo> worktree list --porcelain`
+9. **Clean up**:
+   `git -C repos/<repo> worktree remove "$PWD/worktrees/<repo>/<feature>"`
+
+### Path resolution and worktree location
+
+- **Manifest discovery**: By default `wspace` looks for `workspace.json`, then
+  `workspace.jsonc`, in the current directory. Pass `--manifest <path>` to point
+  at a manifest elsewhere. Relative repository and worktree paths resolve
+  relative to the directory containing the manifest, regardless of caller
+  directory.
+- **Why `$PWD` is used with `git -C`**: `git -C repos/<repo>` changes Git's
+  working directory to `repos/<repo>` before executing. Passing a relative path
+  like `worktrees/<repo>/<feature>` would nest the worktree inside
+  `repos/<repo>/worktrees/`. Using `"$PWD/worktrees/<repo>/<feature>"` resolves
+  `$PWD` from the workspace root before Git runs.
+
+### Worktree dependency management
+
+Each Git worktree maintains an independent working directory, while package
+managers optimize dependency caching across worktrees:
+
+- **`pnpm`**: Uses a central content-addressable store
+  (`~/.local/share/pnpm/store`). Running `pnpm install` in a new worktree
+  hard-links dependencies from the central store without duplicating files or
+  re-downloading packages.
+- **Deno**: Uses the global `DENO_DIR` module cache (`~/.cache/deno` or
+  `%LOCALAPPDATA%\deno`), sharing cached dependencies across all worktrees
+  zero-copy.
+- **npm / yarn**: Running `npm install` or `yarn install` inside a worktree
+  installs dependencies for that worktree, fetching packages from the shared
+  user HTTP cache.
+
+## Manifest schema
+
+Schema v4 keeps a single flat `repositories[]` array, with a `host` and `owner`
+for shorthand expansion:
+
+```json
+{
+  "$schema": "https://wazootech.github.io/workspace-cli/schema.json",
+  "schemaVersion": 4,
+  "owner": "acme",
+  "repositoriesDirectory": "repos",
+  "repositories": [
+    "workspace-cli",
+    "worlds-client-ts",
+    {
+      "name": "worlds-sdk-ts",
+      "url": "https://github.com/acme/worlds-sdk-ts.git"
+    }
+  ]
+}
+```
+
+- **Shorthand string**: `"repo"` expands to `https://<host>/<owner>/<repo>`;
+  `"owner/repo"` expands to `https://<host>/<owner>/<repo>` with an inline
+  owner. `host` defaults to `github.com`.
+- **Object entry**: `{ "name", "url" }` (any Git host) or `{ "name", "owner" }`
+  (host shorthand). `url` and `owner` are mutually exclusive.
+- **Directories**: `repositoriesDirectory` defaults to `repos`. Relative paths
+  anchor to the folder containing the manifest file.
+- **Names**: a repository checks out at `<repositoriesDirectory>/<name>`; names
+  reject slashes and path traversal, and must be unique across the manifest.

@@ -1,0 +1,62 @@
+---
+title: "Private beta"
+description:
+  "Sign up for the Wazoo Platform private beta and get access to Worlds, the
+  Console, and the Platform API."
+---
+
+The Wazoo Platform is in private beta. Sign up to get access to hosted Worlds,
+the Console, and the Platform API.
+
+## Sign up
+
+Visit [wazoo.dev/beta](https://wazoo.dev/beta) and fill out the form. After
+you're added to the allowlist, you can sign in to the
+[Console](https://console.wazoo.dev) with your email. Sign-in uses a one-time
+passcode (WorkOS).
+
+## What's included
+
+- Console: manage Worlds, tokens, usage, and billing at `console.wazoo.dev`.
+- Wazoo Platform API: provision Worlds and manage platform resources
+  programmatically. See the [Platform API reference](/platform/api).
+- Hosted Worlds: persistent, queryable knowledge graphs with SPARQL and
+  full-text search.
+- World Tokens: API keys scoped to individual worlds for data-plane access.
+
+## Beta status
+
+The Platform API is public-facing and production-oriented. Some Console flows
+are still private-beta and may not be available to every user. Private beta
+access does not require payment.
+
+## Known limitations
+
+These are active limitations during the private beta:
+
+- Data-plane API: the Worlds Data API is stable but may see breaking changes
+  before general availability.
+- Console flows: some Console features are still in development and may not be
+  available to every user.
+- No self-service signup: access is managed through a manual allowlist.
+- Free, with limits: private beta access is free and paid plans are not
+  available yet. A daily write limit and a limit of 10 active Worlds apply, and
+  both may be adjusted. See [Pricing](/platform/pricing#usage-limits).
+- Search: the hosted beta uses full-text search only; an embedding provider is
+  not configured. Successful imports rebuild the full-text projection, but the
+  manual [Reindex](/console/reindex) action currently reports completion without
+  rebuilding.
+- Mobile responsiveness: the console is optimized for desktop browsers.
+
+## Privacy
+
+The Console asks you to confirm that you are at least 13 years old before
+creating an account. See the [privacy policy](/privacy-policy) for how Wazoo
+handles personal information and users under 13.
+
+## Next steps
+
+- [Getting started](/getting-started): onboarding from invite to first query.
+- [Console overview](/console/overview): explore console features.
+- [Quickstart](/quickstart): connect to the API in 2 minutes.
+- [Troubleshooting](/platform/troubleshooting): common errors and fixes.

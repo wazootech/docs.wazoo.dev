@@ -1,0 +1,116 @@
+---
+title: "AI SDK"
+icon: "/images/icons/vercel.svg"
+description: "Connect Worlds knowledge graphs to Vercel AI SDK"
+---
+
+import { CodeGroup } from "../../../components/mint";
+
+The [Vercel AI SDK](https://sdk.vercel.ai/) is the TypeScript toolkit for
+building AI applications with React, Svelte, and Vue. The Wazoo AI tools package
+(`@wazoo/tools`) exposes tools that let LLMs [search](/worlds/search) and
+[query](/worlds/query) `@worlds/sdk` knowledge graphs.
+
+## Installation
+
+Install the Wazoo AI Tools from JSR:
+
+<CodeGroup>
+
+```bash npm
+npx jsr add @wazoo/tools
+```
+
+```bash deno
+deno add jsr:@wazoo/tools
+```
+
+```bash pnpm
+pnpm dlx jsr add @wazoo/tools
+```
+
+```bash yarn
+yarn dlx jsr add @wazoo/tools
+```
+
+```bash bun
+bunx jsr add @wazoo/tools
+```
+
+</CodeGroup>
+
+## Usage
+
+The tools are designed to work with the
+[Vercel AI SDK](https://sdk.ai/docs/ai-sdk-core/tools-and-tool-calling).
+
+```typescript
+import { generateText } from "ai";
+import { google } from "@ai-sdk/google";
+import { WorldsSdk } from "@worlds/sdk";
+import { RdfjsQuadStore, RdfjsSearchIndex } from "@worlds/sdk/rdfjs";
+import { WazooSparqlEngine } from "@wazoo/sparql-engine";
+import { Store } from "n3";
+import { createTools } from "@wazoo/tools";
+
+const store = new Store();
+const client = new WorldsSdk({
+  quadStore: new RdfjsQuadStore(store),
+  searchIndex: new RdfjsSearchIndex(store),
+  sparqlEngine: new WazooSparqlEngine({ store }),
+});
+
+const tools = createTools({
+  client,
+});
+
+const { text } = await generateText({
+  model: google("gemini-3.8-flash"),
+  tools,
+  prompt: "Find all people in the knowledge base and describe them.",
+});
+```
+
+## Tools
+
+The `createTools` function returns a full toolset for use with LLM frameworks.
+
+### Individual tools
+
+If you require granular control, you can import and initialize tools
+individually:
+
+```typescript
+import {
+  createExecuteSparqlTool,
+  createSearchWorldTool,
+  createImportRdfTool,
+  createExportRdfTool,
+  createReindexWorldTool,
+} from "@wazoo/tools";
+
+// client is the @worlds/sdk instance from the usage example above.
+const executeSparql = createExecuteSparqlTool(client);
+const searchWorld = createSearchWorldTool(client);
+const importRdf = createImportRdfTool(client);
+const exportRdf = createExportRdfTool(client);
+const reindexWorld = createReindexWorldTool(client);
+
+const tools = {
+  executeSparql,
+  searchWorld,
+  importRdf,
+  exportRdf,
+  reindexWorld,
+};
+```
+
+### Tool reference
+
+| Tool            | Description                                                     |
+| :-------------- | :-------------------------------------------------------------- |
+| `executeSparql` | Direct execution of SPARQL queries (read-only by default).      |
+| `searchWorld`   | Semantic and keyword search across the knowledge graph.         |
+| `importRdf`     | Utility for ingesting RDF triples into a world graph.           |
+| `exportRdf`     | Utility for exporting RDF triples from a world graph.           |
+| `reindexWorld`  | Rebuild derived search structures (repair, audit, bulk-import). |

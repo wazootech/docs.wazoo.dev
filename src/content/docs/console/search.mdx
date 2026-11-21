@@ -1,0 +1,31 @@
+---
+title: "Search"
+description: "Browse and find items in your worlds using the Console."
+---
+
+The search page lets you browse items in a world using hybrid search.
+
+## Search a world
+
+1. Open the [Wazoo Console](https://console.wazoo.dev).
+2. Select a world.
+3. Click **Search** in the sidebar.
+
+Enter a natural language query or an item IRI. The console returns matching
+items ranked by relevance.
+
+## Filter results
+
+Use the filter controls to tune the search:
+
+- **Limit (Top K)**: the maximum number of results returned.
+- **Min Similarity Score**: the minimum vector-similarity threshold for semantic
+  results.
+
+## View results
+
+Search results are listed in a table with the subject, predicate, content or
+object, similarity score, and graph for each hit.
+
+See the [Worlds search docs](/worlds/search) for how hybrid search works under
+the hood.

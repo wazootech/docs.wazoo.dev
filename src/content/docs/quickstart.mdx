@@ -1,0 +1,83 @@
+---
+title: "Developer quickstart"
+description: "Connect to Wazoo API and query context in 2 minutes."
+---
+
+import { Card, CardGroup, Note, Steps, Step } from "../../components/mint";
+
+<Note>
+  Looking to manage worlds visually in the browser? See the [Console
+  quickstart](/getting-started).
+</Note>
+
+## Quickstart with cURL and API keys
+
+If you prefer calling the Wazoo Platform API directly using HTTP/cURL:
+
+<Steps>
+  <Step title="Get your platform token">
+    Generate your `wzp_` token from the
+    [Console tokens page](/console/tokens).
+  </Step>
+  <Step title="List your worlds">
+    ```bash
+    curl -s -X GET "https://api.wazoo.dev/v1/worlds" \
+      -H "Authorization: Bearer wzp_YOUR_PLATFORM_TOKEN"
+    ```
+  </Step>
+  <Step title="Create a new world">
+    ```bash
+    curl -s -X POST "https://api.wazoo.dev/v1/worlds" \
+      -H "Authorization: Bearer wzp_YOUR_PLATFORM_TOKEN" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "world": {
+          "displayName": "My Agent World",
+          "region": "auto"
+        }
+      }'
+    ```
+    The Worlds API mints an immutable `w_<ULID>` ID and returns it as
+    `world.id`, which callers reuse unchanged in later requests.
+  </Step>
+</Steps>
+
+<Note>
+  A world with no data and no data-plane token is not queryable yet. For the
+  complete path from an empty account to a first search and SPARQL result — mint
+  a `wzw_` world token, import, search, query — see [Your first
+  query](/worlds/first-query).
+</Note>
+
+## Agent skills
+
+The `wazoo` skill gives AI coding agents (Claude Code, Cursor, OpenCode, Gemini)
+direct access to Wazoo memory. See
+[Agents, skills, and MCP](/integrations/agents-skills-mcp) to install and use
+it.
+
+New to Wazoo? Start with the [getting started guide](/getting-started) for an
+end-to-end walkthrough from invite to your first query.
+
+## Choose your path
+
+<CardGroup cols={2}>
+  <Card title="Platform API" icon="waypoints" href="/platform/api">
+    Manage your Worlds, API tokens, resource usage, and billing via HTTP
+    endpoints.
+  </Card>
+  <Card
+    title="TypeScript SDK"
+    icon="/images/icons/typescript.svg"
+    href="/platform/typescript-sdk"
+  >
+    Use `@wazoo/client` for typed TypeScript/Node.js management.
+  </Card>
+  <Card title="Worlds Data Engine" icon="network" href="/projects/worlds">
+    Interact with persistent knowledge graphs, SPARQL queries, and vector
+    search.
+  </Card>
+  <Card title="MemSDK" icon="database" href="/projects/memsdk">
+    Backend-agnostic memory interface for AI agents.
+  </Card>
+</CardGroup>
