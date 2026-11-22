@@ -1,0 +1,110 @@
+---
+title: "Wazoo Skill"
+description:
+  "Give AI coding agents access to Wazoo memory with the wazoo skill."
+---
+
+import { CodeGroup } from '../../../components/mint';
+
+```bash Quickstart
+npx skills add wazootech/wazoo-skills --skill=wazoo
+```
+
+## Overview
+
+The `wazoo` skill packages Wazoo's control plane and data plane features into a
+skill that AI coding agents (Claude Code, Cursor, OpenCode, Gemini, and others)
+can load.
+
+## Prerequisites and installation
+
+Install the `wazoo` skill into your agent workspace or global agent environment:
+
+<CodeGroup>
+
+```bash npm
+npx skills add wazootech/wazoo-skills --skill=wazoo
+```
+
+```bash pnpm
+pnpm dlx skills add wazootech/wazoo-skills --skill=wazoo
+```
+
+```bash yarn
+yarn dlx skills add wazootech/wazoo-skills --skill=wazoo
+```
+
+```bash bun
+bunx skills add wazootech/wazoo-skills --skill=wazoo
+```
+
+</CodeGroup>
+
+### Manual placement
+
+Place the `SKILL.md` file directly into your workspace:
+
+```bash
+mkdir -p .agents/skills/wazoo
+curl -o .agents/skills/wazoo/SKILL.md \
+  https://raw.githubusercontent.com/wazootech/wazoo-skills/main/skills/engineering/wazoo/SKILL.md
+```
+
+Gemini agents read skills from `~/.gemini/config/skills/` instead.
+
+### Updating the skill
+
+<CodeGroup>
+
+```bash npm
+npx skills update wazoo
+```
+
+```bash pnpm
+pnpm dlx skills update wazoo
+```
+
+```bash yarn
+yarn dlx skills update wazoo
+```
+
+```bash bun
+bunx skills update wazoo
+```
+
+</CodeGroup>
+
+## Environment setup
+
+The skill reads two environment variables, one per plane:
+
+| Variable               | Prefix | Scope         | Description                                                 |
+| :--------------------- | :----- | :------------ | :---------------------------------------------------------- |
+| `WAZOO_PLATFORM_TOKEN` | `wzp_` | Control plane | World creation, token management, usage inspection          |
+| `WORLDS_TOKEN`         | `wzw_` | Data plane    | Graph import, hybrid search, graph queries (SPARQL), export |
+
+The Worlds API mints an immutable `w_<ULID>` world ID. The create response
+exposes it as `world.id`, which you reuse unchanged. Create requests expose no
+caller-selected ID or slug field.
+
+## What it covers
+
+### Control plane
+
+- **World management**: create, view, list, update, delete, and undelete worlds.
+- **Token management**: issue and revoke API tokens for scoped application
+  access.
+
+### Data plane
+
+- **Graph import**: add Turtle, JSON-LD, N-Triples, or N-Quads data into worlds.
+- **Hybrid search**: query across vector similarity and pattern matching.
+- **Graph pattern queries (SPARQL)**: run graph queries for deterministic
+  retrieval.
+- **Export**: dump graph facts and provenance data.
+
+## Related links
+
+- [Agents, Skills, and MCP](/integrations/agents-skills-mcp)
+- [Wazoo Platform API Reference](/platform/api)
+- [Wazoo CLI](/reference/cli)

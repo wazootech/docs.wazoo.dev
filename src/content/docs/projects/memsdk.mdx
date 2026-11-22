@@ -1,0 +1,206 @@
+---
+title: "MemSDK"
+description: "MemSDK is a portable SDK interface for AI memory backends."
+---
+
+import { CodeGroup } from '../../../components/mint';
+
+MemSDK extracts Supermemory's public API surface into a backend-agnostic
+TypeScript contract. Application code can target one memory interface, then swap
+adapters without rewriting its memory layer.
+
+> "Oh wow that is awesome."
+> [Dhravya Shah](https://x.com/DhravyaShah/status/2074650939072618968), founder
+> of Supermemory
+
+## The problem
+
+Every AI memory backend ships a different SDK. Moving from Supermemory to Letta
+to another backend usually means rewriting document add, search, forget, and
+list workflows even when the product behavior is conceptually the same.
+
+## The approach
+
+MemSDK freezes a proven interface instead of inventing a new one. It provides:
+
+- `SupermemoryInterface` as a type-level contract.
+- Zod schemas for runtime request validation.
+- Adapters that prove the contract can map to real backends.
+
+## Repositories
+
+| Repository                                                  | Purpose                                          |
+| ----------------------------------------------------------- | ------------------------------------------------ |
+| [memsdk](https://github.com/wazootech/memsdk)               | Core interface and schemas                       |
+| [memsdk-letta](https://github.com/wazootech/memsdk-letta)   | Letta-backed implementation                      |
+| [memsdk-worlds](https://github.com/wazootech/memsdk-worlds) | [Worlds](/projects/worlds)-backed implementation |
+| [memsdk-e2e](https://github.com/wazootech/memsdk-e2e)       | Private conformance scenarios across backends    |
+
+## Installation
+
+Both `memsdk` and its adapters are distributed directly from GitHub. They are
+not currently published to the npm registry.
+
+Install the core package with any npm-compatible package manager:
+
+<CodeGroup>
+```sh npm
+npm install github:wazootech/memsdk
+```
+
+```sh pnpm
+pnpm add github:wazootech/memsdk
+```
+
+```sh yarn
+yarn add github:wazootech/memsdk
+```
+
+```sh bun
+bun add github:wazootech/memsdk
+```
+
+</CodeGroup>
+
+Install a backend adapter (e.g. Letta):
+
+<CodeGroup>
+```sh npm
+npm install github:wazootech/memsdk-letta
+```
+
+```sh pnpm
+pnpm add github:wazootech/memsdk-letta
+```
+
+```sh yarn
+yarn add github:wazootech/memsdk-letta
+```
+
+```sh bun
+bun add github:wazootech/memsdk-letta
+```
+
+</CodeGroup>
+
+For reproducible installs, pin to a tag or commit:
+
+<CodeGroup>
+```sh npm
+npm install github:wazootech/memsdk#<tag-or-commit>
+```
+
+```sh pnpm
+pnpm add github:wazootech/memsdk#<tag-or-commit>
+```
+
+```sh yarn
+yarn add github:wazootech/memsdk#<tag-or-commit>
+```
+
+```sh bun
+bun add github:wazootech/memsdk#<tag-or-commit>
+```
+
+</CodeGroup>
+
+Packages build from source during installation via `prepare`, then expose
+compiled ESM entrypoints and TypeScript declarations from `dist`.
+
+### Runtime support
+
+`memsdk` is plain ESM compiled with `tsc`. Zod is the only runtime dependency,
+and the package declares no `engines` constraint. Runtime support therefore
+comes down to how the package is resolved, not runtime-specific code:
+
+| Runtime       | Status                    | Resolution path                                                                                   |
+| ------------- | ------------------------- | ------------------------------------------------------------------------------------------------- |
+| Node.js       | Supported                 | Any npm-compatible package manager (`npm`, `pnpm`, `yarn`)                                        |
+| Bun           | Supported                 | `bun add github:wazootech/memsdk`                                                                 |
+| Vite/browser  | Supported through bundler | Package dependency, then import normally from app code                                            |
+| Edge runtimes | Supported through bundler | Package dependency, bundled by the platform deployer                                              |
+| Deno          | Not first-class yet       | Blocked by distribution channel, not the runtime: `npm:` specifiers need an npm-registry artifact |
+| Browser/CDN   | Not first-class yet       | Blocked by distribution channel: esm.sh/jsdelivr/unpkg resolve npm packages                       |
+
+Because `memsdk` is primarily a TypeScript contract plus Zod schemas, browser
+and edge use should go through a bundler today. Direct `<script>`/CDN usage is
+not a supported distribution path yet. Publishing to the npm registry would
+unblock Deno `npm:` specifiers, browser CDNs, and edge registries from a single
+artifact.
+
+Adapters such as `memsdk-letta` depend on backend SDKs and should run
+server-side unless browser bundling has been validated for your app.
+
+## Usage
+
+Use the core contract to write backend-agnostic app code:
+
+```typescript
+import type { SupermemoryInterface } from "memsdk";
+
+function buildApp(client: SupermemoryInterface) {
+  return client.search({ q: "project notes" });
+}
+```
+
+`search` is a callable top-level method on the contract. The legacy
+`search.documents`, `search.execute`, and `search.memories` variants are
+deprecated; use `client.search()` for v4 memory search.
+
+### Raw API to typed results
+
+Before: a raw HTTP call against a memory backend, with an untyped response shape
+you must match by hand:
+
+```typescript
+const response = await fetch(`${baseUrl}/memories/search`, {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ q: "project notes" }),
+});
+const data = await response.json(); // untyped: shape depends on the backend
+```
+
+After: the same call through the MemSDK contract, with request validation and
+typed results:
+
+```typescript
+import { LettaMemoryClient } from "memsdk-letta";
+
+const client = new LettaMemoryClient({
+  baseUrl: "http://localhost:8283",
+  apiKey: "sk-your-api-key",
+});
+
+const results = await client.search({ q: "project notes" });
+// results: typed SearchResults from the contract
+```
+
+### Wire in an adapter
+
+```typescript
+import { LettaMemoryClient } from "memsdk-letta";
+
+const client = new LettaMemoryClient({
+  baseUrl: "http://localhost:8283",
+  apiKey: "sk-your-api-key",
+});
+
+await client.add({
+  content: "Dhravya prefers ML over traditional programming.",
+  containerTag: "user_123",
+});
+
+const results = await client.search({
+  q: "ML",
+  containerTag: "user_123",
+});
+console.log(results.results);
+// [{ id: "mem_123", similarity: 0.93, memory: "Dhravya prefers ML over traditional programming.", ... }]
+```
+
+## Status
+
+MemSDK is useful when you want memory portability more than hosted-memory
+lock-in. The public surface focuses on memory-domain methods first: add,
+profile, documents, search, and memories.

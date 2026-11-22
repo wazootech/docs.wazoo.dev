@@ -1,0 +1,63 @@
+---
+title: "LLM Wiki (Karpathy Pattern)"
+description:
+  "Worlds vs LLM Wiki: schema-validated RDF graphs vs agent-compiled markdown
+  wikis."
+---
+
+## At a glance
+
+|                 | Worlds                                                 | LLM Wiki                                                   |
+| :-------------- | :----------------------------------------------------- | :--------------------------------------------------------- |
+| Data model      | RDF triples in named graphs                            | Interlinked Markdown articles (`[[wikilinks]]`)            |
+| Gardening model | SHACL-checked before import (Wiki CLI)                 | Continuous agent summarizing, linking, & synthesis         |
+| Retrieval       | Hybrid: SPARQL graph filters, vector, & full-text      | File traversal (`ls`, `cat`, `grep`) & wikilink navigation |
+| Provenance      | Recorded as data in named graphs, queryable via SPARQL | Article-level source citations & git commits               |
+| Primary surface | Context engine API & agent tool calls                  | Human & agent-readable Markdown vault                      |
+
+## Overlap and shared capabilities
+
+The LLM Wiki pattern (popularized by [Andrej Karpathy](https://x.com/karpathy)
+and demonstrated in project Farzapedia) and Wazoo Worlds take the same position
+on agent memory: it should be compiled, structured, and interlinked rather than
+stored as flat, opaque vector databases.
+
+Both approaches organize knowledge into navigable graph nodes where links
+between concepts matter just as much as raw text search.
+
+Where they overlap and build on each other:
+
+- LLM Wiki defines the human-and-agent readable workspace, where agents
+  continuously summarize, synthesize, and interlink Markdown articles
+  (`[[wikilinks]]`).
+- Worlds provides the underlying fact engine. It imports those compiled articles
+  and frontmatter assertions after the Wiki CLI validates their SHACL shapes,
+  and lets agents execute SPARQL graph queries across the knowledge graph.
+
+## When Worlds fits
+
+- You need strict schema validation (SHACL, run by the Wiki CLI before import)
+  to prevent metadata drift and hallucinated facts in your knowledge base.
+- You require deterministic [graph queries](/worlds/query) (SPARQL) across
+  connected entities rather than manual link-following.
+
+## When LLM Wiki fits
+
+- You want a human-in-the-loop personal knowledge base (Obsidian/Logseq format)
+  where both humans and agents read and edit markdown articles.
+- You are starting with raw transcripts and want agents to summarize and
+  interlink information organically.
+
+## Coexistence and integration
+
+The LLM Wiki pattern is complementary to Wazoo context infrastructure. You can
+run an LLM Wiki directly using the [Wiki toolchain](/projects/wiki), as
+demonstrated in the official
+[`llm-wiki` starter template](https://github.com/wazootech/wiki-templates/tree/main/templates/llm-wiki),
+where agents continuously garden Markdown articles while Wiki CLI validates RDF
+shapes.
+
+To scale agent knowledge across multi-agent fleets and production environments,
+we recommend pairing your LLM Wiki with [Worlds](/projects/worlds) as the
+underlying context engine, so agents maintain human-readable Markdown while
+querying Worlds via SPARQL for deterministic fact verification.

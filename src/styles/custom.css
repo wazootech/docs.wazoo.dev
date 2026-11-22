@@ -1,0 +1,139 @@
+
+/*
+ * Wazoo brand integration for the Starlight spike.
+ * Source of truth: https://wazoo.dev/DESIGN.md v1.0.0 (brand.wazoo.dev).
+ * Canonical tokens: Sunset Orange #FF8C00 primary, Void #040404 dark bg,
+ * Eggshell #F7F2E8 light bg, Surface #0F0F0F, text #B0B0B1 / Ink #1F1B14,
+ * Selection #846CE4. Fonts: IBM Plex Mono body, Inter headings.
+ * 8px radius, 1px hairline borders, -0.025em mono letter-spacing.
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;600&display=swap');
+
+:root {
+  /* Starlight token mapping — light theme (Eggshell / Ink) */
+  --sl-color-bg: #f7f2e8;
+  --sl-color-bg-accent: #f1e9d8;
+  --sl-color-bg-surface: #ffffff;
+  --sl-color-bg-surface-accent: #f7f2e8;
+  --sl-color-text: #1f1b14;
+  --sl-color-text-accent: #1f1b14;
+  --sl-color-text-muted: #4b4332;
+  --sl-color-gray-1: #1f1b14;
+  --sl-color-gray-2: #4b4332;
+  --sl-color-gray-3: #7c7c7c;
+  --sl-color-gray-4: #b0b0b1;
+  --sl-color-gray-5: #e5decf;
+  --sl-color-gray-6: #f1e9d8;
+  --sl-color-hairline: #e5decf;
+  --sl-color-hairline-shade: #e5decf;
+
+  /* Accent: Sunset Orange */
+  --sl-color-accent-low: #ffd9a8;
+  --sl-color-accent: #ff8c00;
+  --sl-color-accent-high: #a05400;
+
+  --sl-border-radius: 8px;
+  --sl-font-regular: "IBM Plex Mono", monospace;
+  --sl-font-mono: "IBM Plex Mono", monospace;
+  --sl-font-headings: "Inter", sans-serif;
+}
+
+:root[data-theme='dark'] {
+  /* Dark theme (Void / gray text / white headings) */
+  --sl-color-bg: #040404;
+  --sl-color-bg-accent: #0f0f0f;
+  --sl-color-bg-surface: #0f0f0f;
+  --sl-color-bg-surface-accent: #0f0f0f;
+  --sl-color-text: #b0b0b1;
+  --sl-color-text-accent: #ffffff;
+  --sl-color-text-muted: #7c7c7c;
+  --sl-color-gray-1: #ffffff;
+  --sl-color-gray-2: #b0b0b1;
+  --sl-color-gray-3: #7c7c7c;
+  --sl-color-gray-4: #7c7c7c;
+  --sl-color-gray-5: #1f1f1f;
+  --sl-color-gray-6: #0f0f0f;
+  --sl-color-hairline: #1f1f1f;
+  --sl-color-hairline-shade: #1f1f1f;
+
+  --sl-color-accent-low: #5a3800;
+  --sl-color-accent: #ff8c00;
+  --sl-color-accent-high: #ffb74d;
+}
+
+/* Headings use Inter; body copy stays mono with brand letter-spacing. */
+.sl-markdown-content h1,
+.sl-markdown-content h2,
+.sl-markdown-content h3,
+.sl-markdown-content h4,
+.sl-markdown-content h5,
+.sl-markdown-content h6,
+.site-title,
+.right-sidebar a {
+  font-family: var(--sl-font-headings);
+  letter-spacing: -0.025em;
+}
+
+.sl-markdown-content,
+.sl-markdown-content p,
+.sl-markdown-content li {
+  letter-spacing: -0.025em;
+}
+
+/* Structured radius + hairline elevation instead of heavy shadows. */
+.sl-markdown-content .ec-line,
+.starlight-aside,
+.card,
+.card-grid,
+mint-code-group,
+.mint-code-group,
+.mint-response-field,
+.mint-frame img {
+  border-radius: 8px;
+}
+
+/* Selection color */
+::selection {
+  background: #846ce4;
+  color: #ffffff;
+}
+
+/* Mintlify Step shims reuse Starlight steps styles */
+.sl-steps {
+  --bullet-size: calc(var(--sl-line-height) * 1rem);
+  --bullet-margin: 0.375rem;
+  list-style: none;
+  counter-reset: steps-counter var(--sl-steps-start, 0);
+  padding-inline-start: 0;
+}
+.sl-steps > li {
+  counter-increment: steps-counter;
+  position: relative;
+  padding-inline-start: calc(var(--bullet-size) + 1rem);
+  padding-bottom: 1px;
+  min-height: calc(var(--bullet-size) + var(--bullet-margin));
+}
+.sl-steps > li + li {
+  margin-top: var(--sl-content-gap-y, 1rem);
+}
+.sl-steps > li::before {
+  content: counter(steps-counter);
+  position: absolute;
+  inset-inline-start: 0;
+  display: grid;
+  place-items: center;
+  width: var(--bullet-size);
+  height: var(--bullet-size);
+  border-radius: 9999px;
+  background: var(--sl-color-bg);
+  border: 1px solid var(--sl-color-hairline);
+  font-size: var(--step-count-font-size, 0.75rem);
+}
+.mint-step-title { font-weight: 600; font-family: var(--sl-font-headings); }
+.mint-code-group { border: 1px solid var(--sl-color-hairline); border-radius: 8px; padding: 0.5rem; }
+.mint-response-field { margin-block: 0.75rem; }
+.mint-response-field .mint-field-meta { color: var(--sl-color-text-muted); font-size: 0.85rem; margin-inline-start: 0.5rem; }
+.mint-frame { margin-block: 1rem; }
+.mint-frame img { border-radius: 8px; }
+.mint-icon { display: none; }

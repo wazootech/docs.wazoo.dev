@@ -1,0 +1,121 @@
+---
+title: "Platform API"
+description: "Manage Worlds, tokens, and usage."
+---
+
+The Worlds architecture separates management operations from graph data
+operations:
+
+```mermaid
+graph TD
+    Client["Client / AI Agent"]
+
+    subgraph ControlPlane ["Control Plane (api.wazoo.dev)"]
+        TokenWzp["Platform Token (wzp_)"]
+        ResMgmt["Provision Worlds, API Tokens & Billing"]
+    end
+
+    subgraph DataPlane ["Data Plane (data.wazoo.dev)"]
+        TokenWzw["World Token (wzw_)"]
+        GraphOps["SPARQL, Hybrid Search, Import/Export"]
+    end
+
+    Client -->|"Manage resources"| ControlPlane
+    Client -->|"Query & mutate graphs"| DataPlane
+```
+
+## Authentication
+
+Platform API requests use platform tokens with the `wzp_` prefix:
+
+```http
+Authorization: Bearer wzp_...
+```
+
+Platform tokens manage resources. World auth tokens use the `wzw_` prefix and
+are intended for data-plane access to specific worlds.
+
+## Base URL
+
+```text
+https://api.wazoo.dev/v1/
+```
+
+For local development of the Platform API server, use the Wrangler dev URL for
+your Worker.
+
+## Resources
+
+The Platform API covers these management resources:
+
+| Resource          | Routes                                                                  |
+| ----------------- | ----------------------------------------------------------------------- |
+| Worlds            | `/v1/worlds`, `/v1/worlds/:worldId`                                     |
+| Platform tokens   | `/v1/auth/api-tokens`                                                   |
+| World auth tokens | `/v1/worlds/:worldId/auth/tokens`                                       |
+| Usage             | `/v1/worlds/:worldId/usage`                                             |
+| Limits            | `/v1/worlds/:worldId/limits`                                            |
+| Billing           | `/v1/worlds/:worldId/billing`, `/v1/worlds/:worldId/billing/openPortal` |
+| Users             | `/v1/users/me`                                                          |
+| Plan and usage    | `/v1/users/me/plan`                                                     |
+| Stripe webhook    | `/v1/stripe/webhook`                                                    |
+
+`worlds-api` mints each immutable world ID as `w_<ULID>`. The Platform API
+stores it as `world_id`, and both APIs expose the unchanged value as `id`.
+Create requests define a display name but no caller-selected ID or slug field.
+Use `world.id` as the `worldId` path parameter.
+
+```http
+POST /v1/worlds
+Authorization: Bearer wzp_YOUR_PLATFORM_TOKEN
+Content-Type: application/json
+
+{
+  "world": {
+    "displayName": "My World",
+    "region": "auto"
+  }
+}
+
+HTTP/1.1 201 Created
+
+{
+  "world": {
+    "id": "w_01jd8x5mqv7k3n9r2t4w6y8z0b",
+    "displayName": "My World",
+    "region": "auto",
+    "state": "ACTIVE",
+    "restorable": false,
+    "backend": "worlds-api"
+  }
+}
+```
+
+## Data-plane boundary
+
+The Platform API does not execute SPARQL, search triples, import RDF, or export
+RDF. Those operations belong to the Worlds Data API (`data.wazoo.dev`), its
+generated client `@worlds/client`, or the embedded `@worlds/sdk`.
+
+The Data API runs inside a Cloudflare Worker. Graph data lives in a shared
+Cloudflare D1 database, partitioned by world. Each world gets a cached
+`WorldsSdk` instance backed by:
+
+- **`D1QuadStore`** — RDF triple storage with D1-backed hexastore indexes.
+- **`CloudflareSearchIndex`** — FTS5 keyword search projected into D1.
+- **`WazooSparqlEngine`** — the
+  [sparql-engine](https://github.com/wazootech/sparql-engine) evaluator, wired
+  to a `D1RdfjsStore` that streams quads from D1 on each query (no in-memory
+  hydration).
+
+SPARQL and search requests run against this per-world SDK instance inside the
+Worker isolate. See [Query](/worlds/query#hosted-engine-architecture) for
+details on the query path.
+
+## Related
+
+- [TypeScript SDK](/platform/typescript-sdk) — typed client for the Platform
+  API.
+- [Worlds CLI](/reference/cli) — command-line management of worlds.
+- [Console tokens](/console/tokens) — create and revoke platform tokens.
+- [OpenAPI spec](https://api.wazoo.dev/openapi.json) — live API reference.

@@ -1,0 +1,61 @@
+---
+title: "MemMachine"
+description:
+  "Worlds vs MemMachine: a graph-and-SQL memory service against a curated fact
+  graph."
+---
+
+## At a glance
+
+|                 | Worlds                           | [MemMachine](https://github.com/memmachine) |
+| :-------------- | :------------------------------- | :------------------------------------------ |
+| Data model      | RDF triples in named graphs      | Graph for episodes, SQL for profiles        |
+| How facts enter | Import, patches, agent writes    | Logged conversations and profile writes     |
+| Retrieval       | Hybrid search + SPARQL           | Graph traversal + vectors                   |
+| Provenance      | Recorded as data in named graphs | Graph-derived                               |
+| Deployment      | Hosted beta or embedded          | Self-hosted or cloud                        |
+
+## The philosophical difference
+
+[MemMachine](https://github.com/memmachine) is an open-source memory service
+that splits its model in two. Episodic memory, the relational context of
+conversations, lives in a Neo4j graph, while profile data lives in SQL.
+Retrieval walks the graph to reconstruct who said what to whom. It emphasizes
+token efficiency and works across LLM providers, including AWS Bedrock.
+
+Worlds stores relational structure too, but as RDF triples in named graphs. The
+difference is where structure comes from. MemMachine derives context from
+conversation logs after the fact; Worlds accepts only facts you assert
+deliberately.
+
+The token-efficiency claim is worth weighing honestly. MemMachine reports using
+fewer tokens than comparable services. Worlds answers the same question with a
+different currency: exactness. A SPARQL query returns a deterministic result
+rather than a retrieved context window.
+
+## When Worlds fits
+
+- Facts must be true against a source of record, not derived from conversation
+  logs.
+- You want to [query relationships](/worlds/query) deterministically instead of
+  walking a reconstructed graph.
+- You need to know when a fact changed and who asserted it.
+- You want provider-agnostic LLM and embedding choices, including AWS Bedrock
+  ([provider-agnostic](/comparisons/index)).
+
+## When Worlds does not fit
+
+- You want episodic memory reconstructed from conversation logs, with no fact
+  curation. Worlds ingests unstructured text but does not extract graph facts
+  automatically ([update](/worlds/update)).
+- You want a memory service native to AWS operations, such as IAM-based access
+  and Bedrock-managed storage.
+- Context-window token cost is the binding constraint and you want the memory
+  layer to minimize it.
+
+## Coexistence
+
+Run MemMachine for the episodic layer, what an agent talked about and how it
+reacted, and Worlds for the durable facts the agent may act on. Both store
+graphs, but the Worlds graph stays the authoritative source because its facts
+are curated and verifiable.

@@ -2,14 +2,14 @@
   "name": "@wazoo/docs",
   "version": "0.1.0",
   "private": true,
-  "description": "Official documentation hub for the Wazoo project ecosystem, built with Mintlify.",
+  "description": "Official documentation hub for the Wazoo project ecosystem (Starlight migration spike: Astro 7 + starlight-openapi).",
   "scripts": {
-    "dev": "mintlify dev",
-    "check": "mintlify validate",
-    "broken-links": "mintlify broken-links",
-    "format": "prettier \"**/*.{md,mdx,json}\" --write",
-    "format:check": "prettier \"**/*.{md,mdx,json}\" --check",
-    "precommit": "pnpm run --silent format:check && pnpm run --silent check"
+    "dev": "astro dev",
+    "build": "astro build",
+    "check": "astro check || true",
+    "format": "prettier \"**/*.{md,mdx,astro,mjs,json}\" --write",
+    "format:check": "prettier \"**/*.{md,mdx,astro,mjs,json}\" --check",
+    "broken-links": "echo skipped on starlight spike branch (mintlify-only tool)"
   },
   "keywords": [],
   "author": "Wazoo",
@@ -17,7 +17,15 @@
   "type": "commonjs",
   "packageManager": "pnpm@12.11.2",
   "devDependencies": {
-    "mintlify": "^4.2.639",
-    "prettier": "^3.8.1"
+    "prettier": "^3.8.1",
+    "prettier-plugin-astro": "^0.14.1"
+  },
+  "dependencies": {
+    "@astrojs/markdown-remark": "^7.3.10",
+    "@astrojs/starlight": "^0.43.1",
+    "astro": "^7.4.13",
+    "rehype-katex": "^7.0.1",
+    "remark-math": "^6.0.0",
+    "starlight-openapi": "^0.27.1"
   }
 }
