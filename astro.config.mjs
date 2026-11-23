@@ -26,10 +26,11 @@ export default defineConfig({
       title: docs.name,
       description:
         "Official documentation hub for the Wazoo project ecosystem.",
+      // Canonical brand assets from wazootech/brand (brand.wazoo.dev)
       logo: {
-        light: docs.logo.light,
-        dark: docs.logo.dark,
-        href: docs.logo.href,
+        light: "/brand/light.svg",
+        dark: "/brand/dark.svg",
+        href: "/",
       },
       favicon: "/favicon.svg",
       social: [
