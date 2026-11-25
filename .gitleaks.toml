@@ -1,0 +1,8 @@
+# Extend the default gitleaks rules; allow only the documented placeholder
+# token used in docs examples (e.g. wzp_YOUR_API_KEY).
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Documentation placeholder API keys"
+regexes = ['''^wzp_YOUR_[A-Z_]+$''']
