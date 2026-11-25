@@ -37,8 +37,8 @@ models are not accepted.
   revoke keys. A token with `users.read` can list them. See
   [Tokens](/console/tokens) for more information.
 - A world and a world token (`wzw_`) for it. Choosing a model for the world and
-  reindexing the world require a token with the `data:write` scope. Searching
-  requires `data:read`.
+  reindexing it (rebuilding its search index with that model) require a token
+  with the `data:write` scope. Searching requires `data:read`.
 - An account and API key with an embedding provider. Set a monthly spend limit
   on the key if you want to cap what the provider can bill.
 - The base URL of your Worlds deployment. The examples use
@@ -90,8 +90,9 @@ models are not accepted.
 
   </Step>
   <Step title="Reindex the world">
-    Reindexing embeds the world's text with your key and spends your provider
-    budget. It does not run automatically.
+    Reindexing rebuilds the world's search index. It embeds the world's text
+    with your key and spends your provider budget. Your data is not changed, and
+    reindexing does not run automatically.
 
     ```bash title="Reindex"
     curl -s -X POST "https://data.wazoo.dev/worlds/<world_id>/reindex" \
@@ -107,8 +108,9 @@ models are not accepted.
     | `in_progress`                  | A large world reindexes in windows. Call reindex again until the status is `completed`. |
 
     Vector indexing is asynchronous. When reindex reports `completed`, your
-    vectors are written, but the search index can take a minute or more to start
-    serving them. Until then search stays keyword-only, so results still return.
+    vectors are written, but the vector index can take a minute or more to start
+    serving them. Keyword search reflects your data immediately, so results
+    still return in the meantime.
 
   </Step>
   <Step title="Check the world's status">
@@ -122,11 +124,16 @@ models are not accepted.
     | Value           | Meaning                                                              |
     | :-------------- | :------------------------------------------------------------------- |
     | `ready`         | Vectors are current. Search is hybrid.                               |
-    | `stale`         | Vectors are not built for the current model. Reindex.                |
+    | `stale`         | Vectors cannot be trusted for the current model or data. Reindex.    |
     | `partial`       | Some vectors failed. Hybrid search covers what exists. Reindex.      |
     | `no_credential` | There is no active key for this model's provider. Store one.         |
     | `invalid`       | The provider rejected your key. Store a new key.                     |
     | `unconfigured`  | The world has no allowlisted embedding model. Choose one.            |
+
+    A world becomes `stale` when you change its model, when you revoke the key
+    its model uses, or when removing vectors after a delete fails. While a world
+    is `stale`, search ignores its vectors and runs keyword-only until you
+    reindex.
 
   </Step>
   <Step title="Search">
@@ -190,7 +197,7 @@ hybrid search returns. Vectors built before a revoke are never reused.
 | `400` when storing a key                             | The key has whitespace or is outside 16 to 512 characters, or the provider in the path is not `openai` or `openrouter`.                                                                                                                                             |
 | `503` with `EMBEDDINGS_NOT_CONFIGURED`               | Embeddings are not enabled on this deployment. Contact the Wazoo team.                                                                                                                                                                                              |
 | `embeddingStatus` is `invalid`                       | Your provider rejected the key several times in a row. Check the key and its spend limit, then store it again.                                                                                                                                                      |
-| Search `mode` stays `keyword` after reindex          | Wait a minute or two, because the search index updates asynchronously. If it persists, check `embeddingStatus`: anything other than `ready` or `partial` keeps search keyword-only. A `fallback` mode means the search engine itself was unavailable, so try again. |
+| Search `mode` stays `keyword` after reindex          | Wait a minute or two, because the vector index updates asynchronously. If it persists, check `embeddingStatus`: anything other than `ready` or `partial` keeps search keyword-only. A `fallback` mode means the search engine itself was unavailable, so try again. |
 | `completed_with_vector_errors`                       | Call reindex again. The `vectorSync.errors` list names the failures.                                                                                                                                                                                                |
 
 ## Next steps
