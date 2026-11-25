@@ -1,0 +1,17 @@
+// Cloudflare Workers deploy for the Starlight docs build.
+// Fully static output, so this is an assets-only Worker (no script).
+// Production deploys: push to main (Workers Builds, production branch).
+// PR previews: enable "Preview Builds" in the dashboard (Worker Previews);
+// each PR branch gets a preview URL, posted as a PR comment by the
+// GitHub integration.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "docs-wazoo-dev",
+  "compatibility_date": "2026-11-21",
+  "assets": {
+    "directory": "./dist",
+    // Mintlify-era URLs were /path (no .html); assets routing covers this.
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page",
+  },
+}

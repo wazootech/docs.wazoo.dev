@@ -1,0 +1,63 @@
+---
+title: "CocoIndex"
+description:
+  "Worlds vs CocoIndex: RDF knowledge graph vs incremental vector sidecar
+  indexing."
+---
+
+## At a glance
+
+|                  | Worlds                                           | [CocoIndex](https://github.com/cocoindex-io/cocoindex) |
+| :--------------- | :----------------------------------------------- | :----------------------------------------------------- |
+| Primary role     | RDF knowledge graph & SPARQL context engine      | Incremental ETL indexer & vector memory sidecar        |
+| Data model       | RDF triples in named graphs                      | Relational vector chunks (pgvector / PGlite)           |
+| Retrieval        | SPARQL graph queries, full-text, & vector fusion | Vector similarity & chunk retrieval                    |
+| Incremental flow | RDF patches (additions and deletions)            | Memoized pipeline functions (`@coco.fn(memo=True)`)    |
+| Deployment       | Edge-ready adapters (LibSQL, Postgres) or Cloud  | Python runtime + Postgres (Docker or PGlite)           |
+
+## Overlap and shared capabilities
+
+Both Worlds and [CocoIndex](https://github.com/cocoindex-io/cocoindex) address
+the need for structured, indexable context over Markdown documents. Both systems
+parse section headings, chunk content for search, and maintain fast retrieval
+pipelines so AI agents spend fewer tokens retrieving relevant context.
+
+The difference is in which layer of the stack they manage:
+
+- CocoIndex is an incremental ETL sidecar pipeline. It continuously watches
+  source files and updates derived pgvector or WASM PGlite vector indexes.
+- Worlds is an authoritative RDF fact engine. It manages canonical triple
+  assertions and SPARQL graph filters.
+
+Rather than competing, the two systems serve complementary steps in the context
+pipeline: CocoIndex handles background incremental indexing, while Worlds
+provides the authoritative SPARQL-driven [knowledge graph](/worlds/index).
+
+## When Worlds fits
+
+- You need deterministic graph querying (SPARQL) to verify multi-hop
+  relationships across enterprise domain facts.
+- You want open-standard RDF schemas that operate natively across edge adapters
+  (LibSQL) and cloud databases.
+
+## When CocoIndex fits
+
+- You want an incremental background pipeline that updates vector embeddings as
+  Markdown files change.
+- You need zero-Docker local vector sidecars via WASM PGlite.
+- You are transforming raw document corpora into derived chunk indexes for LLM
+  RAG pipelines.
+
+## Coexistence and integration
+
+CocoIndex and Wazoo tooling work together out of the box. You can use CocoIndex
+directly alongside the [Wiki toolchain](/projects/wiki), as demonstrated in the
+official
+[`wiki-cocoindex-template`](https://github.com/wazootech/wiki-templates/tree/main/templates/cocoindex),
+where Wiki CLI manages markdown source checking and CocoIndex builds derived
+sidecar vector indexes.
+
+As projects and team memory scale, we recommend integrating
+[Worlds](/projects/worlds) as the central context engine, letting CocoIndex
+handle background incremental vector indexing while Worlds serves authoritative,
+SPARQL-driven graph retrieval.

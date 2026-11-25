@@ -1,0 +1,48 @@
+---
+title: "Export"
+description: "Download graph data in standard RDF formats from the Console."
+---
+
+The export page lets you download all triples from a world in your choice of
+[RDF serialization format](/worlds/index#serialization).
+
+## Supported formats
+
+| Format     | Extension |
+| :--------- | :-------- |
+| JSON quads | `.json`   |
+| Turtle     | `.ttl`    |
+| N-Triples  | `.nt`     |
+| N-Quads    | `.nq`     |
+| Plain text | `.txt`    |
+
+## Export a world
+
+1. Open the [Wazoo Console](https://console.wazoo.dev).
+2. Select a world.
+3. Click **Export** in the sidebar.
+4. Select the export format.
+5. Click **Download**.
+
+The console downloads the full graph as a file.
+
+## Use the API
+
+You can also export programmatically:
+
+```bash
+curl -X GET "https://data.wazoo.dev/worlds/{worldId}/export?format=text%2Fturtle" \
+  -H "Authorization: Bearer $WORLDS_TOKEN"
+```
+
+Change the `format` query parameter for other formats:
+
+| Format     | `format` value          |
+| :--------- | :---------------------- |
+| JSON quads | `application/json`      |
+| Turtle     | `text/turtle`           |
+| N-Triples  | `application/n-triples` |
+| N-Quads    | `application/n-quads`   |
+| Trig       | `application/trig`      |
+| JSON-LD    | `application/ld+json`   |
+| Plain text | `text/plain`            |

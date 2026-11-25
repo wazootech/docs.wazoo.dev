@@ -1,0 +1,91 @@
+---
+title: "Console quickstart"
+description: "From invite to your first query in the Wazoo Web Console UI."
+---
+
+import { Note } from '../../components/mint';
+
+<Note>
+  Looking to connect programmatically via API, cURL, or SDK? See the [Developer
+  quickstart](/quickstart).
+</Note>
+
+This guide walks you from your invite email through signing in, creating a
+world, importing data, and running your first graph pattern query (SPARQL).
+
+## Before you start
+
+You need an invite to the Wazoo private beta. Sign up at
+[wazoo.dev/beta](https://wazoo.dev/beta).
+
+## 1. Sign in
+
+Visit [console.wazoo.dev](https://console.wazoo.dev). Sign in with the email
+address you used to join the beta. You will receive a one-time passcode.
+
+If your email is not on the allowlist, you will see an error. Contact the team
+if you believe you should have access.
+
+## 2. Create a world
+
+After signing in, click **Create world** and enter a display name. The platform
+mints the world's ID; you do not choose one. Use the returned `id` in API
+requests.
+
+## 3. Import data
+
+Click **Import** in the sidebar. Upload a file with graph data. The console
+accepts:
+
+- JSON quads: an array of objects with `subject`, `predicate`, and `object`
+  fields.
+- Plain text: one chunk of text per line, indexed for full-text and vector
+  search.
+
+If you do not have data yet, upload a JSON file with this content:
+
+```json
+[
+  {
+    "subject": "https://example.org/user/alice",
+    "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+    "object": "https://schema.org/Person"
+  },
+  {
+    "subject": "https://example.org/user/alice",
+    "predicate": "https://schema.org/givenName",
+    "object": "Alice"
+  },
+  {
+    "subject": "https://example.org/user/bob",
+    "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+    "object": "https://schema.org/Person"
+  },
+  {
+    "subject": "https://example.org/user/bob",
+    "predicate": "https://schema.org/givenName",
+    "object": "Bob"
+  }
+]
+```
+
+## 4. Run your first graph query (SPARQL)
+
+Click **SPARQL** in the sidebar. Paste this query and click **Run**:
+
+```sparql
+PREFIX schema: <https://schema.org/>
+
+SELECT ?name WHERE {
+  ?person a schema:Person ;
+          schema:givenName ?name .
+}
+```
+
+You should see `Alice` and `Bob` in the results.
+
+## Next steps
+
+- [Console overview](/console/overview): explore all console features
+- [Worlds concepts](/worlds/index): understand worlds, items, and facts
+- [Quickstart](/quickstart): connect via the API and SDK

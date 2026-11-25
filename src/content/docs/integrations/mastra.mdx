@@ -1,0 +1,98 @@
+---
+title: "Mastra"
+icon: "/images/icons/mastra.svg"
+description: "Connect Worlds to Mastra"
+---
+
+import { CodeGroup } from '../../../components/mint';
+
+[Mastra](https://mastra.ai/) is an un-opinionated AI framework you can run
+alongside your application code. Because it follows Vercel AI SDK standards,
+`@wazoo/tools` works with Mastra agents out of the box.
+
+## Installation
+
+Install Mastra core and the Wazoo AI tools:
+
+<CodeGroup>
+
+```bash npm
+npm i @mastra/core && npx jsr add @wazoo/tools
+```
+
+```bash deno
+deno add npm:@mastra/core jsr:@wazoo/tools
+```
+
+```bash pnpm
+pnpm add @mastra/core && pnpm dlx jsr add @wazoo/tools
+```
+
+```bash yarn
+yarn add @mastra/core && yarn dlx jsr add @wazoo/tools
+```
+
+```bash bun
+bun add @mastra/core && bunx jsr add @wazoo/tools
+```
+
+</CodeGroup>
+
+## Usage
+
+You can pass `@wazoo/tools` directly to a Mastra `Agent`.
+
+```typescript
+import { Agent } from "@mastra/core/agent";
+import { google } from "@ai-sdk/google";
+import { WorldsSdk } from "@worlds/sdk";
+import { RdfjsQuadStore, RdfjsSearchIndex } from "@worlds/sdk/rdfjs";
+import { WazooSparqlEngine } from "@wazoo/sparql-engine";
+import { Store } from "n3";
+import { createTools } from "@wazoo/tools";
+
+const store = new Store();
+const client = new WorldsSdk({
+  quadStore: new RdfjsQuadStore(store),
+  searchIndex: new RdfjsSearchIndex(store),
+  sparqlEngine: new WazooSparqlEngine({ store }),
+});
+
+const { executeSparql, searchWorld } = createTools({
+  client,
+});
+
+// Create a Mastra agent with Worlds tools
+const agent = new Agent({
+  name: "WorldsAgent",
+  instructions: "You are a knowledge graph assistant.",
+  model: google("gemini-3.8-flash"),
+  tools: {
+    executeSparql,
+    searchWorld,
+  },
+});
+
+const result = await agent.generate("Find all people in my world.");
+console.log(result.text);
+```
+
+## Granular selection
+
+If you only need specific tools, you can import and initialize them
+individually:
+
+```typescript
+import { Agent } from "@mastra/core/agent";
+import { google } from "@ai-sdk/google";
+import { createSearchWorldTool } from "@wazoo/tools";
+
+// client is the @worlds/sdk instance from the usage example above.
+const agent = new Agent({
+  name: "SearchAgent",
+  model: google("gemini-3.8-flash"),
+  tools: {
+    searchWorld: createSearchWorldTool(client),
+  },
+});
+```

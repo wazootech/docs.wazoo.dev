@@ -1,0 +1,64 @@
+---
+title: "Google Search & Knowledge Graph"
+description:
+  "Worlds vs Google Search: self-hostable private agent context vs public web
+  search."
+---
+
+## At a glance
+
+|                  | Worlds                                                | [Google Search](https://developers.google.com/custom-search) & [Knowledge Graph](https://developers.google.com/knowledge-graph) |
+| :--------------- | :---------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------ |
+| Deployment       | Self-hostable, edge-embeddable (LibSQL), or Cloud     | Proprietary Google cloud infrastructure                                                                                         |
+| Scope            | Private domain facts, agent memory, & codebase graphs | Public web pages & global web-scale entities                                                                                    |
+| Data model       | W3C RDF 1.1 quads, JSON-LD, & Linked Markdown         | Google Knowledge Graph (Schema.org / Wikidata)                                                                                  |
+| Primary consumer | Autonomous AI agents, LLM tool calls, & developers    | Human web searchers, Gemini Assistant, & Google APIs                                                                            |
+| Query surface    | SPARQL graph queries, full-text, & vector fusion      | Web search box, Knowledge Panels, & Custom Search API                                                                           |
+| Provenance       | Recorded as data in named graphs                      | Indexed web URL references                                                                                                      |
+
+## Overlap and shared capabilities
+
+Both [Google Search](https://developers.google.com/custom-search) and Worlds are
+built on the same premise: structured knowledge graphs answer queries better
+than keyword strings alone ("things, not strings").
+
+- Google Knowledge Graph (launched in 2012) added entity search to the public
+  web by mapping entities, attributes, and real-world relationships with
+  Schema.org and RDF standards.
+- Worlds applies the same RDF graph model to agent memory, so agents can query
+  connected entities with SPARQL instead of relying on flat vector embeddings.
+
+The two differ in privacy, self-hostability, and domain scope:
+
+- Google Search indexes the public web for general human information retrieval
+  on proprietary cloud infrastructure.
+- Worlds is self-hostable and open-source. It manages private enterprise facts,
+  local codebases, and agent context graphs on edge databases (LibSQL/SQLite),
+  local servers, or private clouds.
+
+## When Worlds fits
+
+- You need to self-host your context engine for data privacy, compliance, and
+  air-gapped security.
+- You are building AI agents that query private enterprise domain facts,
+  codebase structures, or local user state.
+- You require deterministic [graph queries](/worlds/query) (SPARQL) to verify
+  multi-hop relationships between internal entities.
+- You want edge-embeddable context stores (`worlds-libsql`) running directly
+  inside your local application runtime.
+
+## When Google Search fits
+
+- You need real-time, global information retrieval across the public internet
+  (current events, web pages, external documentation).
+- Your application requires broad web-scale entity resolution across world
+  facts.
+
+## Coexistence and integration
+
+Google Search and Worlds are complementary tools in an AI agent's toolkit:
+
+- Agents use web search tools (Google Search API, Serper, Tavily, Exa) to
+  retrieve live, external information from the open web.
+- Agents query Worlds for self-hosted, private domain facts, internal project
+  context, and verifiable memory.

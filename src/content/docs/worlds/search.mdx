@@ -1,0 +1,60 @@
+---
+title: "Search"
+description:
+  "How Worlds searches graph data and the current hosted-beta limits."
+---
+
+Before reasoning about facts, agents must find the correct starting point.
+
+## Hosted private-beta status
+
+The hosted Worlds Data API currently uses keyword full-text search. It does not
+have an embedding provider configured, so vector ranking and the hybrid flow
+described below are not active in the hosted beta.
+
+## Hybrid retrieval design
+
+When vector search is configured, Worlds can combine keyword matching, vector
+similarity, and graph filters to resolve a natural-language query to a semantic
+entity (IRI) before executing symbolic logic.
+
+| Signal        | Technique                    | What it captures         |
+| :------------ | :--------------------------- | :----------------------- |
+| Semantic      | Vector embeddings (1536-dim) | Conceptual meaning       |
+| Keyword       | FTS5 / BM25                  | Exact term matches       |
+| Graph context | RDF relationship filters     | Structural relationships |
+
+## Reciprocal rank fusion
+
+When multiple signals are available, Worlds merges their rankings using
+Reciprocal Rank Fusion (RRF):
+
+$$score = \sum_{d \in D} \frac{1}{60 + rank(d)}$$
+
+This lifts results ranked highly by multiple signals to the top and suppresses
+noise from any single signal.
+
+## Execute a search
+
+Use the data-plane search endpoint for keyword search in the hosted private
+beta. Data-plane requests authenticate with a `wzw_` world token:
+
+```bash
+curl -s -X POST "https://data.wazoo.dev/worlds/w_01jd8x5mqv7k3n9r2t4w6y8z0b/search" \
+  -H "Authorization: Bearer $WORLDS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "who manages Ethan",
+    "limit": 5
+  }'
+```
+
+Watch the shell quoting: a JSON string inside single quotes breaks the moment
+the text contains an apostrophe ("Ethan's manager" terminates the quote early).
+If a query genuinely needs an apostrophe, end the single-quoted string, escape
+the apostrophe, and reopen it — or put the payload in a file and use
+`-d @payload.json`.
+
+Results return the matching subject and predicate IRIs plus the literal
+`content`, so an agent can bind the exact entity before running
+[SPARQL](/worlds/query).

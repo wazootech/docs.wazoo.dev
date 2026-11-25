@@ -1,0 +1,52 @@
+---
+title: "Comparison placement"
+description:
+  "Where third-party tools belong in the docs versus the wiki-templates program"
+---
+
+Third-party tools appear in two Wazoo surfaces: the
+[Comparisons](/comparisons/index) section of this site and the
+[wiki-templates](https://github.com/wazootech/wiki-templates) repository. Each
+surface has one job.
+
+- Comparison pages position Worlds against alternatives an evaluator weighs
+  before adopting it.
+- Wiki templates deliver runnable scaffolds that connect a validated Wiki corpus
+  to a downstream runtime such as memory, retrieval-augmented generation, graph
+  engines, or agents.
+
+## Placement tests
+
+When a tool or player comes up, apply two tests:
+
+1. **Evaluator test**: If someone choosing Worlds would weigh the tool as an
+   alternative or complement, add a page under `comparisons/` and a row to the
+   alternatives table in `comparisons/index.mdx`.
+2. **Scaffold test**: If a Wiki CLI user can scaffold the tool or integrate it
+   into their vault workflow, track a `wiki-*` template on
+   wazootech/wiki-templates.
+
+The tests are independent. A tool can satisfy both, and satisfying one does not
+obligate the other.
+
+## Table order
+
+The alternatives table in `comparisons/index.mdx` is sorted lexicographically by
+display name. Insert new rows in order; a row out of place fails review.
+
+## Dual-surface tools
+
+Open-source memory and graph tools often satisfy both tests. When a tool has a
+comparison page and a template, link both directions:
+
+- The comparison page names the starter template where it describes an
+  integration path, as `/comparisons/cocoindex` does.
+- The template README cites the comparison page for positioning.
+
+## Substrate exclusion
+
+Components underneath Worlds adapters are infrastructure, not alternatives.
+Turso backs the `worlds-libsql` adapter, so it receives no comparison page, and
+`comparisons/index.mdx` records the relationship in its closing paragraph. A
+wiki template can still exist for a substrate tool because the scaffold test is
+unaffected.
