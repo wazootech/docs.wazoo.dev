@@ -1,0 +1,60 @@
+---
+title: "DIY memory infra"
+description:
+  "Worlds vs assembling your own memory stack: Postgres plus vector indexes,
+  triple stores, and custom pipelines."
+---
+
+## At a glance
+
+|                   | Worlds                                   | DIY memory stack                                        |
+| :---------------- | :--------------------------------------- | :------------------------------------------------------ |
+| Graph model       | RDF triples                              | Custom schema or relational tables                      |
+| Retrieval         | Hybrid search + pattern queries (SPARQL) | Custom vector + SQL index queries                       |
+| Provenance        | Recorded as data in named graphs         | Custom versioning & logging tables                      |
+| Ingestion         | Import API                               | Custom ETL pipeline & queues                            |
+| Pieces to operate | One engine                               | Postgres, pgvector, queue worker, ETL script, audit log |
+
+## The maintenance cost of a DIY memory stack
+
+A DIY memory stack starts with familiar pieces:
+[PostgreSQL](https://www.postgresql.org),
+[pgvector](https://github.com/pgvector/pgvector), an ingestion queue, an
+embedding service, and a schema you design. Each piece is standard. The cost
+lives in keeping them coherent.
+
+The work that actually adds up:
+
+- Vector embeddings, full-text indexes, and relational tables all have to stay
+  consistent under concurrent writes. When they drift, agents search against
+  stale context.
+- Hybrid retrieval means fusing vector similarity with graph relationships
+  yourself. That means writing and tuning a fusion algorithm, usually something
+  like Reciprocal Rank Fusion.
+- Agents need exact provenance for every fact. A multi-tenant, fact-level audit
+  log on top of a relational schema is substantial plumbing.
+- A schema that starts simple grows into a multi-service pipeline, and someone
+  has to operate it.
+
+Worlds handles these cases directly. Facts are RDF quads in named graphs, and
+retrieval combines vector similarity, keyword search, and pattern matching
+(SPARQL) in a single engine.
+
+## When Worlds fits
+
+- Facts, relationships, and provenance are core requirements.
+- You want hybrid retrieval and graph queries working before you have a team to
+  build them.
+- You need a smaller operational surface than a five-service stack.
+
+## When Worlds does not fit
+
+- You already have a database estate with a schema you are happy with.
+- You need retrieval logic that a general engine cannot express.
+- You want to own every layer and have the operational budget for it.
+
+## Coexistence
+
+The `@worlds/postgres` and `worlds-libsql` [adapters](/contribute/self-host) let
+a world run inside the database you already operate. Your data stays where it
+is, and Worlds becomes the context engine that makes it queryable by agents.

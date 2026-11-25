@@ -1,0 +1,118 @@
+---
+title: "OpenBot"
+description: "Give an OpenBot agent Wazoo memory with the wazoo-openbot plugin"
+---
+
+[OpenBot](https://docs.getopenbot.com) is a local-first harness for running AI
+agents on your own hardware. Agents are defined with `AGENT.md` files and
+extended with plugins that handle events on the OpenBot bus. The
+[`wazoo-openbot`](https://github.com/wazootech/wazoo-openbot) plugin gives an
+OpenBot agent a persistent world-model memory backed by a hosted Wazoo world.
+
+## What the plugin provides
+
+The plugin adds five tools to the agent that hosts it:
+
+| Tool            | Purpose                                                                                                                                                                                   |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `search_world`  | Hybrid search over the world's memory. Keyword search always works; the vector arm activates when embeddings are configured on the world.                                                 |
+| `run_sparql`    | Run a SPARQL 1.1 SELECT query against the world's graph. Use this for structured questions: lists, relations, counts.                                                                     |
+| `remember`      | Save one typed memory (decision, preference, person, project, finding, correction). Corrections carry the statement they supersede; statements that look like tokens or keys are refused. |
+| `import_turtle` | Import RDF/Turtle into the world and rebuild the search index.                                                                                                                            |
+| `reindex_world` | Rebuild the search index on demand.                                                                                                                                                       |
+
+## Requirements
+
+- An [OpenBot](https://docs.getopenbot.com) install (`npm i -g openbot`).
+- A Wazoo account with a platform token (`wzp_...`) for one-click setup, or a
+  world token (`wzw_...`) and world id (`w_...`) to bring your own world (see
+  [tokens](/console/tokens)).
+
+## Install the plugin
+
+Clone and build the plugin, then copy it into the OpenBot plugins folder:
+
+```bash
+git clone https://github.com/wazootech/wazoo-openbot.git
+cd wazoo-openbot
+bun install
+bun run build
+mkdir -p ~/.openbot/plugins/wazoo
+cp -r dist/* ~/.openbot/plugins/wazoo/
+```
+
+## Wire it into an agent
+
+Reference the plugin in the agent's `AGENT.md`:
+
+```yaml
+plugins:
+  - id: wazoo
+```
+
+Then connect a Wazoo platform token when the host shows the connect prompt. On
+first use, the plugin creates a world named after the agent, mints a scoped
+`wzw_` token, and caches both; later calls reuse them.
+
+To pin a specific world instead:
+
+```yaml
+plugins:
+  - id: wazoo
+    config:
+      worldToken: wzw_YOUR_WORLD_TOKEN
+      worldId: w_YOUR_WORLD_ID
+```
+
+Explicit config wins over provisioning. With neither a connection nor config,
+every tool call fails with a message that names both setup paths.
+
+## Memory teammate mode
+
+The tools are passive by default: an agent uses them when it thinks to. One
+standing rule in each agent's instructions turns the world into the team's
+shared memory instead. Adapt this to the agent's format:
+
+```markdown
+Before work that depends on past decisions, people, preferences, or project
+context, use search_world first; if the result is structural (who owns what,
+list all X), use run_sparql. When something worth keeping is decided or stated,
+save it with remember, filed by kind (decision, preference, person, project,
+finding, correction). Never save secrets or preferences you only inferred. If a
+stored fact is wrong, save a correction with supersedes set to the outdated
+statement.
+```
+
+Every agent with the rule reads from and writes to the same world, so one
+agent's decisions are visible to the rest. What the team has kept is one SPARQL
+query away:
+
+```sparql
+PREFIX wz: <https://wazoo.dev/vocab#>
+SELECT ?kind ?statement ?when WHERE {
+  ?memory a ?kind ;
+    wz:statement ?statement ;
+    wz:recordedAt ?when .
+} ORDER BY DESC(?when)
+```
+
+See
+[examples/memory-teammate.md](https://github.com/wazootech/wazoo-openbot/blob/main/examples/memory-teammate.md)
+in the plugin repo for the full pattern.
+
+## Usage notes
+
+Keyword search matches literal values in the graph, not predicate names: a
+search for `Ethan` finds triples whose object is `Ethan`, while a search for
+`manages` finds nothing. For structural questions ("who manages X", "list all
+projects"), prefer `run_sparql`.
+
+`import_turtle` rebuilds the search index automatically. If you import through
+another surface, run `reindex_world` afterwards, or keyword search returns
+nothing for the new facts.
+
+## Source
+
+The plugin lives at
+[wazootech/wazoo-openbot](https://github.com/wazootech/wazoo-openbot). Its only
+runtime dependency is the Worlds REST API; tests run with `bun test`.

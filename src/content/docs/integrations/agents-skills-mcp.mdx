@@ -1,0 +1,23 @@
+---
+title: "Agents, skills, and MCP"
+description:
+  "How AI coding agents connect to Wazoo memory using skills and MCP protocol."
+---
+
+## Overview
+
+Agents connect to Worlds through two REST surfaces:
+
+- **Control plane** (`api.wazoo.dev`): manage worlds and API tokens with a
+  `wzp_` token.
+- **Data plane** (`data.wazoo.dev`): [import](/worlds/update),
+  [search](/worlds/search), [pattern queries](/worlds/query), and
+  [export](/console/export) using a `wzw_` token.
+
+The MCP protocol is part of this agent-native surface. The REST endpoints above
+are the stable way to reach it today.
+
+## Install the `wazoo` skill
+
+For install instructions and the full reference, see
+[the `wazoo` skill docs](/skills/wazoo).

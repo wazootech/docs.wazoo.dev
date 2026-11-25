@@ -1,0 +1,23 @@
+---
+title: "Reindex"
+description: "How search indexing works for a world."
+---
+
+Worlds stores RDF quads as canonical data. The hosted Cloudflare data plane
+derives a full-text search projection from those quads. A successful import
+rebuilds that projection before the import response returns, so you do not
+normally need to reindex after an import.
+
+## Current status
+
+The Console's Reindex World action currently returns `completed` without running
+a rebuild. Do not use it to repair stale search results.
+
+The hosted private-beta data plane does not configure an embedding provider, so
+reindexing does not currently rebuild vector embeddings.
+
+## If search is stale
+
+1. Verify that the expected quads exist with a SPARQL query.
+2. If SPARQL returns the quads but search does not, contact the Wazoo team.
+   Retrying the Reindex action will not refresh the search projection.

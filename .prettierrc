@@ -8,5 +8,8 @@
   "useTabs": false,
   "arrowParens": "always",
   "bracketSpacing": true,
-  "endOfLine": "lf"
+  "endOfLine": "lf",
+  "plugins": [
+    "prettier-plugin-astro"
+  ]
 }

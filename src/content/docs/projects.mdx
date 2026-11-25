@@ -1,0 +1,64 @@
+---
+title: "Projects"
+description: "Open-source projects in the Wazoo ecosystem."
+---
+
+import { Card, CardGroup } from "../../components/mint";
+
+Wazoo maintains an ecosystem of independent open-source projects. While
+**Worlds** powers hosted context infrastructure, these child projects exist as
+standalone libraries, CLI tools, specs, and adapters.
+
+<CardGroup cols={2}>
+  <Card title="Worlds engine" icon="network" href="/projects/worlds">
+    Context infrastructure for agents: graphs, hybrid search, graph pattern
+    queries, and edge storage.
+  </Card>
+  <Card title="Wiki CLI & toolchain" icon="book-open" href="/projects/wiki">
+    CLI for semantic Markdown wikis: validate, query, render, and publish.
+  </Card>
+  <Card
+    title="Linked Markdown spec"
+    icon="braces"
+    href="/projects/linked-markdown"
+  >
+    Spec and parsers for Markdown graph nodes.
+  </Card>
+  <Card title="MemSDK" icon="database" href="/projects/memsdk">
+    Backend-agnostic AI memory interface.
+  </Card>
+</CardGroup>
+
+## Ecosystem repositories
+
+### Wazoo platform
+
+| Project       | Repository                                                        | Scope & description                     |
+| :------------ | :---------------------------------------------------------------- | :-------------------------------------- |
+| **Wazoo SDK** | [`wazoo-client-ts`](https://github.com/wazootech/wazoo-client-ts) | Primary TypeScript platform SDK         |
+| **Wazoo CLI** | [`wazoo-cli`](https://github.com/wazootech/wazoo-cli)             | Command line interface for the platform |
+| **AI tools**  | [`wazoo-tools`](https://github.com/wazootech/wazoo-tools)         | Vercel AI SDK tools integration         |
+| **Skills**    | [`wazoo-skills`](https://github.com/wazootech/wazoo-skills)       | Agent skills for coding agents          |
+
+### Worlds
+
+| Project             | Repository                                                          | Scope & description                 |
+| :------------------ | :------------------------------------------------------------------ | :---------------------------------- |
+| **Worlds client**   | [`worlds-client-ts`](https://github.com/wazootech/worlds-client-ts) | Graph client & embedded database    |
+| **Worlds adapters** | [`worlds-libsql`](https://github.com/wazootech/worlds-libsql)       | Storage adapters for LibSQL / Turso |
+
+### Linked Markdown
+
+| Project                    | Repository                                                              | Scope & description                       |
+| :------------------------- | :---------------------------------------------------------------------- | :---------------------------------------- |
+| **Wiki toolchain**         | [`wiki`](https://github.com/wazootech/wiki)                             | Semantic Markdown validator and generator |
+| **Linked Markdown**        | [`linked-markdown`](https://github.com/wazootech/linked-markdown)       | Format spec & conformance suite           |
+| **Linked Markdown TS**     | [`linked-markdown-ts`](https://github.com/wazootech/linked-markdown-ts) | TypeScript parser & AST transformer       |
+| **Linked Markdown Python** | [`linked-markdown-py`](https://github.com/wazootech/linked-markdown-py) | Python parser implementation              |
+
+### MemSDK
+
+| Project             | Repository                                                    | Scope & description                   |
+| :------------------ | :------------------------------------------------------------ | :------------------------------------ |
+| **MemSDK**          | [`memsdk`](https://github.com/wazootech/memsdk)               | Portable memory interface             |
+| **MemSDK adapters** | [`memsdk-worlds`](https://github.com/wazootech/memsdk-worlds) | Native MemSDK driver for Wazoo Worlds |
