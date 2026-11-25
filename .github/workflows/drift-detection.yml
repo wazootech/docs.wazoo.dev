@@ -2,6 +2,8 @@ name: Drift Detection
 
 on:
   push:
+  pull_request:
+    types: [closed]
   workflow_dispatch:
 
 permissions:
@@ -9,6 +11,8 @@ permissions:
 
 jobs:
   verify:
+    # A closed pull request only closes drift issues; it has nothing to verify.
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -36,13 +40,13 @@ jobs:
             const runUrl = context.serverUrl + "/" + context.repo.owner + "/" + context.repo.repo + "/actions/runs/" + context.runId;
             const branch = context.ref.replace("refs/heads/", "");
             const title = "Drift detected on " + branch;
-            const body = "The drift detection workflow failed on " + context.ref + ".\n\nChecks that ran: format:check (prettier), check (mintlify validate), broken-links.\n\nSee the failing run: " + runUrl + "\n\nThis issue was opened automatically by the workflow. Close it once the drift is fixed.";
-            const { data: existing } = await github.rest.issues.listForRepo({
+            const body = "The drift detection workflow failed on " + context.ref + ".\n\nChecks that ran: format:check (prettier), check (mintlify validate), broken-links.\n\nSee the failing run: " + runUrl + "\n\nThis issue was opened automatically by the workflow. It closes automatically when the branch passes or its pull request merges.";
+            const existing = await github.paginate(github.rest.issues.listForRepo, {
               owner: context.repo.owner,
               repo: context.repo.repo,
               state: "open",
               labels: "drift-detection",
-              per_page: 10,
+              per_page: 100,
             });
             const duplicate = existing.find((issue) => issue.title === title);
             if (duplicate) {
@@ -61,4 +65,51 @@ jobs:
                 body: body,
                 labels: ["drift-detection"],
               });
+            }
+
+  close-resolved:
+    runs-on: ubuntu-latest
+    needs: verify
+    # Runs when a branch passes, or when a same-repository pull request merges
+    # (a merged branch is not pushed again, so a passing run would never come).
+    if: >-
+      !cancelled() && (needs.verify.result == 'success' ||
+      (github.event_name == 'pull_request' &&
+      github.event.pull_request.merged == true &&
+      github.event.pull_request.head.repo.full_name == github.repository))
+    permissions:
+      issues: write
+    steps:
+      - uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
+        with:
+          script: |
+            const runUrl = context.serverUrl + "/" + context.repo.owner + "/" + context.repo.repo + "/actions/runs/" + context.runId;
+            const pr = context.payload.pull_request;
+            const branch = pr ? pr.head.ref : context.ref.replace("refs/heads/", "");
+            const title = "Drift detected on " + branch;
+            const reason = pr
+              ? "Closing: pull request #" + pr.number + " for " + branch + " merged."
+              : "Closing: " + branch + " passed the drift checks: " + runUrl;
+            const existing = await github.paginate(github.rest.issues.listForRepo, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: "open",
+              labels: "drift-detection",
+              per_page: 100,
+            });
+            for (const issue of existing.filter((item) => item.title === title)) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                body: reason,
+              });
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                state: "closed",
+                state_reason: "completed",
+              });
+              core.notice("Closed drift issue #" + issue.number + ".");
             }
