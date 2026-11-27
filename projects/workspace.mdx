@@ -33,14 +33,24 @@ ecosystem without submodules:
 
 ## Installation
 
-Install the `wspace` CLI using Deno:
+Install the `wspace` CLI with Deno, or add the package with npm or Bun:
 
 <CodeGroup>
-```sh Deno JSR
-deno install -g --allow-read --allow-write --allow-run=git jsr:@wazoo/workspace/cli
+```sh Deno
+deno install -g -A --name wspace jsr:@wazoo/workspace/cli
 ```
 
-```sh From Source
+```sh npm
+npx jsr add @wazoo/workspace
+node node_modules/@wazoo/workspace/src/cli.js install
+```
+
+```sh Bun
+bunx jsr add @wazoo/workspace
+bun node_modules/@wazoo/workspace/src/cli.js install
+```
+
+```sh From source
 git clone https://github.com/wazootech/workspace-cli.git
 cd workspace-cli
 deno task build
@@ -48,8 +58,13 @@ deno task build
 
 </CodeGroup>
 
-The JSR package installs a binary named `wspace`. Building from source writes
+The Deno command installs a binary named `wspace`. Building from source writes
 the binary to `./wspace`.
+
+The npm and Bun commands do not create a `wspace` command. Run them in the
+directory that contains `workspace.json`, and replace `wspace` in the examples
+on this page with `node node_modules/@wazoo/workspace/src/cli.js` or
+`bun node_modules/@wazoo/workspace/src/cli.js`.
 
 ## Command reference
 
